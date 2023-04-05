@@ -1,15 +1,21 @@
+import { SlotType } from "./types";
+
 export type SerializedLLink = [number, string, number, number, number, number];
 
 export default class LLink {
     id: number;
-    type: string;
+    type: SlotType;
     origin_id: number;
     origin_slot: number;
     target_id: number;
     target_slot: number;
+    data?: any;
+
+    _last_time: number = 0;
+
     constructor(
         id: number,
-        type: string,
+        type: SlotType,
         origin_id: number,
         origin_slot: number,
         target_id: number,

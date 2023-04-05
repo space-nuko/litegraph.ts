@@ -1,0 +1,13 @@
+{
+  "compilerOptions":
+  {
+    "sourceMap": true,
+    "target": "es2017",
+    "verbatimModuleSyntax": true,
+    "sourceMap": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

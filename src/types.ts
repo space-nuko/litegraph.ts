@@ -10,7 +10,8 @@ export enum NodeMode {
     ALWAYS = 0,
     ON_EVENT,
     NEVER,
-    ON_TRIGGER
+    ON_TRIGGER,
+    ON_REQUEST
 }
 export const NodeModeNames = ["Always", "On Event", "Never", "On Trigger"] // helper, will add "On Request" and more in the future
 export const NodeModeColors = ["#666","#422","#333","#224","#626"] // use with node_box_coloured_by_mode
@@ -61,9 +62,16 @@ export enum TitleType {
     AUTOHIDE_TITLE
 }
 
-export enum SlotType {
+export enum BuiltInSlotType {
     EVENT = -1, //for outputs
-    ACTION = -1 //for inputs
+    ACTION = -1, //for inputs
+    DEFAULT = 0
 }
 
+export type SlotType =
+    BuiltInSlotType
+    | string;
+
 export type Version = number;
+
+export type PointerEventsMethod = "mouse" | "pointer" | "touch";
