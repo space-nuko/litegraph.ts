@@ -10,9 +10,16 @@ import { ContextMenuItem, IContextMenuItem } from "./ContextMenu"
 import { Vector2, Vector4, NodeMode, SlotShape, BuiltInSlotType, SlotType, LConnectionKind } from "./types";
 
 export type NodeOutput = [string, SlotType, Record<any, any>?];
-export type InputSlotLayout = { name: string, type: string, options?: Record<string, any> }
-export type OutputSlotLayout = { name: string, type: string, options?: Record<string, any> }
+export type InputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
+export type OutputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
 export type SlotLayout = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] };
+
+export type PropertyLayout = {
+    name: string,
+    defaultValue: any,
+    type?: string,
+    options?: Partial<IProperty>
+}[];
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
     type: new (title: string?) => T,

@@ -1,7 +1,7 @@
 import { Vector2, Vector4, PointerEventsMethod, BuiltInSlotShape, BuiltInSlotType, SlotType, NodeMode } from "./types";
 import { LGraphNodeConstructor, SerializedLGraphNode } from "./LGraphNode"
 import LGraph from "./LGraph"
-import { default as LGraphNode, SlotsLayout } from "./LGraphNode"
+import { default as LGraphNode, SlotLayout, PropertyLayout } from "./LGraphNode"
 
 export type SearchboxExtra = {
     data: {
@@ -366,6 +366,15 @@ export default class LiteGraph {
             }
         } else {
             node = new regConfig.type(title) as T;
+        }
+
+        if (Object.hasOwn((regConfig.type.constructor as any), "propertyLayout")) {
+            const propertyLayout: PropertyLayout = (regConfig.type.constructor as any).slotLayout as PropertyLayout;
+            console.log("Found property layout!", propertyLayout);
+            for (const item of propertyLayout) {
+                const { name, defaultValue, type, options } = item;
+                node.addProperty(name, defaultValue, type, options)
+            }
         }
 
         if (Object.hasOwn((regConfig.type.constructor as any), "slotLayout")) {

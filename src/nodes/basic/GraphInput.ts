@@ -1,7 +1,7 @@
-import { default as LGraphNode, SlotLayout } from "../LGraphNode"
-import LiteGraph from "../LiteGraph"
-import { default as IWidget, ITextWidget } from "../IWidget"
-import { BuiltInSlotType, SlotType } from "../types";
+import { default as LGraphNode, SlotLayout } from "../../LGraphNode"
+import LiteGraph from "../../LiteGraph"
+import { default as IWidget, ITextWidget } from "../../IWidget"
+import { BuiltInSlotType, SlotType, Vector2 } from "../../types";
 
 export interface GraphInputProperties extends Record<string, any> {
     name: string,
@@ -16,11 +16,61 @@ export default class GraphInput extends LGraphNode {
         value: 0
     }
 
+    static slotLayout: SlotLayout = {
+        inputs: [
+            {name: "", type: "number"}
+        ],
+        outputs: []
+    }
+
     nameWidget: ITextWidget;
     typeWidget: ITextWidget;
     valueWidget: IWidget;
 
     nameInGraph: string = "";
+
+    override size: Vector2 = [180, 90];
+
+    constructor(title?: string) {
+        super(title)
+
+        let that = this;
+
+        this.nameWidget = this.addWidget(
+            "text",
+            "Name",
+            this.properties.name,
+            function(v) {
+                if (!v) {
+                    return
+                }
+                that.setProperty("name", v);
+            }
+        );
+
+        this.typeWidget = this.addWidget(
+            "text",
+            "Type",
+            "" + this.properties.type,
+            function(v) {
+                if (!v) {
+                    return
+                }
+                that.setProperty("type", v);
+            }
+        );
+
+        this.valueWidget = this.addWidget(
+            "number",
+            "Value",
+            this.properties.value,
+            function(v) {
+                that.setProperty("value", v);
+            }
+        );
+
+        this.widgets_up = true;
+    }
 
     override onConfigure() {
         this.updateType();
@@ -130,60 +180,11 @@ export default class GraphInput extends LGraphNode {
             this.graph.removeInput(this.nameInGraph);
         }
     }
-
-    static slotLayout: SlotLayout = {
-        inputs: [
-            {name: "", type: "number"}
-        ],
-        outputs: []
-    }
-
-    constructor(title?: string) {
-        super(title)
-
-        let that = this;
-
-        this.nameWidget = this.addWidget(
-            "text",
-            "Name",
-            this.properties.name,
-            function(v) {
-                if (!v) {
-                    return
-                }
-                that.setProperty("name", v);
-            }
-        );
-
-        this.typeWidget = this.addWidget(
-            "text",
-            "Type",
-            "" + this.properties.type,
-            function(v) {
-                if (!v) {
-                    return
-                }
-                that.setProperty("type", v);
-            }
-        );
-
-        this.valueWidget = this.addWidget(
-            "number",
-            "Value",
-            this.properties.value,
-            function(v) {
-                that.setProperty("value", v);
-            }
-        );
-
-        this.widgets_up = true;
-        this.size = [180, 90];
-    }
 }
 
 LiteGraph.registerNodeType({
     type: GraphInput,
     title: "Input",
     desc: "Input of the graph",
-    typeName: "graph/subgraph"
+    typeName: "graph/input"
 })
