@@ -1,52 +1,7 @@
 {
-  "name": "litegraph.js",
-  "version": "0.7.10",
-  "description": "A graph node editor similar to PD or UDK Blueprints. It works in an HTML5 Canvas and allows to export graphs to be included in applications.",
-  "main": "./build/litegraph.umd.cjs",
-  "module": "./build/litegraph-ts.js",
-  "types": "./build/litegraph-ts.d.ts",
-  "exports": {
-    ".": {
-      "import": "./build/litegraph-ts.js",
-      "require": "./build/litegraph-ts.umd.cjs"
-    }
-  },
-  "directories": {
-    "doc": "doc"
-  },
-  "private": false,
+  "private": true,
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "test": "jest",
-    "prettier": "npx prettier --write src/**/*.* css/**/*.*",
-    "lint": "npx eslint src",
-    "lint:fix": "npx eslint --fix src"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jagenjo/litegraph.js.git"
-  },
-  "author": "jagenjo",
-  "license": "MIT",
-  "files": [
-    "build",
-    "css/litegraph.css"
-  ],
-  "bugs": {
-    "url": "https://github.com/jagenjo/litegraph.js/issues"
-  },
-  "homepage": "https://github.com/jagenjo/litegraph.js#readme",
-  "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "eslint": "^8.37.0 ",
-    "eslint-plugin-jest": "^27.2.1",
-    "jest": "^29.5.0",
-    "typescript": "^5.0.3",
-    "vite": "^4.2.1"
-  },
-  "dependencies": {
-    "vite-plugin-dts": "^2.2.0"
+    "dev": "turbo run dev"
   }
 }

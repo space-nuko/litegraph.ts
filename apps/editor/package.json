@@ -1,0 +1,13 @@
+{
+  "name": "litegraph-ts-editor",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "dependencies": {
+    "typescript": "^5.0.3",
+    "vite": "^4.2.1",
+    "litegraph-ts": "workspace:*"
+  }
+}
