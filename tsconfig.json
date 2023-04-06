@@ -2,14 +2,18 @@
   "compilerOptions":
   {
     "sourceMap": true,
-    "module": "commonjs",
-    "rootDir": "src",
-    "target": "es2017",
+    "target": "es2020",
+    "module": "es2020",
+    "lib": [
+      "es2020", "DOM"
+    ],
+    "moduleResolution": "node",
     "verbatimModuleSyntax": true,
     "sourceMap": true,
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./build"
   }
 }

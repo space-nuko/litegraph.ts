@@ -22,6 +22,7 @@ export type WidgetTypes =
     | "number"
     | "slider"
     | "combo"
+    | "string"
     | "text"
     | "toggle"
     | "button";

@@ -1,12 +1,13 @@
-import LiteGraph from "./LiteGraph";
-import LGraphNode from "./LGraphNode";
-import { SerializedLGraphNode, LGraphNodeConstructor } from "./LGraphNode";
-import LGraphGroup from "./LGraphGroup";
+import type { SlotIndex } from "./INodeSlot";
 import LGraphCanvas from "./LGraphCanvas";
-import { default as LLink, SerializedLLink } from "./LLink";
-import { default as INodeSlot, SlotIndex } from "./INodeSlot"
-import { Version, LConnectionKind, NodeMode, LayoutDirection } from "./types";
-import GraphInput from "./nodes/GraphInput"
+import LGraphGroup from "./LGraphGroup";
+import LGraphNode from "./LGraphNode";
+import type { SerializedLLink } from "./LLink";
+import LLink from "./LLink";
+import LiteGraph from "./LiteGraph";
+import GraphInput from "./nodes/basic/GraphInput";
+import type { LConnectionKind, Version } from "./types";
+import { LayoutDirection, NodeMode } from "./types";
 
 export interface LGraphConfig {
     align_to_grid?: boolean;
@@ -52,7 +53,7 @@ export default class LGraph {
     static DEFAULT_SUPPORTED_TYPES: string[] = ["number", "string", "boolean"];
     supported_types: string[] | null = null;
 
-    constructor(o?: object) {
+    constructor(o?: SerializedLGraph) {
         if (LiteGraph.debug) {
             console.log("Graph created");
         }
@@ -105,7 +106,7 @@ export default class LGraph {
     nodes_actioning: boolean[] = [];
     nodes_executedAction: string[] = [];
 
-    execution_timer_id: number = -1;
+    execution_timer_id: ReturnType<typeof setInterval> | -1 = -1;
     execution_time: number = 0;
     errors_in_execution: boolean = false;
 
@@ -772,16 +773,14 @@ export default class LGraph {
      * Called when a node's connection is changed
      * @param node the instance of the node
      */
-    onNodeConnectionChange(kind: LConnectionKind,
-                           node: LGraphNode,
-                           slot: SlotIndex,
-                           target_node: LGraphNode,
-                           target_slot: SlotIndex): void {
-    }
+    onNodeConnectionChange?(kind: LConnectionKind,
+                            node: LGraphNode,
+                            slot: SlotIndex,
+                            target_node: LGraphNode,
+                            target_slot: SlotIndex): void;
 
     /** Called by `LGraph.configure` */
-    onConfigure?(o: SerializedLGraphNode): void {
-    }
+    onConfigure?(data: SerializedLGraph): void;
 
     /** Removes a node from the graph */
     remove(node: LGraphNode): void {
@@ -988,8 +987,8 @@ export default class LGraph {
         var changes = false;
         for (var i = 0; i < this._nodes.length; i++) {
             var node = this._nodes[i];
-            var ctor = LiteGraph.registered_node_types[node.type];
-            if (node.constructor == ctor) {
+            var config = LiteGraph.registered_node_types[node.type];
+            if (node.constructor == config.type) {
                 continue;
             }
             console.log("node being replaced by newer version: " + node.type);
@@ -1418,8 +1417,6 @@ export default class LGraph {
         return data as T;
     }
 
-    onConfigure?(data: SerializedLGraph): void;
-
     /**
      * Configure a graph from a JSON string
      * @param data configure a graph from a JSON string
@@ -1500,9 +1497,9 @@ export default class LGraph {
         this._groups.length = 0;
         if (data.groups) {
             for (var i = 0; i < data.groups.length; ++i) {
-                var group = new LiteGraph.LGraphGroup();
+                var group = new LGraphGroup();
                 group.configure(data.groups[i]);
-                this.add(group);
+                this.addGroup(group);
             }
         }
 

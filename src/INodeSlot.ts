@@ -1,4 +1,4 @@
-import { Dir, SlotShape, SlotType, Vector2 } from "./types"
+import type { Dir, SlotShape, SlotType, Vector2 } from "./types"
 import LLink from "./LLink"
 
 /** https://github.com/jagenjo/litegraph.js/tree/master/guides#node-slots */
@@ -14,6 +14,7 @@ export default interface INodeSlot {
     nameLocked?: boolean;
     _data?: any;
     pos?: Vector2
+    slot_index?: number;
 }
 
 export interface INodeInputSlot extends INodeSlot {

@@ -1,6 +1,6 @@
 import LGraphCanvas from "./LGraphCanvas"
 import LGraphNode from "./LGraphNode"
-import { Vector2, WidgetTypes } from "./types"
+import type { Vector2, WidgetTypes } from "./types"
 
 export type WidgetCallback<T extends IWidget = IWidget> = (
     this: T,
@@ -19,8 +19,10 @@ export default interface IWidget<TValue = any, TOptions = any> {
     y?: number;
     property?: string;
     last_y?: number;
+    width?: number;
     clicked?: boolean;
     marker?: boolean;
+    disabled?: boolean;
     callback?: WidgetCallback<this>;
     /** Called by `LGraphCanvas.drawNodeWidgets` */
     draw?(

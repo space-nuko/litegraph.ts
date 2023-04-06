@@ -1,22 +1,119 @@
-import { default as ContextMenu, ContextMenuItem, IContextMenuItem, ContextMenuEventListener } from "./ContextMenu";
-import { default as DragAndScale, MouseEventExt } from "./DragAndScale";
-import { default as INodeSlot, SlotNameOrIndex } from "./INodeSlot";
-import { default as LGraphCanvas, IGraphDialog } from "./LGraphCanvas";
-import LGraphNode from "./LGraphNode";
+import type { ContextMenuEventListener, ContextMenuItem, IContextMenuItem } from "./ContextMenu";
+import ContextMenu from "./ContextMenu";
+import type { MouseEventExt } from "./DragAndScale";
+import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
+import type { IGraphDialog } from "./LGraphCanvas";
+import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
+import LGraphNode from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
-import { BuiltInSlotType, SlotType, Vector2 } from "./types";
+import type { SlotType, Vector2 } from "./types";
+import { BuiltInSlotType } from "./types";
 
 export default class LGraphCanvas_UI {
-    static onMenuCollapseAll(): void;
-    static onMenuNodeEdit(): void;
-    static onShowPropertyEditor(
-        item: any,
-        options: any,
-        e: any,
-        menu: any,
-        node: any
-    ): void;
+    static onMenuCollapseAll(): void {}
+    static onMenuNodeEdit(): void {}
+
+    // TODO refactor :: this is used fot title but not for properties!
+    static onShowPropertyEditor: ContextMenuEventListener = function(
+        item: ContextMenuItem,
+        options,
+        e: MouseEventExt,
+        menu: ContextMenu,
+        node?: LGraphNode
+    ): void {
+        var property = /* TODO refactor :: item.property || */ "title";
+        var value = node[property];
+
+        // TODO refactor :: use createDialog ?
+
+        var dialog = document.createElement("div") as IGraphDialog;
+        dialog.is_modified = false;
+        dialog.className = "graphdialog";
+        dialog.innerHTML =
+            "<span class='name'></span><input autofocus type='text' class='value'/><button>OK</button>";
+        dialog.close = function() {
+            if (dialog.parentNode) {
+                dialog.parentNode.removeChild(dialog);
+            }
+        };
+        var title = dialog.querySelector(".name") as HTMLDivElement;
+        title.innerText = property;
+        var input = dialog.querySelector(".value") as HTMLInputElement;
+        if (input) {
+            input.value = value;
+            input.addEventListener("blur", function(e) {
+                this.focus();
+            });
+            input.addEventListener("keydown", function(e) {
+                dialog.is_modified = true;
+                if (e.keyCode == 27) {
+                    //ESC
+                    dialog.close();
+                } else if (e.keyCode == 13) {
+                    inner(); // save
+                } else if (e.keyCode != 13 && e.target instanceof Element && e.target.localName != "textarea") {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+
+        var graphcanvas = LGraphCanvas.active_canvas;
+        var canvas = graphcanvas.canvas;
+
+        var rect = canvas.getBoundingClientRect();
+        var offsetx = -20;
+        var offsety = -20;
+        if (rect) {
+            offsetx -= rect.left;
+            offsety -= rect.top;
+        }
+
+        if (e) {
+            dialog.style.left = e.clientX + offsetx + "px";
+            dialog.style.top = e.clientY + offsety + "px";
+        } else {
+            dialog.style.left = canvas.width * 0.5 + offsetx + "px";
+            dialog.style.top = canvas.height * 0.5 + offsety + "px";
+        }
+
+        var button = dialog.querySelector("button");
+        button.addEventListener("click", inner);
+        canvas.parentNode.appendChild(dialog);
+
+        if(input) input.focus();
+
+        var dialogCloseTimer = null;
+        dialog.addEventListener("mouseleave", function(e) {
+            if(LiteGraph.dialog_close_on_mouse_leave)
+                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave)
+                    dialogCloseTimer = setTimeout(dialog.close, LiteGraph.dialog_close_on_mouse_leave_delay); //dialog.close();
+        });
+        dialog.addEventListener("mouseenter", function(e) {
+            if(LiteGraph.dialog_close_on_mouse_leave)
+                if(dialogCloseTimer) clearTimeout(dialogCloseTimer);
+        });
+
+        function inner() {
+            if(input) setValue(input.value);
+        }
+
+        function setValue(value: any) {
+            // TODO refactor
+            // if (item.type == "Number") {
+            //     value = Number(value);
+            // } else if (item.type == "Boolean") {
+            //     value = Boolean(value);
+            // }
+            node[property] = value;
+            if (dialog.parentNode) {
+                dialog.parentNode.removeChild(dialog);
+            }
+            node.setDirtyCanvas(true, true);
+        }
+    }
 
     /** Create menu for `Add Group` */
     static onGroupAdd: ContextMenuEventListener = function(value: IContextMenuItem, options, mouseEvent, menu, node: LGraphNode) {
@@ -85,7 +182,7 @@ export default class LGraphCanvas_UI {
                         canvas.graph.beforeChange();
                         var node = LiteGraph.createNode(value.value);
                         if (node) {
-                            node.pos = canvas.convertEventToCanvasOffset(firstEvent);
+                            node.pos = canvas.convertEventToCanvasOffset(firstEvent as MouseEventExt);
                             canvas.graph.add(node);
                         }
                         if(callback)
@@ -383,15 +480,13 @@ export default class LGraphCanvas_UI {
     // refactor: there are different dialogs, some uses createDialog some dont
     prompt(
         this: LGraphCanvas,
-        title: string,
+        title: string = "",
         value: any,
         callback: Function,
         event: any,
         multiline: boolean = false
     ): IGraphDialog {
         var that = this;
-        var input_html = "";
-        title = title || "";
 
         var dialog = document.createElement("div") as IGraphDialog;
         dialog.is_modified = false;
@@ -835,7 +930,7 @@ export default class LGraphCanvas_UI {
                         }
                         if (typeof options.node_from.outputs[iS] !== undefined){
                             if (iS !== null && iS>-1){
-                                options.node_from.connectByType( iS, node, options.node_from.outputs[iS].type );
+                                options.node_from.connectByTypeInput( iS, node, options.node_from.outputs[iS].type );
                             }
                         }else{
                             // console.warn("cant find slot " + options.slot_from);
@@ -845,7 +940,7 @@ export default class LGraphCanvas_UI {
                         var iS: SlotNameOrIndex | null = null;
                         switch (typeof options.slot_from){
                             case "string":
-                                iS = options.node_to.findInputSlot(options.slot_from);
+                                iS = options.node_to.findInputSlotIndexByName(options.slot_from);
                                 break;
                                 // case "object":
                                 //     if (options.slot_from.name){
@@ -1081,6 +1176,120 @@ export default class LGraphCanvas_UI {
         }
 
         return dialog;
+    }
+
+    showConnectionMenu(this: LGraphCanvas, optPass: {
+        nodeFrom?: LGraphNode,
+        slotFrom?: SlotNameOrIndex | INodeSlot,
+        nodeTo?: LGraphNode,
+        slotTo?: SlotNameOrIndex | INodeSlot,
+        e?: Event
+    } = {}) { // addNodeMenu for connection
+        var opts = Object.assign({   nodeFrom: null  // input
+                                    ,slotFrom: null // input
+                                    ,nodeTo: null   // output
+                                    ,slotTo: null   // output
+                                    ,e: null
+                                }
+                                ,optPass
+                            );
+        var that = this;
+
+        var isFrom = opts.nodeFrom && opts.slotFrom;
+        var isTo = !isFrom && opts.nodeTo && opts.slotTo;
+
+        if (!isFrom && !isTo){
+            console.warn("No data passed to showConnectionMenu");
+            return false;
+        }
+
+        var nodeX: LGraphNode = isFrom ? opts.nodeFrom : opts.nodeTo;
+        var slotX: SlotNameOrIndex | INodeSlot = isFrom ? opts.slotFrom : opts.slotTo;
+
+        var iSlotConn: SlotIndex | null = null;
+        switch (typeof slotX){
+            case "string":
+                iSlotConn = isFrom ? nodeX.findOutputSlotIndexByName(slotX) : nodeX.findInputSlotIndexByName(slotX);
+                slotX = isFrom ? nodeX.outputs[slotX] : nodeX.inputs[slotX];
+            break;
+            case "object":
+                // ok slotX
+                iSlotConn = isFrom ? nodeX.findOutputSlotIndexByName(slotX.name) : nodeX.findInputSlotIndexByName(slotX.name);
+            break;
+            case "number":
+                iSlotConn = slotX;
+                slotX = isFrom ? nodeX.outputs[slotX] : nodeX.inputs[slotX];
+            break;
+            default:
+                // bad ?
+                //iSlotConn = 0;
+                console.warn("Cant get slot information "+slotX);
+                return false;
+        }
+
+        slotX = slotX as INodeSlot;
+
+		var options: IContextMenuItem[] = [{ content: "Add Node" }, null];
+
+		if (that.allow_searchbox){
+			options.push({ content: "Search" });
+			options.push(null);
+		}
+
+		// get defaults nodes for this slottype
+		var fromSlotType = slotX.type == BuiltInSlotType.EVENT ? "_event_" : slotX.type;
+		var slotTypesDefault = isFrom ? LiteGraph.slot_types_default_out : LiteGraph.slot_types_default_in;
+		if(slotTypesDefault && slotTypesDefault[fromSlotType]){
+			if(typeof slotTypesDefault[fromSlotType] === "object"){
+				for(var typeX in slotTypesDefault[fromSlotType]){
+					options.push(slotTypesDefault[fromSlotType][typeX]);
+				}
+			}else{
+				options.push(slotTypesDefault[fromSlotType]);
+			}
+		}
+
+		// build menu
+        var menu = new ContextMenu(options, {
+            event: opts.e,
+			title: (slotX && slotX.name!="" ? (slotX.name + (fromSlotType?" | ":"")) : "")+(slotX && fromSlotType ? fromSlotType : ""),
+            callback: inner_clicked
+        });
+
+		// callback
+        function inner_clicked(v: string, options, e) {
+            //console.log("Process showConnectionMenu selection");
+            switch (v) {
+                case "Add Node":
+                    LGraphCanvas.onMenuAdd(null, null, e, menu, function(node){
+                        if (isFrom){
+                            opts.nodeFrom.connectByType( iSlotConn, node, fromSlotType );
+                        }else{
+                            opts.nodeTo.connectByTypeOutput( iSlotConn, node, fromSlotType );
+                        }
+                    });
+                    break;
+				case "Search":
+					if(isFrom){
+						that.showSearchBox(e,{node_from: opts.nodeFrom, slot_from: slotX, type_filter_in: fromSlotType});
+					}else{
+						that.showSearchBox(e,{node_to: opts.nodeTo, slot_from: slotX, type_filter_out: fromSlotType});
+					}
+					break;
+                default:
+					// check for defaults nodes for this slottype
+					var nodeCreated = that.createDefaultNodeForSlot(v, Object.assign(opts,{ position: [opts.e.canvasX, opts.e.canvasY]}));
+					if (nodeCreated){
+						// new node created
+						//console.log("node "+v+" created")
+					}else{
+						// failed or v is not in defaults
+					}
+					break;
+            }
+        }
+
+        return false;
     }
 
     showEditPropertyValue(this: LGraphCanvas, node: LGraphNode, property: any, options: any): IGraphDialog {

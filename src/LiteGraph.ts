@@ -1,19 +1,7 @@
-import { Vector2, Vector4, PointerEventsMethod, BuiltInSlotShape, BuiltInSlotType, SlotType, NodeMode } from "./types";
-import { LGraphNodeConstructor, SerializedLGraphNode } from "./LGraphNode"
-import LGraph from "./LGraph"
-import { default as LGraphNode, SlotLayout, PropertyLayout } from "./LGraphNode"
-
-export type SearchboxExtra = {
-    data: {
-        title: string,
-        properties?: any[],
-        inputs?: [string, SlotType][],
-        outputs?: [string, SlotType][],
-        json?: SerializedLGraphNode<LGraphNode>;
-    };
-    desc: string;
-    type: string;
-}
+import type { LGraphNodeConstructor, NodeTypeSpec, PropertyLayout, SearchboxExtra, SerializedLGraphNode } from "./LGraphNode";
+import LGraphNode from "./LGraphNode";
+import type { NodeMode, PointerEventsMethod, SlotType, Vector2, Vector4 } from "./types";
+import { BuiltInSlotType } from "./types";
 
 export default class LiteGraph {
     static VERSION: number = 10.0;
@@ -29,7 +17,7 @@ export default class LiteGraph {
     static NODE_COLLAPSED_RADIUS: number = 10;
     static NODE_COLLAPSED_WIDTH: number = 80;
     static NODE_TITLE_COLOR: string = "#999";
-    static NODE_SELECTED_TITLE_COLOR: string "#FFF";
+    static NODE_SELECTED_TITLE_COLOR: string = "#FFF";
     static NODE_TEXT_SIZE: number = 14;
     static NODE_TEXT_COLOR: string = "#AAA";
     static NODE_SUBTEXT_SIZE: number = 12;
@@ -109,9 +97,9 @@ export default class LiteGraph {
     // slot types OUT
     static slot_types_out: Array<string> = [];
     // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-    static slot_types_default_in: Record<string, any> = [];
+    static slot_types_default_in: Record<string, NodeTypeSpec> = {}
     // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-    static slot_types_default_out: Record<string, any> = [];
+    static slot_types_default_out: Record<string, NodeTypeSpec> = {}
 
     // [true!] very handy, ALT click to clone and drag the new node
     static alt_drag_do_clone_nodes: boolean = false;
@@ -132,7 +120,7 @@ export default class LiteGraph {
     static pointerevents_method: PointerEventsMethod = "mouse";
 
     /** Register a node class so it can be listed when the user wants to create a new one */
-    static registerNodeType<T Extends LGraphNode>(config: LGraphNodeConstructor) : void {
+    static registerNodeType<T extends LGraphNode>(config: LGraphNodeConstructor) : void {
         if (LiteGraph.debug) {
             console.log("Node registered: " + config.typeName);
         }

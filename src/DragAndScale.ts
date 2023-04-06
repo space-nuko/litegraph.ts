@@ -1,7 +1,7 @@
-import { Vector2, Vector4 } from "./types";
+import type { Vector2, Vector4 } from "./types";
 import LiteGraph from "./LiteGraph";
 
-export interface MouseEventExt extends MouseEvent {
+export interface EventExt {
     canvasX: number;
     canvasY: number;
     dragging: boolean;
@@ -9,25 +9,16 @@ export interface MouseEventExt extends MouseEvent {
     wheel?: number;
     delta?: number;
     wheelDelta?: number;
+    deltaX?: number;
     deltaY?: number;
     wheelDeltaY?: number;
     click_time?: number;
     layerY?: number;
 }
 
-export interface DragEventExt extends DragEvent {
-    canvasX: number;
-    canvasY: number;
-    dragging: boolean;
-    eventType?: string;
-    wheel?: number;
-    delta?: number;
-    wheelDelta?: number;
-    deltaY?: number;
-    wheelDeltaY?: number;
-    click_time?: number;
-    layerY?: number;
-}
+export interface MouseEventExt extends MouseEvent, EventExt {}
+export interface DragEventExt extends DragEvent, EventExt {}
+export interface CustomEventExt extends CustomEvent, EventExt {}
 
 export default class DragAndScale {
     constructor(element?: HTMLCanvasElement, skipEvents: boolean = false) {
