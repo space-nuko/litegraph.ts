@@ -7,6 +7,11 @@ import LLink from "./LLink";
 import { default as INodeSlot, SlotIndex } from "./INodeSlot"
 import { Version, LConnectionKind, NodeMode } from "./types";
 
+export interface LGraphConfig {
+    align_to_grid?: boolean;
+    links_ontop?: boolean;
+}
+
 export type SerializedLGraph<
     TNode = ReturnType<LGraphNode["serialize"]>,
 // https://github.com/jagenjo/litegraph.js/issues/74
@@ -46,7 +51,7 @@ export default class LGraph {
     filter: string;
     catch_errors: boolean;
     /** custom data */
-    config: object;
+    config: LGraphConfig;
     vars: Record<string, any> = {}
     /** to store custom data */
     extra: Record<string, any> = {}
@@ -76,8 +81,9 @@ export default class LGraph {
     /** nodes that contain onExecute */
     private _nodes_in_order: LGraphNode[] = [];
     /** used to detect changes */
-    _version: number = -1;
+    private _version: number = -1;
     _last_trigger_time: number = 0;
+    _subgraph_node: LGraphNode | null = null;
 
     getSupportedTypes(): string[] {
         return this.supported_types || LGraph.DEFAULT_SUPPORTED_TYPES;
@@ -648,13 +654,8 @@ export default class LGraph {
      * Adds a new node instance to this graph
      * @param node the instance of the node
      */
-    add(node?: LGraphNode, skip_compute_order: boolean = false): void {
-        if (!node) {
-            return;
-        }
-
-        //groups
-        if (node.constructor === LGraphGroup) {
+    add(node: LGraphNode | LGraphGroup, skip_compute_order: boolean = false): void {
+        if (node instanceof LGraphGroup) {
             this._groups.push(node);
             this.setDirtyCanvas(true);
             this.change();
@@ -993,7 +994,7 @@ export default class LGraph {
     change(): void {
     }
 
-    setDirtyCanvas(fg: boolean, bg: boolean): void {
+    setDirtyCanvas(fg: boolean = false, bg: boolean = false): void {
     }
 
     /** Destroys a link */

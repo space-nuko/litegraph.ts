@@ -11,6 +11,22 @@ export interface MouseEventExt extends MouseEvent {
     wheelDelta?: number;
     deltaY?: number;
     wheelDeltaY?: number;
+    click_time?: number;
+    layerY?: number;
+}
+
+export interface DragEventExt extends DragEvent {
+    canvasX: number;
+    canvasY: number;
+    dragging: boolean;
+    eventType?: string;
+    wheel?: number;
+    delta?: number;
+    wheelDelta?: number;
+    deltaY?: number;
+    wheelDeltaY?: number;
+    click_time?: number;
+    layerY?: number;
 }
 
 export default class DragAndScale {
@@ -31,7 +47,8 @@ export default class DragAndScale {
     enabled: boolean = true;
     last_mouse: Vector2 = [0, 0];
     element: HTMLCanvasElement | null = null;
-    visible_area: Vector4 = [0, 0, 0, 0];
+    visible_area: Float32Array = new Float32Array([0, 0, 0, 0]);
+    viewport: Vector4 | null = null;
 
     dragging: boolean = false;
 
@@ -92,8 +109,7 @@ export default class DragAndScale {
         e.canvasX = y;
         e.dragging = this.dragging;
 
-        // var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
-        let is_inside = true;
+        var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
 
         //console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
 

@@ -1,6 +1,8 @@
-import { LGraphNode } from "./LGraphNode"
+import LGraphNode from "./LGraphNode"
+import { MouseEventExt } from "./DragAndScale"
 
 export interface IContextMenuItem {
+    value?: any,
     content: string;
     callback?: ContextMenuEventListener;
     /** Used as innerHTML for extra child element */
@@ -16,20 +18,22 @@ export interface IContextMenuItem {
 export interface IContextMenuOptions {
     callback?: ContextMenuEventListener;
     ignore_item_callbacks?: Boolean;
-    event?: MouseEvent | CustomEvent;
+    event?: MouseEventExt | CustomEvent;
     parentMenu?: ContextMenu;
     autoopen?: boolean;
     title?: string;
     extra?: any;
+    node?: LGraphNode;
 }
 
 export type ContextMenuItem = IContextMenuItem | null;
 export type ContextMenuEventListener = (
     value: ContextMenuItem,
     options: IContextMenuOptions,
-    event: MouseEvent,
+    event: MouseEventExt,
     parentMenu: ContextMenu | undefined,
-    node: LGraphNode
+    node?: LGraphNode,
+    callback?: (node: LGraphNode) => void,
 ) => boolean | void;
 
 export default class ContextMenu {
@@ -39,7 +43,7 @@ export default class ContextMenu {
         params: any,
         origin: any
     ): void;
-    static isCursorOverElement(event: MouseEvent, element: HTMLElement): void;
+    static isCursorOverElement(event: MouseEventExt, element: HTMLElement): void;
     static closeAllContextMenus(window: Window): void;
     constructor(values: ContextMenuItem[], options?: IContextMenuOptions, window?: Window);
     options: IContextMenuOptions;
@@ -51,7 +55,7 @@ export default class ContextMenu {
         value: ContextMenuItem,
         options?: IContextMenuOptions
     ): void;
-    close(e?: MouseEvent, ignore_parent_menu?: boolean): void;
+    close(e?: MouseEventExt, ignore_parent_menu?: boolean): void;
     getTopMenu(): void;
-    getFirstEvent(): void;
+    getFirstEvent(): MouseEventExt;
 }

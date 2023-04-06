@@ -13,8 +13,8 @@ export enum NodeMode {
     ON_TRIGGER,
     ON_REQUEST
 }
-export const NodeModeNames = ["Always", "On Event", "Never", "On Trigger"] // helper, will add "On Request" and more in the future
-export const NodeModeColors = ["#666","#422","#333","#224","#626"] // use with node_box_coloured_by_mode
+export const NODE_MODE_NAMES = ["Always", "On Event", "Never", "On Trigger"] // helper, will add "On Request" and more in the future
+export const NODE_MODE_COLORS = ["#666","#422","#333","#224","#626"] // use with node_box_coloured_by_mode
 
 export type Vector2 = [number, number];
 export type Vector4 = [number, number, number, number];
@@ -34,7 +34,7 @@ export enum BuiltInSlotShape {
     CIRCLE_SHAPE,
     CARD_SHAPE,
     ARROW_SHAPE,
-    SQUARE_SHAPE,
+    GRID_SHAPE,
 }
 export type SlotShape =
     BuiltInSlotShape
@@ -63,7 +63,7 @@ export enum TitleType {
 }
 
 export enum BuiltInSlotType {
-    EVENT = -1, //for outputs
+    EVENT = -2, //for outputs
     ACTION = -1, //for inputs
     DEFAULT = 0
 }

@@ -1,4 +1,4 @@
-import { SlotType } from "./types";
+import { SlotType, Vector2 } from "./types";
 
 export type SerializedLLink = [number, string, number, number, number, number];
 
@@ -10,6 +10,8 @@ export default class LLink {
     target_id: number;
     target_slot: number;
     data?: any;
+    _pos?: Vector2;
+    color?: string;
 
     _last_time: number = 0;
 

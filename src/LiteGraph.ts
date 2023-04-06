@@ -1,10 +1,16 @@
 import { Vector2, Vector4, PointerEventsMethod, BuiltInSlotShape, BuiltInSlotType, SlotType, NodeMode } from "./types";
-import { LGraphNodeConstructor } from "./LGraphNode"
+import { LGraphNodeConstructor, SerializedLGraphNode } from "./LGraphNode"
 import LGraph from "./LGraph"
 import LGraphNode from "./LGraphNode"
 
 export type SearchboxExtra = {
-    data: { outputs: string[][]; title: string };
+    data: {
+        title: string,
+        properties?: any[],
+        inputs?: [string, SlotType][],
+        outputs?: [string, SlotType][],
+        json?: SerializedLGraphNode<LGraphNode>;
+    };
     desc: string;
     type: string;
 }
@@ -23,6 +29,7 @@ export default class LiteGraph {
     static NODE_COLLAPSED_RADIUS: number = 10;
     static NODE_COLLAPSED_WIDTH: number = 80;
     static NODE_TITLE_COLOR: string = "#999";
+    static NODE_SELECTED_TITLE_COLOR: string "#FFF";
     static NODE_TEXT_SIZE: number = 14;
     static NODE_TEXT_COLOR: string = "#AAA";
     static NODE_SUBTEXT_SIZE: number = 12;
@@ -705,7 +712,7 @@ export default class LiteGraph {
     }
 
     // bounding overlap, format: [ startx, starty, width, height ]
-    static overlapBounding(a: Vector4, b: Vector4) {
+    static overlapBounding(a: Float32Array, b: Float32Array) {
         var A_end_x = a[0] + a[2];
         var A_end_y = a[1] + a[3];
         var B_end_x = b[0] + b[2];
