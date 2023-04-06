@@ -1,6 +1,6 @@
 import { SlotType, Vector2 } from "./types";
 
-export type SerializedLLink = [number, string, number, number, number, number];
+export type SerializedLLink = [number, number, number, number, number, SlotType];
 
 export default class LLink {
     id: number;
@@ -9,8 +9,8 @@ export default class LLink {
     origin_slot: number;
     target_id: number;
     target_slot: number;
-    data?: any;
-    _pos?: Vector2;
+    data?: any = null;
+    _pos?: Vector2 = [0, 0]; // center
     color?: string;
 
     _last_time: number = 0;
@@ -22,7 +22,32 @@ export default class LLink {
         origin_slot: number,
         target_id: number,
         target_slot: number
-    );
-    configure(o: LLink | SerializedLLink): void;
-    serialize(): SerializedLLink;
+    ) {
+        this.id = id;
+        this.type = type;
+        this.origin_id = origin_id;
+        this.origin_slot = origin_slot;
+        this.target_id = target_id;
+        this.target_slot = target_slot;
+    }
+
+    static configure(o: LLink | SerializedLLink): LLink {
+        if (o instanceof Array) {
+            return new LLink(o[0], o[5], o[1], o[2], o[3], o[4])
+        }
+        else {
+            return new LLink(o.id, o.type, o.origin_id, o.origin_slot, o.target_id, o.target_slot)
+        }
+    }
+
+    serialize(): SerializedLLink {
+        return [
+            this.id,
+            this.origin_id,
+            this.origin_slot,
+            this.target_id,
+            this.target_slot,
+            this.type
+        ];
+    }
 }

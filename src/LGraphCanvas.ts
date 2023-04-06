@@ -6,7 +6,7 @@ import LGraph from "./LGraph";
 import LGraphCanvas_Rendering from "./LGraphCanvas_Rendering";
 import LGraphCanvas_UI from "./LGraphCanvas_UI";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode from "./LGraphvarNode";
+import LGraphNode from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
 import { BuiltInSlotType, LinkRenderMode, Vector2, Vector4 } from "./types";
@@ -59,21 +59,6 @@ export default class LGraphCanvas implements LGraphCanvas_Rendering, LGraphCanva
         e.innerText = str;
         return e.innerHTML;
     }
-
-    static onGroupAdd = LGraphCanvas_UI.onGroupAdd;
-    static onMenuAdd = LGraphCanvas_UI.onMenuAdd;
-    static showMenuNodeOptionalInputs = LGraphCanvas_UI.showMenuNodeOptionalInputs;
-    static showMenuNodeOptionalOutputs = LGraphCanvas_UI.showMenuNodeOptionalOutputs;
-    static onShowMenuNodeProperties = LGraphCanvas_UI.onShowMenuNodeProperties;
-    static onResizeNode = LGraphCanvas_UI.onResizeNode;
-    static onMenuNodeCollapse = LGraphCanvas_UI.onMenuNodeCollapse;
-    static onMenuNodePin = LGraphCanvas_UI.onMenuNodePin;
-    static onMenuNodeMode = LGraphCanvas_UI.onMenuNodeMode;
-    static onMenuNodeColors = LGraphCanvas_UI.onMenuNodeColors;
-    static onMenuNodeShapes = LGraphCanvas_UI.onMenuNodeShapes;
-    static onMenuNodeRemove = LGraphCanvas_UI.onMenuNodeRemove;
-    static onMenuNodeClone = LGraphCanvas_UI.onMenuNodeClone;
-    static onMenuNodeToSubgraph = LGraphCanvas_UI.onMenuNodeToSubgraph;
 
     constructor(
         canvas: HTMLCanvasElement | string,
@@ -2583,18 +2568,52 @@ export default class LGraphCanvas implements LGraphCanvas_Rendering, LGraphCanva
      *
      */
 
+    static onMenuCollapseAll = LGraphCanvas_UI.onMenuCollapseAll;
+    static onMenuNodeEdit = LGraphCanvas_UI.onMenuNodeEdit;
+    static onShowPropertyEditor = LGraphCanvas_UI.onShowPropertyEditor;
+    static onGroupAdd = LGraphCanvas_UI.onGroupAdd;
+    static onMenuAdd = LGraphCanvas_UI.onMenuAdd;
+    static showMenuNodeOptionalInputs = LGraphCanvas_UI.showMenuNodeOptionalInputs;
+    static showMenuNodeOptionalOutputs = LGraphCanvas_UI.showMenuNodeOptionalOutputs;
+    static onShowMenuNodeProperties = LGraphCanvas_UI.onShowMenuNodeProperties;
+    static onResizeNode = LGraphCanvas_UI.onResizeNode;
+    static onMenuNodeCollapse = LGraphCanvas_UI.onMenuNodeCollapse;
+    static onMenuNodePin = LGraphCanvas_UI.onMenuNodePin;
+    static onMenuNodeMode = LGraphCanvas_UI.onMenuNodeMode;
+    static onMenuNodeColors = LGraphCanvas_UI.onMenuNodeColors;
+    static onMenuNodeShapes = LGraphCanvas_UI.onMenuNodeShapes;
+    static onMenuNodeRemove = LGraphCanvas_UI.onMenuNodeRemove;
+    static onMenuNodeClone = LGraphCanvas_UI.onMenuNodeClone;
+    static onMenuNodeToSubgraph = LGraphCanvas_UI.onMenuNodeToSubgraph;
+
     getCanvasMenuOptions = LGraphCanvas_UI.prototype.getCanvasMenuOptions;
     getNodeMenuOptions = LGraphCanvas_UI.prototype.getNodeMenuOptions;
     getGroupMenuOptions = LGraphCanvas_UI.prototype.getGroupMenuOptions;
     checkPanels = LGraphCanvas_UI.prototype.checkPanels;
     createDialog = LGraphCanvas_UI.prototype.createDialog;
+    showSearchBox = LGraphCanvas_UI.prototype.showSearchBox;
+    prompt = LGraphCanvas_UI.prototype.prompt;
+    showEditPropertyValue = LGraphCanvas_UI.prototype.showEditPropertyValue;
+    processContextMenu = LGraphCanvas_UI.prototype.processContextMenu;
 
     /*
      * Rendering
      */
 
     setZoom = LGraphCanvas_Rendering.prototype.setZoom;
-    drawBackCanvas = LGraphCanvas_Rendering.prototype.drawBackCanvas;
-    drawFrontCanvas = LGraphCanvas_Rendering.prototype.drawFrontCanvas;
+    bringToFront = LGraphCanvas_Rendering.prototype.bringToFront;
+    sendToBack = LGraphCanvas_Rendering.prototype.sendToBack;
     computeVisibleNodes = LGraphCanvas_Rendering.prototype.computeVisibleNodes;
+    draw = LGraphCanvas_Rendering.prototype.draw;
+    drawFrontCanvas = LGraphCanvas_Rendering.prototype.drawFrontCanvas;
+    drawBackCanvas = LGraphCanvas_Rendering.prototype.drawBackCanvas;
+    renderInfo = LGraphCanvas_Rendering.prototype.renderInfo;
+    drawNode = LGraphCanvas_Rendering.prototype.drawNode;
+    drawLinkTooltip = LGraphCanvas_Rendering.prototype.drawLinkTooltip;
+    drawNodeShape = LGraphCanvas_Rendering.prototype.drawNodeShape;
+    drawConnections = LGraphCanvas_Rendering.prototype.drawConnections;
+    renderLink = LGraphCanvas_Rendering.prototype.renderLink;
+    computeConnectionPoint = LGraphCanvas_Rendering.prototype.computeConnectionPoint;
+    drawExecutionOrder = LGraphCanvas_Rendering.prototype.drawExecutionOrder;
+    drawNodeWidgets = LGraphCanvas_Rendering.prototype.drawNodeWidgets;
 }

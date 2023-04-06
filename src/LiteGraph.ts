@@ -1,7 +1,7 @@
 import { Vector2, Vector4, PointerEventsMethod, BuiltInSlotShape, BuiltInSlotType, SlotType, NodeMode } from "./types";
 import { LGraphNodeConstructor, SerializedLGraphNode } from "./LGraphNode"
 import LGraph from "./LGraph"
-import LGraphNode from "./LGraphNode"
+import { default as LGraphNode, SlotsLayout } from "./LGraphNode"
 
 export type SearchboxExtra = {
     data: {
@@ -131,123 +131,81 @@ export default class LiteGraph {
     // use mouse for retrocompatibility issues? (none found @ now)
     static pointerevents_method: PointerEventsMethod = "mouse";
 
-    static createNode<T extends LGraphNode = LGraphNode>(type: string): T;
     /** Register a node class so it can be listed when the user wants to create a new one */
-    static registerNodeType(type: string, base_class: LGraphNodeConstructor ): void {
-        if (!base_class.prototype) {
-            throw "Cannot register a simple object, it must be a class with a prototype";
-        }
-        base_class.type = type;
-
+    static registerNodeType<T Extends LGraphNode>(config: LGraphNodeConstructor) : void {
         if (LiteGraph.debug) {
-            console.log("Node registered: " + type);
+            console.log("Node registered: " + config.typeName);
         }
 
-        const classname = base_class.name;
+        if (Object.hasOwn(config.type.constructor, "slotLayout")) {
+            const slotLayout = config.type.constructor.slotLayout;
+            console.log("Found slot layout", slotLayout);
+            if (slotLayout.inputs) {
+                for (const input in slotLayout.inputs) {
+
+                }
+            }
+        }
+
+        const classname = config.name;
+        const type = config.typeName;
 
         const pos = type.lastIndexOf("/");
-        base_class.category = type.substring(0, pos);
+        config.category = type.substring(0, pos);
 
-        if (!base_class.title) {
-            base_class.title = classname;
-        }
-
-        //extend class
-        for (var i in LGraphNode.prototype) {
-            if (!base_class.prototype[i]) {
-                base_class.prototype[i] = LGraphNode.prototype[i];
-            }
+        if (!config.title) {
+            config.title = classname;
         }
 
         const prev = LiteGraph.registered_node_types[type];
         if(prev) {
             console.log("replacing node type: " + type);
         }
-        if( !Object.prototype.hasOwnProperty.call( base_class.prototype, "shape") ) {
-            Object.defineProperty(base_class.prototype, "shape", {
-                set: function(v) {
-                    switch (v) {
-                        case "default":
-                            delete LiteGraph._shape;
-                            break;
-                        case "box":
-                            LiteGraph._shape = BuiltInSlotShape.BOX_SHAPE;
-                            break;
-                        case "round":
-                            LiteGraph._shape = BuiltInSlotShape.ROUND_SHAPE;
-                            break;
-                        case "circle":
-                            LiteGraph._shape = BuiltInSlotShape.CIRCLE_SHAPE;
-                            break;
-                        case "card":
-                            LiteGraph._shape = BuiltInSlotShape.CARD_SHAPE;
-                            break;
-                        default:
-                            LiteGraph._shape = v;
-                    }
-                },
-                get: function() {
-                    return LiteGraph._shape;
-                },
-                enumerable: true,
-                configurable: true
-            });
 
-
-            //used to know which nodes to create when dragging files to the canvas
-            if (base_class.supported_extensions) {
-                for (let i in base_class.supported_extensions) {
-                    const ext = base_class.supported_extensions[i];
-                    if(ext && ext.constructor === String) {
-                        LiteGraph.node_types_by_file_extension[ ext.toLowerCase() ] = base_class;
-                    }
+        //used to know which nodes to create when dragging files to the canvas
+        if (config.supported_extensions) {
+            for (let i in config.supported_extensions) {
+                const ext = config.supported_extensions[i];
+                if(ext && ext.constructor === String) {
+                    LiteGraph.node_types_by_file_extension[ext.toLowerCase()] = config;
                 }
             }
         }
 
-        LiteGraph.registered_node_types[type] = base_class;
-        if ((base_class.constructor as any).name) {
-            LiteGraph.Nodes[classname] = base_class;
+        LiteGraph.registered_node_types[type] = config;
+        if ((config.constructor as any).name) {
+            LiteGraph.Nodes[classname] = config;
         }
         if (LiteGraph.onNodeTypeRegistered) {
-            LiteGraph.onNodeTypeRegistered(type, base_class);
+            LiteGraph.onNodeTypeRegistered(type, config);
         }
         if (prev && LiteGraph.onNodeTypeReplaced) {
-            LiteGraph.onNodeTypeReplaced(type, base_class, prev);
-        }
-
-        //warnings
-        if (base_class.prototype.onPropertyChange) {
-            console.warn(
-                "LiteGraph node class " +
-                    type +
-                    " has onPropertyChange method, it must be called onPropertyChanged with d at the end"
-            );
+            LiteGraph.onNodeTypeReplaced(type, config, prev);
         }
 
         // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
-        if (LiteGraph.auto_load_slot_types) {
-            new (base_class as any)(base_class.title || "tmpnode");
-        }
+        // if (LiteGraph.auto_load_slot_types) {
+        //     new (regConfig as any)(regConfig.title || "tmpnode");
+        // }
     }
 
-    static onNodeTypeRegistered?(type: string, base_class: LGraphNodeConstructor): void;
-    static onNodeTypeReplaced?(type: string, base_class: LGraphNodeConstructor, prev: LGraphNodeConstructor): void;
+    static onNodeTypeRegistered?(type: string, regConfig: LGraphNodeConstructor): void;
+    static onNodeTypeReplaced?(type: string, regConfig: LGraphNodeConstructor, prev: LGraphNodeConstructor): void;
 
     /** removes a node type from the system */
     static unregisterNodeType(type: string | LGraphNodeConstructor): void {
-        let base_class: LGraphNodeConstructor;
+        let regConfig: LGraphNodeConstructor;
         if (typeof type === "string") {
-            base_class = LiteGraph.registered_node_types[type];
+            regConfig = LiteGraph.registered_node_types[type];
         }
         else {
-            base_class = type;
+            regConfig = type;
         }
-        if(!base_class)
+        if(!regConfig)
             throw("node type not found: " + type );
-        delete LiteGraph.registered_node_types[base_class.type];
-        if((base_class.constructor as any).name)
-            delete LiteGraph.Nodes[(base_class.constructor as any).name];
+        delete LiteGraph.registered_node_types[regConfig.type];
+        if((regConfig.constructor as any).name)
+            delete LiteGraph.Nodes[(regConfig.constructor as any).name];
     }
 
     /**
@@ -257,21 +215,21 @@ export default class LiteGraph {
      * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
      */
     static registerNodeAndSlotType(type: string | LGraphNodeConstructor, slot_type: SlotType, out: boolean = false) {
-        let base_class: LGraphNodeConstructor;
+        let regConfig: LGraphNodeConstructor;
 
         if (typeof type === "string") {
             // if (LiteGraph.registered_node_types[type] !== "anonymous") {
-                base_class = LiteGraph.registered_node_types[type];
+                regConfig = LiteGraph.registered_node_types[type];
             // }
             // else {
-            //     base_class = type;
+            //     regConfig = type;
             // }
         }
         else {
-            base_class = type;
+            regConfig = type;
         }
 
-        var sCN = (base_class.constructor as any).type;
+        var sCN = (regConfig.constructor as any).type;
 
         if (typeof slot_type == "string"){
             var aTypes = slot_type.split(",");
@@ -384,14 +342,9 @@ export default class LiteGraph {
      * @param name a name to distinguish from other nodes
      * @param options to set options
      */
-    static createNode<T extends LGraphNode>(
-        type: string,
-        title: string,
-        options: object
-    ): T {
-        // TODO fix interface
-        var base_class = LiteGraph.registered_node_types[type];
-        if (!base_class) {
+    static createNode<T extends LGraphNode>(type: string, title?: string, options?: object): T {
+        var regConfig = LiteGraph.registered_node_types[type];
+        if (!regConfig) {
             if (LiteGraph.debug) {
                 console.log(
                     'GraphNode type "' + type + '" not registered.'
@@ -400,21 +353,34 @@ export default class LiteGraph {
             return null;
         }
 
-        var prototype = base_class.prototype || base_class;
+        title = title || regConfig.title || type;
 
-        title = title || base_class.title || type;
-
-        var node = null;
+        var node: T = null;
 
         if (LiteGraph.catch_exceptions) {
             try {
-                node = new (base_class as any)(title);
+                node = new regConfig.type(title) as T;
             } catch (err) {
                 console.error(err);
                 return null;
             }
         } else {
-            node = new (base_class as any)(title);
+            node = new regConfig.type(title) as T;
+        }
+
+        if (Object.hasOwn((regConfig.type.constructor as any), "slotLayout")) {
+            const slotLayout: SlotsLayout = (regConfig.type.constructor as any).slotLayout as SlotsLayout;
+            console.log("Found slot layout!", slotLayout);
+            if (slotLayout.inputs) {
+                for (const item of slotLayout.inputs) {
+                    const { name, type, options } = item;
+                    node.addInput(name, type, options);
+                }
+                for (const item of slotLayout.outputs) {
+                    const { name, type, options } = item;
+                    node.addOutput(name, type, options);
+                }
+            }
         }
 
         node.type = type;
@@ -436,7 +402,7 @@ export default class LiteGraph {
             //call onresize?
         }
         if (!node.pos) {
-            node.pos = LiteGraph.DEFAULT_POSITION.concat();
+            node.pos = [LiteGraph.DEFAULT_POSITION[0], LiteGraph.DEFAULT_POSITION[1]]
         }
         if (!node.mode) {
             node.mode = NodeMode.ALWAYS;
@@ -462,7 +428,7 @@ export default class LiteGraph {
      * @param type full name of the node class. p.e. "math/sin"
      */
     static getNodeType<T extends LGraphNode>(type: string): LGraphNodeConstructor<T> {
-        return LiteGraph.registered_node_types[type];
+        return LiteGraph.registered_node_types[type] as LGraphNodeConstructor<T>;
     }
 
     /**

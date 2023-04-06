@@ -3,19 +3,32 @@ import LGraphNode from "./LGraphNode";
 import { SerializedLGraphNode, LGraphNodeConstructor } from "./LGraphNode";
 import LGraphGroup from "./LGraphGroup";
 import LGraphCanvas from "./LGraphCanvas";
-import LLink from "./LLink";
+import { default as LLink, SerializedLLink } from "./LLink";
 import { default as INodeSlot, SlotIndex } from "./INodeSlot"
-import { Version, LConnectionKind, NodeMode } from "./types";
+import { Version, LConnectionKind, NodeMode, LayoutDirection } from "./types";
+import GraphInput from "./nodes/GraphInput"
 
 export interface LGraphConfig {
     align_to_grid?: boolean;
     links_ontop?: boolean;
 }
 
+export type LGraphInput = {
+    name: string,
+    type: string,
+    value: any
+}
+
+export type LGraphOutput = {
+    name: string,
+    type: string,
+    value: any
+}
+
 export type SerializedLGraph<
     TNode = ReturnType<LGraphNode["serialize"]>,
 // https://github.com/jagenjo/litegraph.js/issues/74
-TLink = [number, number, number, number, number, string],
+TLink = SerializedLLink,
 TGroup = ReturnType<LGraphGroup["serialize"]>
     > = {
         last_node_id: LGraph["last_node_id"];
@@ -24,6 +37,7 @@ TGroup = ReturnType<LGraphGroup["serialize"]>
         links: TLink[];
         groups: TGroup[];
         config: LGraph["config"];
+        extra: LGraph["extra"];
         version: Version;
     };
 
@@ -31,6 +45,8 @@ export enum LGraphStatus {
     STATUS_STOPPED = 1,
     STATUS_RUNNING
 }
+
+export type LGraphNodeExecutable = (LGraphNode & { onExecute: NonNullable<LGraphNode["onExecute"]> });
 
 export default class LGraph {
     static DEFAULT_SUPPORTED_TYPES: string[] = ["number", "string", "boolean"];
@@ -59,14 +75,14 @@ export default class LGraph {
     fixedtime: number;
     fixedtime_lapse: number;
     globaltime: number;
-    inputs: any;
+    inputs: Record<string, LGraphInput> = {}
+    outputs: Record<string, LGraphOutput> = {}
     iteration: number;
     last_link_id: number;
     last_node_id: number;
     last_update_time: number;
     links: Record<number, LLink>;
     list_of_graphcanvas: LGraphCanvas[];
-    outputs: any;
     runningtime: number;
     starttime: number;
     status: LGraphStatus;
@@ -76,7 +92,7 @@ export default class LGraph {
     private _nodes_by_id: Record<number, LGraphNode> = {};
     /** nodes that are executable sorted in execution order */
     private _nodes_executable:
-        | (LGraphNode & { onExecute: NonNullable<LGraphNode["onExecute"]> }[])
+        | LGraphNodeExecutable[]
         | null = null;
     /** nodes that contain onExecute */
     private _nodes_in_order: LGraphNode[] = [];
@@ -84,6 +100,14 @@ export default class LGraph {
     private _version: number = -1;
     _last_trigger_time: number = 0;
     _subgraph_node: LGraphNode | null = null;
+
+    nodes_executing: boolean[] = [];
+    nodes_actioning: boolean[] = [];
+    nodes_executedAction: string[] = [];
+
+    execution_timer_id: number = -1;
+    execution_time: number = 0;
+    errors_in_execution: boolean = false;
 
     getSupportedTypes(): string[] {
         return this.supported_types || LGraph.DEFAULT_SUPPORTED_TYPES;
@@ -156,19 +180,19 @@ export default class LGraph {
 
     /** Attach Canvas to this graph */
     attachCanvas(graphCanvas: LGraphCanvas): void {
-        if (!(graphcanvas instanceof LGraphCanvas)) {
+        if (!(graphCanvas instanceof LGraphCanvas)) {
             throw "attachCanvas expects a LGraphCanvas instance";
         }
-        if (graphcanvas.graph && graphcanvas.graph != this) {
-            graphcanvas.graph.detachCanvas(graphcanvas);
+        if (graphCanvas.graph && graphCanvas.graph != this) {
+            graphCanvas.graph.detachCanvas(graphCanvas);
         }
 
-        graphcanvas.graph = this;
+        graphCanvas.graph = this;
 
         if (!this.list_of_graphcanvas) {
             this.list_of_graphcanvas = [];
         }
-        this.list_of_graphcanvas.push(graphcanvas);
+        this.list_of_graphcanvas.push(graphCanvas);
     }
 
     /** Detach Canvas to this graph */
@@ -177,11 +201,11 @@ export default class LGraph {
             return;
         }
 
-        var pos = this.list_of_graphcanvas.indexOf(graphcanvas);
+        var pos = this.list_of_graphcanvas.indexOf(graphCanvas);
         if (pos == -1) {
             return;
         }
-        graphcanvas.graph = null;
+        graphCanvas.graph = null;
         this.list_of_graphcanvas.splice(pos, 1);
     }
 
@@ -190,10 +214,10 @@ export default class LGraph {
      * @param interval amount of milliseconds between executions, if 0 then it renders to the monitor refresh rate
      */
     start(interval?: number): void {
-        if (this.status == LGraph.STATUS_RUNNING) {
+        if (this.status == LGraphStatus.STATUS_RUNNING) {
             return;
         }
-        this.status = LGraph.STATUS_RUNNING;
+        this.status = LGraphStatus.STATUS_RUNNING;
 
         if (this.onPlayEvent) {
             this.onPlayEvent();
@@ -236,11 +260,11 @@ export default class LGraph {
 
     /** Stops the execution loop of the graph */
     stop(): void {
-        if (this.status == LGraph.STATUS_STOPPED) {
+        if (this.status == LGraphStatus.STATUS_STOPPED) {
             return;
         }
 
-        this.status = LGraph.STATUS_STOPPED;
+        this.status = LGraphStatus.STATUS_STOPPED;
 
         if (this.onStopEvent) {
             this.onStopEvent();
@@ -261,13 +285,14 @@ export default class LGraph {
      * @param num number of steps to run, default is 1
      * @param do_not_catch_errors if you want to try/catch errors
      */
-    runStep(num: number = 1, do_not_catch_errors: boolean = false): void {
+    runStep(num: number = 1, do_not_catch_errors: boolean = false, limit?: number): void {
         var start = LiteGraph.getTime();
         this.globaltime = 0.001 * (start - this.starttime);
 
-        var nodes = this._nodes_executable
+        let nodes: LGraphNode[] | null = (this._nodes_executable
             ? this._nodes_executable
-            : this._nodes;
+            : this._nodes) as LGraphNode[] | null;
+
         if (!nodes) {
             return;
         }
@@ -279,7 +304,7 @@ export default class LGraph {
             for (var i = 0; i < num; i++) {
                 for (var j = 0; j < limit; ++j) {
                     var node = nodes[j];
-                    if (node.mode == LiteGraph.ALWAYS && node.onExecute) {
+                    if (node.mode == NodeMode.ALWAYS && node.onExecute) {
                         //wrap node.onExecute();
 						node.doExecute();
                     }
@@ -300,7 +325,7 @@ export default class LGraph {
                 for (var i = 0; i < num; i++) {
                     for (var j = 0; j < limit; ++j) {
                         var node = nodes[j];
-                        if (node.mode == LiteGraph.ALWAYS && node.onExecute) {
+                        if (node.mode == NodeMode.ALWAYS && node.onExecute) {
                             node.onExecute();
                         }
                     }
@@ -351,18 +376,19 @@ export default class LGraph {
         this._nodes_executable = [];
         for (var i = 0; i < this._nodes_in_order.length; ++i) {
             if (this._nodes_in_order[i].onExecute) {
-                this._nodes_executable.push(this._nodes_in_order[i]);
+                let node = this._nodes_in_order[i] as LGraphNodeExecutable;
+                this._nodes_executable.push(node);
             }
         }
     }
 
     /** This is more internal, it computes the executable nodes in order and returns it */
-    computeExecutionOrder<T = any>(only_onExecute: boolean, set_level: any): T {
-        var L = [];
+    computeExecutionOrder<T extends LGraphNodeExecutable>(only_onExecute: boolean = false, set_level?: any): T[] {
+        var L: T[] = [];
         var S = [];
         var M = {};
         var visited_links = {}; //to avoid repeating links
-        var remaining_links = {}; //to a
+        var remaining_links = {};
 
         //search for the nodes without inputs (starting nodes)
         for (var i = 0, l = this._nodes.length; i < l; ++i) {
@@ -403,7 +429,7 @@ export default class LGraph {
             }
 
             //get an starting node
-            var node = S.shift();
+            let node = S.shift();
             L.push(node); //add to ordered list
             delete M[node.id]; //remove from the pending nodes
 
@@ -425,8 +451,8 @@ export default class LGraph {
 
                 //for every connection
                 for (var j = 0; j < output.links.length; j++) {
-                    var link_id = output.links[j];
-                    var link = this.links[link_id];
+                    var linkId = output.links[j];
+                    var link = this.links[linkId];
                     if (!link) {
                         continue;
                     }
@@ -460,7 +486,7 @@ export default class LGraph {
         }
 
         //the remaining ones (loops)
-        for (var i in M) {
+        for (let i in M) {
             L.push(M[i]);
         }
 
@@ -477,8 +503,8 @@ export default class LGraph {
 
         //sort now by priority
         L = L.sort(function(A, B) {
-            var Ap = A.constructor.priority || A.priority || 0;
-            var Bp = B.constructor.priority || B.priority || 0;
+            var Ap = (A.constructor as any).priority || A.priority || 0;
+            var Bp = (B.constructor as any).priority || B.priority || 0;
             if (Ap == Bp) {
                 //if same priority, sort by order
                 return A.order - B.order;
@@ -531,7 +557,7 @@ export default class LGraph {
     /**
      * Positions every node in a more readable manner
      */
-    arrange(margin: number = 100, layout?: string): void {
+    arrange(margin: number = 100, layout: LayoutDirection = LayoutDirection.HORIZONTAL_LAYOUT): void {
         const nodes = this.computeExecutionOrder(false, true);
         const columns = [];
         for (let i = 0; i < nodes.length; ++i) {
@@ -554,13 +580,13 @@ export default class LGraph {
             let y = margin + LiteGraph.NODE_TITLE_HEIGHT;
             for (let j = 0; j < column.length; ++j) {
                 const node = column[j];
-                node.pos[0] = (layout == LiteGraph.VERTICAL_LAYOUT) ? y : x;
-                node.pos[1] = (layout == LiteGraph.VERTICAL_LAYOUT) ? x : y;
-                const max_size_index = (layout == LiteGraph.VERTICAL_LAYOUT) ? 1 : 0;
+                node.pos[0] = (layout == LayoutDirection.VERTICAL_LAYOUT) ? y : x;
+                node.pos[1] = (layout == LayoutDirection.VERTICAL_LAYOUT) ? x : y;
+                const max_size_index = (layout == LayoutDirection.VERTICAL_LAYOUT) ? 1 : 0;
                 if (node.size[max_size_index] > max_size) {
                     max_size = node.size[max_size_index];
                 }
-                const node_size_index = (layout == LiteGraph.VERTICAL_LAYOUT) ? 0 : 1;
+                const node_size_index = (layout == LayoutDirection.VERTICAL_LAYOUT) ? 0 : 1;
                 y += node.size[node_size_index] + margin + LiteGraph.NODE_TITLE_HEIGHT;
             }
             x += max_size + margin;
@@ -601,7 +627,7 @@ export default class LGraph {
      * @param eventName the name of the event (function to be called)
      * @param params parameters in array format
      */
-    sendEventToAllNodes(eventName: string, params: any[], mode: NodeMode = NodeMode.ALWAYS): void {
+    sendEventToAllNodes(eventName: string, params: any[] = [], mode: NodeMode = NodeMode.ALWAYS): void {
         var nodes = this._nodes_in_order ? this._nodes_in_order : this._nodes;
         if (!nodes) {
             return;
@@ -637,7 +663,7 @@ export default class LGraph {
     }
 
 
-    sendActionToCanvas(action: any, params: any[]): void {
+    sendActionToCanvas(action: any, params: any[] = []): void {
         if (!this.list_of_graphcanvas) {
             return;
         }
@@ -650,20 +676,22 @@ export default class LGraph {
         }
     }
 
+    addGroup(group: LGraphGroup): LGraphGroup {
+        this._groups.push(group);
+        this.setDirtyCanvas(true);
+        this.change();
+        group.graph = this;
+        this._version++;
+        return group;
+    }
+
     /**
      * Adds a new node instance to this graph
      * @param node the instance of the node
      */
-    add(node: LGraphNode | LGraphGroup, skip_compute_order: boolean = false): void {
-        if (node instanceof LGraphGroup) {
-            this._groups.push(node);
-            this.setDirtyCanvas(true);
-            this.change();
-            node.graph = this;
-            this._version++;
-            return;
-        }
-
+    add(node: LGraphNode, skip_compute_order: boolean = false, options: {
+        doCalcSize?: boolean
+    } = {}): LGraphNode | null {
         //nodes
         if (node.id != -1 && this._nodes_by_id[node.id] != null) {
             console.warn(
@@ -714,28 +742,31 @@ export default class LGraph {
     /**
      * Called before the graph is changed
      */
-    onBeforeChange(graph: LGraph, info: any): void {
-    }
+    onBeforeChange?(graph: LGraph, info: any): void;
 
     /**
      * Called after the graph is changed
      */
-    onAfterChange(graph: LGraph, info: any): void {
-    }
+    onAfterChange?(graph: LGraph, info: any): void;
 
     /**
      * Called when a new node is added
      * @param node the instance of the node
      */
-    onNodeAdded(node: LGraphNode): void {
-    }
+    onNodeAdded?(node: LGraphNode): void;
 
     /**
      * Called when a node is removed
      * @param node the instance of the node
      */
-    onNodeRemoved(node: LGraphNode): void {
-    }
+    onNodeRemoved?(node: LGraphNode): void;
+
+    onPlayEvent?(): void;
+    onStopEvent?(): void;
+    onBeforeStep?(): void;
+    onAfterStep?(): void;
+    onExecuteStep?(): void;
+    onAfterExecute?(): void;
 
     /**
      * Called when a node's connection is changed
@@ -853,10 +884,10 @@ export default class LGraph {
      * @param classObject the class itself (not an string)
      * @return a list with all the nodes of this type
      */
-    findNodesByClass<T extends LGraphNode>(classObject: LGraphNodeConstructor<T>, result: T[] = []): T[] {
+    findNodesByClass<T extends LGraphNode>(type: new () => T, result: T[] = []): T[] {
         result.length = 0;
         for (var i = 0, l = this._nodes.length; i < l; ++i) {
-            if (this._nodes[i] instanceof T) {
+            if (this._nodes[i] instanceof type) {
                 result.push(this._nodes[i] as T);
             }
         }
@@ -868,7 +899,15 @@ export default class LGraph {
      * @param type the name of the node type
      * @return a list with all the nodes of this type
      */
-    findNodesByType<T extends LGraphNode = LGraphNode>(type: string): T[] {
+    findNodesByType(type: string, result: LGraphNode[] = []): LGraphNode[] {
+        var type = type.toLowerCase();
+        result.length = 0;
+        for (var i = 0, l = this._nodes.length; i < l; ++i) {
+            if (this._nodes[i].type.toLowerCase() == type) {
+                result.push(this._nodes[i] as LGraphNode);
+            }
+        }
+        return result;
     }
 
     /**
@@ -876,7 +915,13 @@ export default class LGraph {
      * @param title the name of the node to search
      * @return the node or null
      */
-    findNodeByTitle<T extends LGraphNode = LGraphNode>(title: string): T | null {
+    findNodeByTitle(title: string): LGraphNode | null {
+        for (var i = 0, l = this._nodes.length; i < l; ++i) {
+            if (this._nodes[i].title == title) {
+                return this._nodes[i];
+            }
+        }
+        return null;
     }
 
     /**
@@ -884,22 +929,38 @@ export default class LGraph {
      * @param title the name of the node to search
      * @return a list with all the nodes with this name
      */
-    findNodesByTitle<T extends LGraphNode = LGraphNode>(title: string): T[] {
+    findNodesByTitle(title: string): LGraphNode[] {
+        var result = [];
+        for (var i = 0, l = this._nodes.length; i < l; ++i) {
+            if (this._nodes[i].title == title) {
+                result.push(this._nodes[i]);
+            }
+        }
+        return result;
     }
 
     /**
      * Returns the top-most node in this position of the canvas
      * @param x the x coordinate in canvas space
      * @param y the y coordinate in canvas space
-     * @param nodes_list a list with all the nodes to search from, by default is all the nodes in the graph
+     * @param nodesList a list with all the nodes to search from, by default is all the nodes in the graph
      * @return the node at this position or null
      */
-    getNodeOnPos<T extends LGraphNode = LGraphNode>(
-        x: number,
-        y: number,
-        node_list?: LGraphNode[],
-        margin?: number
-    ): T | null {
+    getNodeOnPos(x: number, y: number, nodesList?: LGraphNode[], margin?: number): LGraphNode | null {
+        nodesList = nodesList || this._nodes;
+		var nRet = null;
+        for (var i = nodesList.length - 1; i >= 0; i--) {
+            var n = nodesList[i];
+            if (n.isPointInside(x, y, margin)) {
+                // check for lesser interest nodes (TODO check for overlapping, use the top)
+				/*if (typeof n == "LGraphGroup"){
+					nRet = n;
+				}else{*/
+					return n;
+				/*}*/
+            }
+        }
+        return nRet;
     }
 
     /**
@@ -909,111 +970,588 @@ export default class LGraph {
      * @return the group or null
      */
     getGroupOnPos(x: number, y: number): LGraphGroup | null {
+        for (var i = this._groups.length - 1; i >= 0; i--) {
+            var g = this._groups[i];
+            if (g.isPointInside(x, y, 2, true)) {
+                return g;
+            }
+        }
+        return null;
     }
 
-
-    onAction(action: any, param: any): void {
+    /**
+     * Checks that the node type matches the node type registered, used when replacing a nodetype by a newer version during execution
+     * this replaces the ones using the old version with the new version
+     * @method checkNodeTypes
+     */
+    checkNodeTypes(): boolean {
+        var changes = false;
+        for (var i = 0; i < this._nodes.length; i++) {
+            var node = this._nodes[i];
+            var ctor = LiteGraph.registered_node_types[node.type];
+            if (node.constructor == ctor) {
+                continue;
+            }
+            console.log("node being replaced by newer version: " + node.type);
+            var newnode = LiteGraph.createNode(node.type);
+            changes = true;
+            this._nodes[i] = newnode;
+            newnode.configure(node.serialize());
+            newnode.graph = this;
+            this._nodes_by_id[newnode.id] = newnode;
+            if (node.inputs) {
+                newnode.inputs = node.inputs.concat();
+            }
+            if (node.outputs) {
+                newnode.outputs = node.outputs.concat();
+            }
+        }
+        this.updateExecutionOrder();
+        return changes
     }
+
+    // ********** GLOBALS *****************
+
+    private _input_nodes: LGraphNode[] = [];
+
+    onAction(action: any, param: any, options: { action_call?: string } = {}): void {
+        this._input_nodes = this.findNodesByClass(GraphInput, this._input_nodes);
+        for (var i = 0; i < this._input_nodes.length; ++i) {
+            var node = this._input_nodes[i];
+            if (node.properties.name != action) {
+                continue;
+            }
+            //wrap node.onAction(action, param);
+            node.actionDo(action, param, options);
+            break;
+        }
+    }
+
+    onTrigger?(action: any, param: any): void;
+    onInputsOutputsChange?(): void;
 
     trigger(action: any, param: any): void {
+        if (this.onTrigger) {
+            this.onTrigger(action, param);
+        }
     }
 
     /** Tell this graph it has a global graph input of this type */
-    addInput(name: string, type: string, value?: any): void {
+    addInput(name: string, type: string, value: any): void {
+        var input = this.inputs[name];
+        if (input) {
+            //already exist
+            return;
+        }
+
+		this.beforeChange();
+        this.inputs[name] = { name: name, type: type, value: value };
+        this._version++;
+		this.afterChange();
+
+        if (this.onInputAdded) {
+            this.onInputAdded(name, type, value);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
     }
+
+    onInputAdded?(name: string, type: string, value: any): void;
 
     /** Assign a data to the global graph input */
     setInputData(name: string, data: any): void {
+        var input = this.inputs[name];
+        if (!input) {
+            return;
+        }
+        input.value = data;
     }
 
     /** Returns the current value of a global graph input */
-    getInputData<T = any>(name: string): T {
+    getInputData<T = any>(name: string): T | null {
+        var input = this.inputs[name];
+        if (!input) {
+            return null;
+        }
+        return input.value;
     }
+
+    onInputRenamed?(oldName: string, newName: string): void;
 
     /** Changes the name of a global graph input */
-    renameInput(old_name: string, name: string): false | undefined {
+    renameInput(old_name: string, name: string): boolean | undefined {
+        if (name == old_name) {
+            return;
+        }
+
+        if (!this.inputs[old_name]) {
+            return false;
+        }
+
+        if (this.inputs[name]) {
+            console.error("there is already one input with that name");
+            return false;
+        }
+
+        this.inputs[name] = this.inputs[old_name];
+        delete this.inputs[old_name];
+        this._version++;
+
+        if (this.onInputRenamed) {
+            this.onInputRenamed(old_name, name);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
+
+        return true;
     }
 
+    onInputTypeChanged?(name: string, oldType: string, newType: string): void;
+
     /** Changes the type of a global graph input */
-    changeInputType(name: string, type: string): false | undefined {
+    changeInputType(name: string, type: string): boolean | undefined {
+        if (!this.inputs[name]) {
+            return false;
+        }
+
+        if (
+            this.inputs[name].type &&
+            String(this.inputs[name].type).toLowerCase() ==
+                String(type).toLowerCase()
+        ) {
+            return;
+        }
+
+        const oldType = this.inputs[name].type ;
+        this.inputs[name].type = type;
+        this._version++;
+        if (this.onInputTypeChanged) {
+            this.onInputTypeChanged(name, oldType, type);
+        }
+
+        return true;
     }
+
+    onInputRemoved?(name: string): void;
 
     /** Removes a global graph input */
     removeInput(name: string): boolean {
+        if (!this.inputs[name]) {
+            return false;
+        }
+
+        delete this.inputs[name];
+        this._version++;
+
+        if (this.onInputRemoved) {
+            this.onInputRemoved(name);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
+        return true;
     }
+
+    onOutputAdded?(name: string, type: string, value: any)
 
     /** Creates a global graph output */
     addOutput(name: string, type: string, value: any): void {
+        this.outputs[name] = { name: name, type: type, value: value };
+        this._version++;
+
+        if (this.onOutputAdded) {
+            this.onOutputAdded(name, type, value);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
     }
 
     /** Assign a data to the global output */
     setOutputData(name: string, value: string): void {
+        var output = this.outputs[name];
+        if (!output) {
+            return;
+        }
+        output.value = value;
     }
 
     /** Returns the current value of a global graph output */
-    getOutputData<T = any>(name: string): T {
+    getOutputData<T = any>(name: string): T | null {
+        var output = this.outputs[name];
+        if (!output) {
+            return null;
+        }
+        return output.value;
     }
 
+    onOutputRenamed?(oldName: string, newName: string): void;
 
     /** Renames a global graph output */
-    renameOutput(old_name: string, name: string): false | undefined {
+    renameOutput(old_name: string, name: string): boolean | undefined {
+        if (!this.outputs[old_name]) {
+            return false;
+        }
+
+        if (this.outputs[name]) {
+            console.error("there is already one output with that name");
+            return false;
+        }
+
+        this.outputs[name] = this.outputs[old_name];
+        delete this.outputs[old_name];
+        this._version++;
+
+        if (this.onOutputRenamed) {
+            this.onOutputRenamed(old_name, name);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
+
+        return true;
     }
 
+    onOutputTypeChanged?(name: string, oldType: string, newType: string)
+
     /** Changes the type of a global graph output */
-    changeOutputType(name: string, type: string): false | undefined {
+    changeOutputType(name: string, type: string): boolean | undefined {
+        if (!this.outputs[name]) {
+            return false;
+        }
+
+        if (
+            this.outputs[name].type &&
+            String(this.outputs[name].type).toLowerCase() ==
+                String(type).toLowerCase()
+        ) {
+            return;
+        }
+
+        const oldType = this.outputs[name].type
+        this.outputs[name].type = type;
+        this._version++;
+        if (this.onOutputTypeChanged) {
+            this.onOutputTypeChanged(name, oldType, type);
+        }
+
+        return true;
     }
+
+    onOutputRemoved?(name: string): void;
 
     /** Removes a global graph output */
     removeOutput(name: string): boolean {
+        if (!this.outputs[name]) {
+            return false;
+        }
+        delete this.outputs[name];
+        this._version++;
+
+        if (this.onOutputRemoved) {
+            this.onOutputRemoved(name);
+        }
+
+        if (this.onInputsOutputsChange) {
+            this.onInputsOutputsChange();
+        }
+        return true;
     }
 
+    /* TODO implement
     triggerInput(name: string, value: any): void {
+        var nodes = this.findNodesByTitle(name);
+        for (var i = 0; i < nodes.length; ++i) {
+            nodes[i].onTrigger(value);
+        }
     }
 
     setCallback(name: string, func: (...args: any[]) => any): void {
+        var nodes = this.findNodesByTitle(name);
+        for (var i = 0; i < nodes.length; ++i) {
+            nodes[i].setTrigger(func);
+        }
     }
+    */
 
+	/** used for undo, called before any change is made to the graph */
     beforeChange(info?: LGraphNode): void {
+        if (this.onBeforeChange) {
+            this.onBeforeChange(this,info);
+        }
+        this.sendActionToCanvas("onBeforeChange", [this]);
     }
 
+	/** used to resend actions, called after any change is made to the graph */
     afterChange(info?: LGraphNode): void {
+        if (this.onAfterChange) {
+            this.onAfterChange(this,info);
+        }
+        this.sendActionToCanvas("onAfterChange", [this]);
     }
+
+    onConnectionChange?(node: LGraphNode): void;
 
     connectionChange(node: LGraphNode, linkInfo?: LLink): void {
+        this.updateExecutionOrder();
+        if (this.onConnectionChange) {
+            this.onConnectionChange(node);
+        }
+        this._version++;
+        this.sendActionToCanvas("onConnectionChange");
     }
 
     /** returns if the graph is in live mode */
     isLive(): boolean {
+        if (!this.list_of_graphcanvas) {
+            return false;
+        }
+
+        for (var i = 0; i < this.list_of_graphcanvas.length; ++i) {
+            var c = this.list_of_graphcanvas[i];
+            if (c.live_mode) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** clears the triggered slot animation in all links (stop visual animation) */
     clearTriggeredSlots(): void {
+        for (var i in this.links) {
+            var link_info = this.links[i];
+            if (!link_info) {
+                continue;
+            }
+            if (link_info._last_time) {
+                link_info._last_time = 0;
+            }
+        }
     }
+
+    onChange?(graph: LGraph): void;
 
     /* Called when something visually changed (not the graph!) */
     change(): void {
+        if (LiteGraph.debug) {
+            console.log("Graph changed");
+        }
+        this.sendActionToCanvas("setDirty", [true, true]);
+        if (this.onChange) {
+            this.onChange(this);
+        }
     }
 
     setDirtyCanvas(fg: boolean = false, bg: boolean = false): void {
+        this.sendActionToCanvas("setDirty", [fg, bg]);
     }
 
     /** Destroys a link */
-    removeLink(link_id: number): void {
+    removeLink(linkId: number): void {
+        var link = this.links[linkId];
+        if (!link) {
+            return;
+        }
+        var node = this.getNodeById(link.target_id);
+        if (node) {
+            node.disconnectInput(link.target_slot);
+        }
     }
+
+    onSerialize?(data: SerializedLGraph): void;
 
     /** Creates a Object containing all the info about this graph, it can be serialized */
     serialize<T extends SerializedLGraph>(): T {
+        var nodes_info = [];
+        for (var i = 0, l = this._nodes.length; i < l; ++i) {
+            nodes_info.push(this._nodes[i].serialize());
+        }
+
+        //pack link info into a non-verbose format
+        var links = [];
+        for (const i in this.links) {
+            //links is an OBJECT
+            var link = this.links[i];
+            if (!link.serialize) {
+                //weird bug I havent solved yet
+                console.error(
+                    "weird LLink bug, link info is not a LLink but a regular object",
+                    link
+                );
+                var link2 = LLink.configure(link);
+                for (var j in link) {
+                    link2[j] = link[j];
+                }
+                this.links[i] = link2;
+                link = link2;
+            }
+
+            links.push(link.serialize());
+        }
+
+        var groups_info = [];
+        for (var i = 0; i < this._groups.length; ++i) {
+            groups_info.push(this._groups[i].serialize());
+        }
+
+        var data: SerializedLGraph = {
+            last_node_id: this.last_node_id,
+            last_link_id: this.last_link_id,
+            nodes: nodes_info,
+            links: links,
+            groups: groups_info,
+            config: this.config,
+			extra: this.extra,
+            version: LiteGraph.VERSION
+        };
+
+		if(this.onSerialize)
+			this.onSerialize(data);
+
+        return data as T;
     }
+
+    onConfigure?(data: SerializedLGraph): void;
 
     /**
      * Configure a graph from a JSON string
      * @param data configure a graph from a JSON string
      * @returns if there was any error parsing
      */
-    configure(data: object, keep_old?: boolean): boolean | undefined {
+    configure(data: SerializedLGraph, keep_old?: boolean): boolean | undefined {
+        if (!data) {
+            return;
+        }
+
+        if (!keep_old) {
+            this.clear();
+        }
+
+        var nodes = data.nodes;
+
+        //decode links info (they are very verbose)
+        if (data.links && data.links.constructor === Array) {
+            var links = [];
+            for (var i = 0; i < data.links.length; ++i) {
+                var link_data = data.links[i];
+				if(!link_data) //weird bug
+				{
+					console.warn("serialized graph link data contains errors, skipping.");
+					continue;
+				}
+                var link = LLink.configure(link_data);
+                links[link.id] = link;
+            }
+            data.links = links;
+        }
+
+        //copy all stored fields
+        for (const i in data) {
+			if(i == "nodes" || i == "groups" ) //links must be accepted
+				continue;
+            this[i] = data[i];
+        }
+
+        var error = false;
+
+        //create nodes
+        this._nodes = [];
+        if (nodes) {
+            for (var i = 0, l = nodes.length; i < l; ++i) {
+                var n_info = nodes[i]; //stored info
+                var node = LiteGraph.createNode(n_info.type, n_info.title);
+                if (!node) {
+                    if (LiteGraph.debug) {
+                        console.log(
+                            "Node not found or has errors: " + n_info.type
+                        );
+                    }
+
+                    //in case of error we create a replacement node to avoid losing info
+                    node = new LGraphNode();
+                    node.last_serialization = n_info;
+                    node.has_errors = true;
+                    error = true;
+                    //continue;
+                }
+
+                node.id = n_info.id; //id it or it will create a new id
+                this.add(node, true); //add before configure, otherwise configure cannot create links
+            }
+
+            //configure nodes afterwards so they can reach each other
+            for (var i = 0, l = nodes.length; i < l; ++i) {
+                var n_info = nodes[i];
+                var node = this.getNodeById(n_info.id);
+                if (node) {
+                    node.configure(n_info);
+                }
+            }
+        }
+
+        //groups
+        this._groups.length = 0;
+        if (data.groups) {
+            for (var i = 0; i < data.groups.length; ++i) {
+                var group = new LiteGraph.LGraphGroup();
+                group.configure(data.groups[i]);
+                this.add(group);
+            }
+        }
+
+        this.updateExecutionOrder();
+
+		this.extra = data.extra || {};
+
+		if(this.onConfigure)
+			this.onConfigure(data);
+
+        this._version++;
+        this.setDirtyCanvas(true, true);
+        return error;
     }
 
-    load(url: string): void {
-    }
+    load(url: string, callback: (any) => void): void {
+        var that = this;
 
+		//from file
+		if(url.constructor === File || url.constructor === Blob)
+		{
+			var reader = new FileReader();
+			reader.addEventListener('load', function(event) {
+				var data = JSON.parse(reader.result as string);
+				that.configure(data);
+				if(callback)
+					callback(data);
+			});
+
+			reader.readAsText(url);
+			return;
+		}
+
+		//is a string, then an URL
+        var req = new XMLHttpRequest();
+        req.open("GET", url, true);
+        req.send(null);
+        req.onload = function(_oEvent) {
+            if (req.status !== 200) {
+                console.error("Error loading graph:", req.status, req.response);
+                return;
+            }
+            var data = JSON.parse( req.response );
+            that.configure(data);
+			if(callback)
+				callback(data);
+        };
+        req.onerror = function(err) {
+            console.error("Error loading graph:", err);
+        };
+    }
 }

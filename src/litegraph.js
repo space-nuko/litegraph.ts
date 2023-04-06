@@ -144,32 +144,32 @@
          * Register a node class so it can be listed when the user wants to create a new one
          * @method registerNodeType
          * @param {String} type name of the node and path
-         * @param {Class} base_class class containing the structure of a node
+         * @param {Class} config class containing the structure of a node
          */
 
-        registerNodeType: function(type, base_class) {
-            if (!base_class.prototype) {
+        registerNodeType: function(type, config) {
+            if (!config.prototype) {
                 throw "Cannot register a simple object, it must be a class with a prototype";
             }
-            base_class.type = type;
+            config.type = type;
 
             if (LiteGraph.debug) {
                 console.log("Node registered: " + type);
             }
 
-            const classname = base_class.name;
+            const classname = config.name;
 
             const pos = type.lastIndexOf("/");
-            base_class.category = type.substring(0, pos);
+            config.category = type.substring(0, pos);
 
-            if (!base_class.title) {
-                base_class.title = classname;
+            if (!config.title) {
+                config.title = classname;
             }
 
             //extend class
             for (var i in LGraphNode.prototype) {
-                if (!base_class.prototype[i]) {
-                    base_class.prototype[i] = LGraphNode.prototype[i];
+                if (!config.prototype[i]) {
+                    config.prototype[i] = LGraphNode.prototype[i];
                 }
             }
 
@@ -177,8 +177,8 @@
             if(prev) {
                 console.log("replacing node type: " + type);
             }
-            if( !Object.prototype.hasOwnProperty.call( base_class.prototype, "shape") ) {
-                Object.defineProperty(base_class.prototype, "shape", {
+            if( !Object.prototype.hasOwnProperty.call( config.prototype, "shape") ) {
+                Object.defineProperty(config.prototype, "shape", {
                     set: function(v) {
                         switch (v) {
                             case "default":
@@ -209,29 +209,29 @@
                 
 
                 //used to know which nodes to create when dragging files to the canvas
-                if (base_class.supported_extensions) {
-                    for (let i in base_class.supported_extensions) {
-                        const ext = base_class.supported_extensions[i];
+                if (config.supported_extensions) {
+                    for (let i in config.supported_extensions) {
+                        const ext = config.supported_extensions[i];
                         if(ext && ext.constructor === String) {
-                            this.node_types_by_file_extension[ ext.toLowerCase() ] = base_class;
+                            this.node_types_by_file_extension[ ext.toLowerCase() ] = config;
                         }
                     }
                 }
             }
 
-            this.registered_node_types[type] = base_class;
-            if (base_class.constructor.name) {
-                this.Nodes[classname] = base_class;
+            this.registered_node_types[type] = config;
+            if (config.constructor.name) {
+                this.Nodes[classname] = config;
             }
             if (LiteGraph.onNodeTypeRegistered) {
-                LiteGraph.onNodeTypeRegistered(type, base_class);
+                LiteGraph.onNodeTypeRegistered(type, config);
             }
             if (prev && LiteGraph.onNodeTypeReplaced) {
-                LiteGraph.onNodeTypeReplaced(type, base_class, prev);
+                LiteGraph.onNodeTypeReplaced(type, config, prev);
             }
 
             //warnings
-            if (base_class.prototype.onPropertyChange) {
+            if (config.prototype.onPropertyChange) {
                 console.warn(
                     "LiteGraph node class " +
                         type +
@@ -241,7 +241,7 @@
             
             // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
             if (this.auto_load_slot_types) {
-                new base_class(base_class.title || "tmpnode");
+                new config(config.title || "tmpnode");
             }
         },
 
@@ -251,12 +251,12 @@
          * @param {String|Object} type name of the node or the node constructor itself
          */
         unregisterNodeType: function(type) {
-			var base_class = type.constructor === String ? this.registered_node_types[type] : type;
-			if(!base_class)
+			var config = type.constructor === String ? this.registered_node_types[type] : type;
+			if(!config)
 				throw("node type not found: " + type );
-			delete this.registered_node_types[base_class.type];
-			if(base_class.constructor.name)
-				delete this.Nodes[base_class.constructor.name];
+			delete this.registered_node_types[config.type];
+			if(config.constructor.name)
+				delete this.Nodes[config.constructor.name];
 		},
 
         /**
@@ -267,9 +267,9 @@
         */
         registerNodeAndSlotType: function(type,slot_type,out){
             out = out || false;
-            var base_class = type.constructor === String && this.registered_node_types[type] !== "anonymous" ? this.registered_node_types[type] : type;
+            var config = type.constructor === String && this.registered_node_types[type] !== "anonymous" ? this.registered_node_types[type] : type;
             
-            var sCN = base_class.constructor.type;
+            var sCN = config.constructor.type;
             
             if (typeof slot_type == "string"){
                 var aTypes = slot_type.split(",");
@@ -390,8 +390,8 @@
          */
 
         createNode: function(type, title, options) {
-            var base_class = this.registered_node_types[type];
-            if (!base_class) {
+            var config = this.registered_node_types[type];
+            if (!config) {
                 if (LiteGraph.debug) {
                     console.log(
                         'GraphNode type "' + type + '" not registered.'
@@ -400,21 +400,21 @@
                 return null;
             }
 
-            var prototype = base_class.prototype || base_class;
+            var prototype = config.prototype || config;
 
-            title = title || base_class.title || type;
+            title = title || config.title || type;
 
             var node = null;
 
             if (LiteGraph.catch_exceptions) {
                 try {
-                    node = new base_class(title);
+                    node = new config(title);
                 } catch (err) {
                     console.error(err);
                     return null;
                 }
             } else {
-                node = new base_class(title);
+                node = new config(title);
             }
 
             node.type = type;

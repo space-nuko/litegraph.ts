@@ -1,7 +1,7 @@
 import { default as INodeSlot, INodeInputSlot, INodeOutputSlot, SlotInPosition, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
 import { default as IWidget, WidgetCallback } from "./IWidget";
 import LiteGraph from "./LiteGraph"
-import LGraph from "./LGraph";
+import LGraph, { LGraphInput, LGraphOutput } from "./LGraph";
 import LGraphCanvas from "./LGraphCanvas";
 import LLink from "./LLink";
 import { default as IProperty, IPropertyInfo } from "./IProperty";
@@ -10,13 +10,20 @@ import { ContextMenuItem, IContextMenuItem } from "./ContextMenu"
 import { Vector2, Vector4, NodeMode, SlotShape, BuiltInSlotType, SlotType, LConnectionKind } from "./types";
 
 export type NodeOutput = [string, SlotType, Record<any, any>?];
+export type InputSlotLayout = { name: string, type: string, options?: Record<string, any> }
+export type OutputSlotLayout = { name: string, type: string, options?: Record<string, any> }
+export type SlotLayout = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] };
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
-    (this: LGraphNode),
-    title?: string,
+    type: new (title: string?) => T,
+    title: string,
+    desc: string,
     category?: string,
     supported_extensions?: string[],
-    type?: string,
+    /** Type name used for serialization, like "graph/input".
+     * Should be unique across all nodes.
+     * The part before the final slash is the category. */
+    typeName: string,
     name?: string,
     filter?: string,
     skip_list?: boolean
@@ -56,6 +63,7 @@ export default class LGraphNode {
     static title: string;
     static type: null | string;
     static widgets_up: boolean;
+    static registerCategory: string = "";
     constructor(title?: string) {
         this.title = title || "Unnamed";
         this.size = [LiteGraph.NODE_WIDTH, 60];
@@ -78,7 +86,10 @@ export default class LGraphNode {
         this.flags = {};
     }
 
+    slotsLayout: SlotsLayout = {}
+
     title: string;
+    desc: string = "";
     type: null | string;
     category: null | string;
     size: Vector2;
@@ -87,6 +98,8 @@ export default class LGraphNode {
     graph_version: number;
     is_selected: boolean;
     mouseOver: boolean;
+    /** computeExecutionOrder sorts by priority first, then order if priorities are the same */
+    priority: number = 0;
     order: number;
     redraw_on_mouse: boolean;
 
@@ -117,13 +130,15 @@ export default class LGraphNode {
     boxcolor: string;
     shape: SlotShape;
 
-    serialize_widgets: boolean;
-    skip_list: boolean;
-    block_delete?: boolean;
+    serialize_widgets: boolean = false;
+    skip_list: boolean = false;
+    block_delete: boolean = false;
+    ignore_remove: boolean = false;
 
     last_serialization?: SerializedLGraphNode = null;
 
     _relative_id: number | null = null;
+    _level = number;
 
     /** Used in `LGraphCanvas.onMenuNodeMode` */
     mode?: NodeMode;
@@ -142,11 +157,19 @@ export default class LGraphNode {
     has_errors?: boolean;
 
     _collapsed_width?: number;
+    exec_version: number = 0;
+    action_call: string | null = null;
+    /** the nFrames it will be used (-- each step), means "how old" is the event */
+    execute_triggered: number = 0;
+    /** the nFrames it will be used (-- each step), means "how old" is the event */
+    action_triggered: number = 0;
+
+    onNodeCreated?(): void;
 
     /** configure a node from an object containing the serialized info */
     configure(info: SerializedLGraphNode): void {
         if (this.graph) {
-            this.graph._version++;
+            (this.graph as any)._version++;
         }
         for (var j in info) {
             if (j == "properties") {
@@ -184,7 +207,7 @@ export default class LGraphNode {
                 var input = this.inputs[i];
                 var linkInfo = this.graph ? this.graph.links[input.link] : null;
                 if (this.onConnectionsChange)
-                    this.onConnectionsChange( LiteGraph.INPUT, i, true, linkInfo, input ); //linkInfo has been created now, so its updated
+                    this.onConnectionsChange( LConnectionKind.INPUT, i, true, linkInfo, input ); //linkInfo has been created now, so its updated
 
                 if( this.onInputAdded )
                     this.onInputAdded(input);
@@ -523,7 +546,7 @@ export default class LGraphNode {
     }
 
     /** tells you if there is a connection in one input slot */
-    isInputConnected(slot: number): boolean {
+    isInputConnected(slot: SlotIndex): boolean {
         if (!this.inputs) {
             return false;
         }
@@ -531,13 +554,18 @@ export default class LGraphNode {
     }
 
     /** tells you info about an input connection (which node, type, etc) */
-    getInputInfo(
-        slot: number
-    ): { link: number; name: string; type: string | 0 } | null {
+    getInputInfo(slot: SlotIndex): INodeInputSlot | null {
+        if (!this.inputs) {
+            return null;
+        }
+        if (slot < this.inputs.length) {
+            return this.inputs[slot];
+        }
+        return null;
     }
 
     /** returns the node connected in the input slot */
-    getInputNode(slot: number): LGraphNode | null {
+    getInputNode(slot: SlotIndex): LGraphNode | null {
         if (!this.inputs) {
             return null;
         }
@@ -576,7 +604,7 @@ export default class LGraphNode {
     }
 
     /** tells you the last output data that went in that slot */
-    getOutputData<T = any>(slot: number): T | null {
+    getOutputData<T = any>(slot: SlotIndex): T | null {
         if (!this.outputs) {
             return null;
         }
@@ -589,7 +617,7 @@ export default class LGraphNode {
     }
 
     /** tells you info about an output connection (which node, type, etc) */
-    getOutputInfo(slot: number): INodeOutputSlot | null {
+    getOutputInfo(slot: SlotIndex): INodeOutputSlot | null {
         if (!this.outputs) {
             return null;
         }
@@ -600,7 +628,7 @@ export default class LGraphNode {
     }
 
     /** tells you if there is a connection in one output slot */
-    isOutputConnected(slot: number): boolean {
+    isOutputConnected(slot: SlotIndex): boolean {
         if (!this.outputs) {
             return false;
         }
@@ -625,7 +653,7 @@ export default class LGraphNode {
     }
 
     /** retrieves all the nodes connected to this output slot */
-    getOutputNodes(slot: number): LGraphNode[] {
+    getOutputNodes(slot: SlotIndex): LGraphNode[] {
         if (!this.outputs || this.outputs.length == 0) {
             return null;
         }
@@ -653,7 +681,7 @@ export default class LGraphNode {
         return r;
     }
 
-    addOnTriggerInput(): number {
+    addOnTriggerInput(): SlotIndex {
         var trigS = this.findInputSlotIndexByName("onTrigger");
         if (trigS == -1){ //!trigS ||
             this.addInput("onTrigger", BuiltInSlotType.EVENT, {optional: true, nameLocked: true});
@@ -662,7 +690,7 @@ export default class LGraphNode {
         return trigS;
     }
 
-    addOnExecutedOutput(): number {
+    addOnExecutedOutput(): SlotIndex {
         var trigS = this.findOutputSlotIndexByName("onExecuted");
         if (trigS == -1){ //!trigS ||
             this.addOutput("onExecuted", BuiltInSlotType.ACTION, {optional: true, nameLocked: true});
@@ -708,6 +736,61 @@ export default class LGraphNode {
         }
         this.mode = modeTo;
         return true;
+    }
+
+    onExecute?(param?: any, options: object): void;
+
+    doExecute(param?: any, options: { action_call?: string } = {}): void {
+        if (this.onExecute){
+            // enable this to give the event an ID
+			if (!options.action_call) options.action_call = this.id+"_exec_"+Math.floor(Math.random()*9999);
+
+            this.graph.nodes_executing[this.id] = true; //.push(this.id);
+
+            this.onExecute(param, options);
+
+            this.graph.nodes_executing[this.id] = false; //.pop();
+
+            // save execution/action ref
+            this.exec_version = this.graph.iteration;
+            if(options && options.action_call){
+                this.action_call = options.action_call; // if (param)
+                this.graph.nodes_executedAction[this.id] = options.action_call;
+            }
+        }
+        this.execute_triggered = 2; // the nFrames it will be used (-- each step), means "how old" is the event
+        if(this.onAfterExecuteNode)
+            this.onAfterExecuteNode(param, options); // callback
+    }
+
+    onAction?(action: any, param: any: options: { action_call?: string }): void;
+
+    /**
+     * Triggers an action, wrapped by logics to control execution flow
+     * @method actionDo
+     * @param {String} action name
+     * @param {*} param
+     */
+    actionDo(action: any, param: any, options: { action_call?: string } = {}) {
+        if (this.onAction){
+
+			// enable this to give the event an ID
+            if (!options.action_call) options.action_call = this.id+"_"+(action?action:"action")+"_"+Math.floor(Math.random()*9999);
+
+            this.graph.nodes_actioning[this.id] = (action?action:"actioning"); //.push(this.id);
+
+            this.onAction(action, param, options);
+
+            this.graph.nodes_actioning[this.id] = false; //.pop();
+
+            // save execution/action ref
+            if(options && options.action_call){
+                this.action_call = options.action_call; // if (param)
+                this.graph.nodes_executedAction[this.id] = options.action_call;
+            }
+        }
+        this.action_triggered = 2; // the nFrames it will be used (-- each step), means "how old" is the event
+        if(this.onAfterExecuteNode) this.onAfterExecuteNode(param, options);
     };
 
     /**  Triggers an event in this node, this will trigger any output with the same name */
@@ -733,7 +816,7 @@ export default class LGraphNode {
      * @param param
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    triggerSlot(slot: number, param: any, link_id?: number, options: object = {}): void {
+    triggerSlot(slot: SlotIndex, param: any, link_id?: number, options: object = {}): void {
         if (!this.outputs) {
             return;
         }
@@ -744,7 +827,7 @@ export default class LGraphNode {
             return;
         }
 
-        if(slot.constructor !== Number)
+        if(typeof slot !== "number")
             console.warn("slot must be a number, use node.trigger('name') if you want to use a string");
 
         var output = this.outputs[slot];
@@ -1470,28 +1553,28 @@ export default class LGraphNode {
      */
     findInputSlotIndexByType(type: SlotType, preferFreeSlot: boolean = false, doNotUseOccupied: boolean = false): number {
         return this.findSlotByType<INodeInputSlot>(true, type, false, preferFreeSlot, doNotUseOccupied) as number;
-    };
+    }
 
     /**
      * findSlotByType for OUTPUTS
      */
     findOutputSlotIndexByType(type: SlotType, preferFreeSlot: boolean = false, doNotUseOccupied: boolean = false): number {
         return this.findSlotByType<INodeOutputSlot>(false, type, false, preferFreeSlot, doNotUseOccupied) as number;
-    };
+    }
 
     /**
      * findSlotByType for INPUTS
      */
     findInputSlotByType(type: SlotType, preferFreeSlot: boolean = false, doNotUseOccupied: boolean = false): INodeInputSlot | null {
         return this.findSlotByType<INodeInputSlot>(true, type, false, preferFreeSlot, doNotUseOccupied) as INodeInputSlot | null;
-    };
+    }
 
     /**
      * findSlotByType for OUTPUTS
      */
     findOutputSlotByType(type: SlotType, preferFreeSlot: boolean = false, doNotUseOccupied: boolean = false): INodeOutputSlot | null {
         return this.findSlotByType<INodeOutputSlot>(false, type, false, preferFreeSlot, doNotUseOccupied) as INodeOutputSlot | null;
-    };
+    }
 
     /**
      * returns the output (or input) slot with a given type, -1 if not found
@@ -1551,7 +1634,7 @@ export default class LGraphNode {
             }
         }
         return returnObj ? null : -1;
-    };
+    }
 
     /**
      * connect this node output to the input of another node BY TYPE
@@ -2250,7 +2333,7 @@ export default class LGraphNode {
         this.graph.sendActionToCanvas("setDirty", [fg, bg]);
     }
 
-    loadImage(url: string): Image {
+    loadImage(url: string): HTMLImageElement {
         var img = new Image();
         img.src = LiteGraph.node_images_path + url;
 
@@ -2461,6 +2544,8 @@ export default class LGraphNode {
     onMenuNodeOutputs?(item: IContextMenuItem[]): IContextMenuItem[];
 
     onNodeOutputAdd?(value: any): void;
+
+    updateOutputData?(slot: number): void;
 
     onOutputAdded?(output: INodeOutputSlot): void;
 

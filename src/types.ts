@@ -75,3 +75,8 @@ export type SlotType =
 export type Version = number;
 
 export type PointerEventsMethod = "mouse" | "pointer" | "touch";
+
+export enum LayoutDirection {
+    VERTICAL_LAYOUT = "vertical",
+    HORIZONTAL_LAYOUT = "horizontal",
+}

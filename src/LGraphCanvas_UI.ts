@@ -25,7 +25,7 @@ export default class LGraphCanvas_UI {
 
         var group = new LGraphGroup();
         group.pos = canvas.convertEventToCanvasOffset(mouseEvent);
-        canvas.graph.add(group);
+        canvas.graph.addGroup(group);
     }
 
     /** Create menu for `Add Node` */
@@ -933,7 +933,7 @@ export default class LGraphCanvas_UI {
                 }
 
                 //extras
-                for (var i in LiteGraph.searchbox_extras) {
+                for (const i in LiteGraph.searchbox_extras) {
                     var extra = LiteGraph.searchbox_extras[i];
                     if ((!options.show_all_if_empty || str) && extra.desc.toLowerCase().indexOf(str) === -1) {
                         continue;
