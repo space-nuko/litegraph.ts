@@ -8,8 +8,6 @@
       "es2020", "DOM"
     ],
     "moduleResolution": "node",
-    "verbatimModuleSyntax": true,
-    "sourceMap": true,
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,

@@ -1,3 +1,4 @@
+import type { IContextMenuItem } from "../../ContextMenu";
 import type { MouseEventExt } from "../../DragAndScale";
 import type { INumberWidget } from "../../IWidget";
 import LGraph from "../../LGraph";
@@ -154,6 +155,7 @@ export default class Subgraph extends LGraphNode {
                 graphcanvas.showSubgraphPropertiesDialogRight(this);
             }
         }
+        return false;
     }
 
 	override computeSize(): Vector2 {
@@ -239,31 +241,32 @@ export default class Subgraph extends LGraphNode {
     };
     // *****************************************************
 
-    override getExtraMenuOptions(graphcanvas) {
+    override getExtraMenuOptions(graphCanvas: LGraphCanvas, options: IContextMenuItem[]): IContextMenuItem[] {
         var that = this;
         return [
             {
                 content: "Open",
                 callback: function() {
-                    graphcanvas.openSubgraph(that.subgraph);
+                    graphCanvas.openSubgraph(that.subgraph);
                 }
             }
         ];
     };
 
-    override onResize(size) {
+    override onResize(size: Vector2) {
+        console.error("TEST subgraph resize");
         size[1] += 20;
     };
 
     override serialize() {
-        var data = LiteGraph.LGraphNode.prototype.serialize.call(this);
+        var data = LGraphNode.prototype.serialize.call(this);
         data.subgraph = this.subgraph.serialize();
         return data;
     };
     //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
 
     override clone() {
-        var node = LiteGraph.createNode(this.type);
+        var node = LiteGraph.createNode(this.typeName);
         var data = this.serialize();
         delete data["id"];
         delete data["inputs"];
@@ -272,8 +275,7 @@ export default class Subgraph extends LGraphNode {
         return node;
     };
 
-	override buildFromNodes(nodes)
-	{
+	buildFromNodes(nodes) {
 		//clear all?
 		//TODO
 

@@ -1,8 +1,9 @@
-import type { ContextMenuEventListener, ContextMenuItem } from "./ContextMenu";
+import type { ContextMenuEventListener, ContextMenuItem, IContextMenuItem } from "./ContextMenu";
 import ContextMenu from "./ContextMenu";
 import type { DragEventExt, MouseEventExt, EventExt } from "./DragAndScale";
 import DragAndScale from "./DragAndScale";
 import type { INodeInputSlot, INodeOutputSlot, default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
+import type { IComboWidget, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import type IWidget from "./IWidget";
 import LGraph from "./LGraph";
 import LGraphCanvas_Events from "./LGraphCanvas_Events";
@@ -32,10 +33,14 @@ export interface IGraphPanel extends HTMLDivElement {
     addHTML: (code: string, classname?: string, on_footer?: boolean) => HTMLDivElement;
     addButton: (name: string, callback: EventListener, options?: any) => HTMLButtonElement;
     addSeparator: () => HTMLDivElement;
-    addWidget: (type: string, name: string, value: any, options?: any, callback?: ContextMenuEventListener) => HTMLDivElement;
+    addWidget: <T extends IWidget<O, V>, O extends WidgetPanelOptions, V>(type: string, name: string, value: V, options?: O, callback?: WidgetPanelCallback) => IGraphWidgetUI;
     inner_showCodePad: (propname: string) => void;
     onOpen?(): void;
 };
+
+export interface INodePanel extends IGraphPanel {
+    node?: LGraphNode;
+}
 
 export interface ISubgraphPropertiesPanel extends IGraphPanel {
     node?: LGraphNode;
@@ -182,7 +187,7 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
     static active_canvas: LGraphCanvas | null = null
     static active_node: LGraphNode | null = null;
 
-    node_panel: IGraphDialog | null = null;
+    node_panel: INodePanel | null = null;
     options_panel: IGraphDialog | null = null;
 
     viewport: Vector4 | null;
@@ -295,6 +300,7 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
     /** Called by `LGraphCanvas.processNodeDblClicked` */
     onNodeDblClicked?(node: LGraphNode): void;
     onRender?(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void;
+    onRenderBackground?(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): boolean; // bg_already_painted
     /** Called by `LGraphCanvas.selectNodes` */
     /** called if the selection changes */
     onSelectionChange?(nodes: Record<number, LGraphNode>): void;
@@ -344,9 +350,9 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
 
     _graph_stack: LGraph[] | null = null;
 
-    private _bg_img: HTMLImageElement | null = null;
-    private _pattern: CanvasPattern | null = null;
-    private _pattern_img: HTMLImageElement | null = null;
+    _bg_img: HTMLImageElement | null = null;
+    _pattern: CanvasPattern | null = null;
+    _pattern_img: HTMLImageElement | null = null;
 
     search_box: IGraphDialog | null = null;
     prompt_box: IGraphDialog | null = null;
@@ -752,8 +758,8 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
         nodeTo?: LGraphNode,   // output
         slotTo?: SlotNameOrIndex | INodeSlot,   // output
         position?: Vector2,	// pass the event coords
-        posAdd: Vector2	// adjust x,y
-        posSizeFix: Vector2 // alpha, adjust the position x,y based on the new node size w,h
+        posAdd?: Vector2	// adjust x,y
+        posSizeFix?: Vector2 // alpha, adjust the position x,y based on the new node size w,h
     } = {
         position: [0, 0], posAdd: [0, 0], posSizeFix: [0, 0]
     }): boolean { // addNodeMenu for connection
@@ -1594,14 +1600,15 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
 							w.value = w.options.max;
 						}
 					} else if (event.type == LiteGraph.pointerevents_method+"down") {
-						var values = w.options.values;
-						if (values && values.constructor === Function) {
-							values = w.options.values(w, node);
+						var values: string[] = w.options.values;
+						if (values && typeof values === "function") {
+                            let fn = w.options.values as ((widget: IComboWidget, node: LGraphNode) => string[]);
+							values = fn(w as IComboWidget, node);
 						}
 						var values_list = null;
 
 						if( w.type != "number")
-							values_list = values.constructor === Array ? values : Object.keys(values);
+							values_list = Array.isArray(values) ? values : Object.keys(values);
 
 						var delta = x < 40 ? -1 : x > widget_width - 40 ? 1 : 0;
 						if (w.type == "number") {
@@ -1625,22 +1632,24 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
 							if (index < 0) {
 								index = 0;
 							}
-							if( values.constructor === Array )
+							if( Array.isArray(values) )
 								w.value = values[index];
 							else
 								w.value = index;
 						} else { //combo clicked
 							var text_values = values != values_list ? Object.values(values) : values;
-							var menu = new ContextMenu(text_values, {
+                            let choices = Array.from(text_values).map((n) => { return { content: n } })
+							var menu = new ContextMenu(choices, {
 									scale: Math.max(1, this.ds.scale),
 									event: event,
 									className: "dark",
 									callback: inner_clicked.bind(w)
 								},
 								ref_window);
-							function inner_clicked(v, option, event) {
+							function inner_clicked(v: IContextMenuItem, option, event) {
+                                let newValue: any = v.content;
 								if(values != values_list)
-									v = text_values.indexOf(v);
+									newValue = text_values.indexOf(newValue);
 								this.value = v;
 								inner_value_change(this, v);
 								that.dirty_canvas = true;
@@ -1746,6 +1755,16 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
         this.setDirty(true, true);
     }
 
+	isAreaClicked(this: LGraphCanvas, x: number, y: number, w: number, h: number, hold_click?: boolean ) {
+		var pos = this.mouse;
+		var hover = LiteGraph.isInsideRectangle( pos[0], pos[1], x,y,w,h );
+		pos = this.last_click_position;
+		var clicked = pos && LiteGraph.isInsideRectangle( pos[0], pos[1], x,y,w,h );
+		var was_clicked = clicked && !this.block_click;
+		if(clicked && hold_click)
+			this.blockClick();
+		return was_clicked;
+	}
 
     /**
      * switches to live mode (node shapes are not rendered, only the content)
@@ -1818,6 +1837,7 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
     static showMenuNodeOptionalOutputs = LGraphCanvas_UI.showMenuNodeOptionalOutputs;
     static onShowMenuNodeProperties = LGraphCanvas_UI.onShowMenuNodeProperties;
     static onResizeNode = LGraphCanvas_UI.onResizeNode;
+    static onMenuResizeNode = LGraphCanvas_UI.onMenuResizeNode;
     static onMenuNodeCollapse = LGraphCanvas_UI.onMenuNodeCollapse;
     static onMenuNodePin = LGraphCanvas_UI.onMenuNodePin;
     static onMenuNodeMode = LGraphCanvas_UI.onMenuNodeMode;
@@ -1864,7 +1884,8 @@ implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
     draw = LGraphCanvas_Rendering.prototype.draw;
     drawFrontCanvas = LGraphCanvas_Rendering.prototype.drawFrontCanvas;
     drawSubgraphPanel = LGraphCanvas_Rendering.prototype.drawSubgraphPanel;
-    drawSubgraphPanelLeft = LGraphCanvas_Rendering.prototype.drawSubgraphPanelRight;
+    drawSubgraphPanelLeft = LGraphCanvas_Rendering.prototype.drawSubgraphPanelLeft;
+    drawSubgraphPanelRight = LGraphCanvas_Rendering.prototype.drawSubgraphPanelRight;
     drawButton = LGraphCanvas_Rendering.prototype.drawButton;
     drawBackCanvas = LGraphCanvas_Rendering.prototype.drawBackCanvas;
     renderInfo = LGraphCanvas_Rendering.prototype.renderInfo;

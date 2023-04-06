@@ -1,4 +1,4 @@
-import { SlotType, Vector2 } from "./types";
+import type { SlotType, Vector2 } from "./types";
 
 export type SerializedLLink = [number, number, number, number, number, SlotType];
 

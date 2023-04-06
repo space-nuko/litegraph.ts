@@ -329,7 +329,7 @@ export default class LGraph {
                     for (var j = 0; j < limit; ++j) {
                         var node = nodes[j];
                         if (node.mode == NodeMode.ALWAYS && node.onExecute) {
-                            node.onExecute();
+                            node.onExecute(null, {});
                         }
                     }
 
@@ -782,11 +782,13 @@ export default class LGraph {
     onNodeConnectionChange?(kind: LConnectionKind,
                             node: LGraphNode,
                             slot: SlotIndex,
-                            target_node: LGraphNode,
-                            target_slot: SlotIndex): void;
+                            target_node?: LGraphNode,
+                            target_slot?: SlotIndex): void;
 
     /** Called by `LGraph.configure` */
     onConfigure?(data: SerializedLGraph): void;
+
+    onNodeTrace?(node: LGraphNode, message: string)
 
     /** Removes a node from the graph */
     remove(node: LGraphNode): void {
@@ -908,7 +910,7 @@ export default class LGraph {
         var type = type.toLowerCase();
         result.length = 0;
         for (var i = 0, l = this._nodes.length; i < l; ++i) {
-            if (this._nodes[i].type.toLowerCase() == type) {
+            if (this._nodes[i].typeName.toLowerCase() == type) {
                 result.push(this._nodes[i] as LGraphNode);
             }
         }
@@ -993,12 +995,12 @@ export default class LGraph {
         var changes = false;
         for (var i = 0; i < this._nodes.length; i++) {
             var node = this._nodes[i];
-            var config = LiteGraph.registered_node_types[node.type];
+            var config = LiteGraph.registered_node_types[node.typeName];
             if (node.constructor == config.type) {
                 continue;
             }
-            console.log("node being replaced by newer version: " + node.type);
-            var newnode = LiteGraph.createNode(node.type);
+            console.log("node being replaced by newer version: " + node.typeName);
+            var newnode = LiteGraph.createNode(node.typeName);
             changes = true;
             this._nodes[i] = newnode;
             newnode.configure(node.serialize());
@@ -1042,7 +1044,7 @@ export default class LGraph {
     }
 
     /** Tell this graph it has a global graph input of this type */
-    addInput(name: string, type: string, value: any): void {
+    addInput(name: string, type: string, value?: any): void {
         var input = this.inputs[name];
         if (input) {
             //already exist

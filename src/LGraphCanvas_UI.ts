@@ -1,8 +1,8 @@
 import type { ContextMenuEventListener, ContextMenuItem, IContextMenuItem, IContextMenuOptions } from "./ContextMenu";
 import ContextMenu from "./ContextMenu";
-import type { MouseEventExt } from "./DragAndScale";
+import type { EventExt, MouseEventExt } from "./DragAndScale";
 import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
-import type { IGraphDialog, IGraphPanel, IGraphWidgetUI, ISubgraphPropertiesPanel } from "./LGraphCanvas";
+import type { IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
 import LGraphNode from "./LGraphNode";
@@ -11,6 +11,8 @@ import LiteGraph from "./LiteGraph";
 import { NODE_MODE_NAMES, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
 import { BuiltInSlotType } from "./types";
 import Subgraph from "./nodes/basic/Subgraph"
+import type IWidget from "./IWidget";
+import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 
 export default class LGraphCanvas_UI {
 
@@ -116,7 +118,7 @@ export default class LGraphCanvas_UI {
     }
 
     /** Create menu for `Add Group` */
-    static onGroupAdd: ContextMenuEventListener = function(value: IContextMenuItem, options, mouseEvent, menu, node: LGraphNode) {
+    static onGroupAdd: ContextMenuEventListener = function(_value: IContextMenuItem, _options, mouseEvent, _menu) {
         var canvas = LGraphCanvas.active_canvas;
         var ref_window = canvas.getCanvasWindow();
 
@@ -126,7 +128,7 @@ export default class LGraphCanvas_UI {
     }
 
     /** Create menu for `Add Node` */
-    static onMenuAdd: ContextMenuEventListener = function(value: IContextMenuItem, options, mouseEvent, prevMenu, node: LGraphNode, callback?) {
+    static onMenuAdd = function(_value: IContextMenuItem, _options, mouseEvent, prevMenu, callback?: (node: LGraphNode) => void) {
         var canvas = LGraphCanvas.active_canvas;
         var ref_window = canvas.getCanvasWindow();
         var graph = canvas.graph;
@@ -164,7 +166,6 @@ export default class LGraphCanvas_UI {
                         }
                     );
                 }
-
             });
 
             var nodes = LiteGraph.getNodeTypesInCategory(base_category.slice(0, -1), canvas.filter || graph.filter );
@@ -394,7 +395,7 @@ export default class LGraphCanvas_UI {
             }
 
             if (v.callback) {
-                v.callback.call(that, node, v, e, prev);
+                v.callback.call(that, node, v, mouseEvent, prev);
             }
 
             if (!v.value) {
@@ -448,6 +449,29 @@ export default class LGraphCanvas_UI {
 
     static onMenuCollapseAll(): void {}
     static onMenuNodeEdit(): void {}
+
+    static onMenuResizeNode: ContextMenuEventListener = function(value: ContextMenuItem, options, e, menu, node: LGraphNode) {
+        if (!node) {
+            return;
+        }
+
+        var fApplyMultiNode = function(node: LGraphNode){
+            node.size = node.computeSize();
+            if (node.onResize)
+                node.onResize(node.size);
+        }
+
+        var graphcanvas = LGraphCanvas.active_canvas;
+        if (!graphcanvas.selected_nodes || Object.keys(graphcanvas.selected_nodes).length <= 1){
+            fApplyMultiNode(node);
+        }else{
+            for (var i in graphcanvas.selected_nodes) {
+                fApplyMultiNode(graphcanvas.selected_nodes[i]);
+            }
+        }
+
+        node.setDirtyCanvas(true, true);
+    };
 
     static onShowMenuNodeProperties: ContextMenuEventListener = function(_value: IContextMenuItem, _options, e, prevMenu, node: LGraphNode) {
         if (!node || !node.properties) {
@@ -509,7 +533,7 @@ export default class LGraphCanvas_UI {
         return false;
     }
 
-    static onResizeNode: ContextMenuEventListener function(_value: IContextMenuItem, _options, _e, _menu, node: LGraphNode) {
+    static onResizeNode: ContextMenuEventListener = function(_value: IContextMenuItem, _options, _e, _menu, node: LGraphNode) {
         if(!node)
             return;
         node.size = node.computeSize();
@@ -620,12 +644,12 @@ export default class LGraphCanvas_UI {
 						node.color = color.groupcolor;
 					} else {
 						node.color = color.color;
-						node.bgcolor = color.bgColor;
+						node.bgColor = color.bgColor;
 					}
 				} else {
 					delete node.color;
                     if (node instanceof LGraphNode) {
-                        delete node.bgcolor;
+                        delete node.bgColor;
                     }
 				}
 			}
@@ -724,7 +748,7 @@ export default class LGraphCanvas_UI {
 			nodes_list = [ node ];
 
 		var subgraph_node = LiteGraph.createNode<Subgraph>("graph/subgraph");
-		subgraph_node.pos = node.pos.concat();
+		subgraph_node.pos = node.pos.concat() as Vector2;
 		graph.add(subgraph_node);
 
 		subgraph_node.buildFromNodes( nodes_list );
@@ -733,7 +757,41 @@ export default class LGraphCanvas_UI {
         node.setDirtyCanvas(true, true);
     };
 
-    static onMenuNodeClone: ContextMenuEventListener;
+    static onMenuNodeClone: ContextMenuEventListener = function(value, options, e, menu, node) {
+		node.graph.beforeChange();
+
+		var newSelected: Record<number, LGraphNode> = {};
+
+		var fApplyMultiNode = function(node){
+			if (node.clonable == false) {
+				return;
+			}
+			var newnode = node.clone();
+			if (!newnode) {
+				return;
+			}
+			newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
+			node.graph.add(newnode);
+			newSelected[newnode.id] = newnode;
+		}
+
+		var graphcanvas = LGraphCanvas.active_canvas;
+		if (!graphcanvas.selected_nodes || Object.keys(graphcanvas.selected_nodes).length <= 1){
+			fApplyMultiNode(node);
+		}else{
+			for (var i in graphcanvas.selected_nodes) {
+				fApplyMultiNode(graphcanvas.selected_nodes[i]);
+			}
+		}
+
+		if(Object.keys(newSelected).length){
+			graphcanvas.selectNodes(Object.values(newSelected));
+		}
+
+		node.graph.afterChange();
+
+        node.setDirtyCanvas(true, true);
+    }
 
 
     // refactor: there are different dialogs, some uses createDialog some dont
@@ -751,9 +809,16 @@ export default class LGraphCanvas_UI {
         dialog.is_modified = false;
         dialog.className = "graphdialog rounded";
         if(multiline)
-            dialog.innerHTML = "<span class='name'></span> <textarea autofocus class='value'></textarea><button class='rounded'>OK</button>";
+            dialog.innerHTML = `
+<span class='name'></span>
+<textarea autofocus class='value'></textarea>
+<button class='rounded'>OK</button>
+`;
         else
-            dialog.innerHTML = "<span class='name'></span> <input autofocus type='text' class='value'/><button class='rounded'>OK</button>";
+            dialog.innerHTML = `
+<span class='name'></span>
+<input autofocus type='text' class='value'/>
+<button class='rounded'>OK</button>`;
         dialog.close = function() {
             that.prompt_box = null;
             if (dialog.parentNode) {
@@ -1278,13 +1343,16 @@ export default class LGraphCanvas_UI {
                 str = str.toLowerCase();
                 var filter = graphcanvas.filter || graphcanvas.graph.filter;
 
+                let sIn: HTMLSelectElement | null;
+                let sOut: HTMLSelectElement | null;
+
                 // filter by type preprocess
                 if(options.do_type_filter && that.search_box){
-                    var sIn = that.search_box.querySelector(".slot_in_type_filter");
-                    var sOut = that.search_box.querySelector(".slot_out_type_filter");
+                    sIn = that.search_box.querySelector(".slot_in_type_filter") as HTMLSelectElement;
+                    sOut = that.search_box.querySelector(".slot_out_type_filter") as HTMLSelectElement;
                 }else{
-                    var sIn = false;
-                    var sOut = false;
+                    sIn = null;
+                    sOut = null;
                 }
 
                 //extras
@@ -1307,7 +1375,7 @@ export default class LGraphCanvas_UI {
                 var filtered: string[] | null = null;
                 if (Array.prototype.filter) { //filter supported
                     var keys = Object.keys( LiteGraph.registered_node_types ); //types
-                    var filtered = keys.filter( inner_test_filter );
+                    var filtered = keys.filter( (k) => inner_test_filter(k) );
                 } else {
                     filtered = [];
                     for (const i in LiteGraph.registered_node_types) {
@@ -1327,12 +1395,12 @@ export default class LGraphCanvas_UI {
                 if (options.show_general_after_typefiltered
                     && (sIn.value || sOut.value)
                    ){
-                    filtered_extra = [];
-                    for (var i in LiteGraph.registered_node_types) {
-                        if( inner_test_filter(i, {inTypeOverride: sIn&&sIn.value?"*":false, outTypeOverride: sOut&&sOut.value?"*":false}) )
+                    let filtered_extra = [];
+                    for (const i in LiteGraph.registered_node_types) {
+                        if( inner_test_filter(i, {inTypeOverride: sIn&&sIn.value?"*":null, outTypeOverride: sOut&&sOut.value?"*":null}) )
                             filtered_extra.push(i);
                     }
-                    for (var i = 0; i < filtered_extra.length; i++) {
+                    for (let i = 0; i < filtered_extra.length; i++) {
                         addResult(filtered_extra[i], "generic_type");
                         if ( LGraphCanvas.search_limit !== -1 && c++ > LGraphCanvas.search_limit ) {
                             break;
@@ -1344,12 +1412,12 @@ export default class LGraphCanvas_UI {
                 if ((sIn.value || sOut.value) &&
                     ( (helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter) )
                    ){
-                    filtered_extra = [];
-                    for (var i in LiteGraph.registered_node_types) {
+                    let filtered_extra = [];
+                    for (const i in LiteGraph.registered_node_types) {
                         if( inner_test_filter(i, {skipFilter: true}) )
                             filtered_extra.push(i);
                     }
-                    for (var i = 0; i < filtered_extra.length; i++) {
+                    for (let i = 0; i < filtered_extra.length; i++) {
                         addResult(filtered_extra[i], "not_in_filter");
                         if ( LGraphCanvas.search_limit !== -1 && c++ > LGraphCanvas.search_limit ) {
                             break;
@@ -1357,12 +1425,11 @@ export default class LGraphCanvas_UI {
                     }
                 }
 
-                function inner_test_filter( type, optsIn = {} )
+                function inner_test_filter( type: string, optsIn: { skipFilter?: boolean, inTypeOverride?: SlotType | null, outTypeOverride?: SlotType | null } = {} )
                 {
-                    var optsIn = optsIn || {};
                     var optsDef = { skipFilter: false
-                                    ,inTypeOverride: false
-                                    ,outTypeOverride: false
+                                    ,inTypeOverride: null
+                                    ,outTypeOverride: null
                                   };
                     var opts = Object.assign(optsDef,optsIn);
                     var ctor = LiteGraph.registered_node_types[ type ];
@@ -1445,16 +1512,16 @@ export default class LGraphCanvas_UI {
         var that = this;
         var graphcanvas = this;
         var panel = this.createPanel(node.title || "",{
-            closable: true
-            ,window: ref_window
-            ,onOpen: function(){
-                graphcanvas.NODEPANEL_IS_OPEN = true;
-            }
-            ,onClose: function(){
-                graphcanvas.NODEPANEL_IS_OPEN = false;
+            closable: true,
+            window: ref_window,
+            onOpen: function() {
+                // graphcanvas.NODEPANEL_IS_OPEN = true;
+            },
+            onClose: function() {
+                // graphcanvas.NODEPANEL_IS_OPEN = false;
                 graphcanvas.node_panel = null;
-            }
-        });
+            },
+        }) as INodePanel;
         graphcanvas.node_panel = panel;
         panel.id = "node-panel";
         panel.node = node;
@@ -1463,19 +1530,19 @@ export default class LGraphCanvas_UI {
         function inner_refresh()
         {
             panel.content.innerHTML = ""; //clear
-            panel.addHTML("<span class='node_type'>"+node.type+"</span><span class='node_desc'>"+(node.constructor.desc || "")+"</span><span class='separator'></span>");
+            panel.addHTML("<span class='node_type'>"+node.typeName+"</span><span class='node_desc'>"+((node.constructor as any).desc || "")+"</span><span class='separator'></span>");
 
             panel.addHTML("<h3>Properties</h3>");
 
-            var fUpdate = function(name,value){
+            var fUpdate = function(name: string, value: any){
                 graphcanvas.graph.beforeChange(node);
                 switch(name){
                     case "Title":
                         node.title = value;
                         break;
                     case "Mode":
-                        var kV = Object.values(LiteGraph.NODE_MODES).indexOf(value);
-                        if (kV>=0 && LiteGraph.NODE_MODES[kV]){
+                        var kV = Object.values(NODE_MODE_NAMES).indexOf(value) as NodeMode;
+                        if (kV>=NodeMode.ALWAYS && NODE_MODE_NAMES[kV]){
                             node.changeMode(kV);
                         }else{
                             console.warn("unexpected mode: "+value);
@@ -1484,13 +1551,13 @@ export default class LGraphCanvas_UI {
                     case "Color":
                         if (LGraphCanvas.node_colors[value]){
                             node.color = LGraphCanvas.node_colors[value].color;
-                            node.bgcolor = LGraphCanvas.node_colors[value].bgcolor;
+                            node.bgColor = LGraphCanvas.node_colors[value].bgColor;
                         }else{
                             console.warn("unexpected color: "+value);
                         }
                         break;
                     default:
-                        node.setProperty(name,value);
+                        node.setProperty(name, value);
                         break;
                 }
                 graphcanvas.graph.afterChange();
@@ -1499,11 +1566,11 @@ export default class LGraphCanvas_UI {
 
             panel.addWidget( "string", "Title", node.title, {}, fUpdate);
 
-            panel.addWidget( "combo", "Mode", LiteGraph.NODE_MODES[node.mode], {values: LiteGraph.NODE_MODES}, fUpdate);
+            panel.addWidget( "combo", "Mode", NODE_MODE_NAMES[node.mode], {values: NODE_MODE_NAMES}, fUpdate);
 
             var nodeCol = "";
             if (node.color !== undefined){
-                nodeCol = Object.keys(LGraphCanvas.node_colors).filter(function(nK){ return LGraphCanvas.node_colors[nK].color == node.color; });
+                nodeCol = Object.keys(LGraphCanvas.node_colors).filter(function(nK){ return LGraphCanvas.node_colors[nK].color == node.color; })[0];
             }
 
             panel.addWidget( "combo", "Color", nodeCol, {values: Object.keys(LGraphCanvas.node_colors)}, fUpdate);
@@ -1639,8 +1706,8 @@ export default class LGraphCanvas_UI {
 		var elem = panel.addHTML(html,"subgraph_property extra", true);
 		elem.querySelector("button").addEventListener("click", function(e){
 			var elem = this.parentNode;
-			var name = elem.querySelector<HTMLSpanElement>(".name").value;
-			var type = elem.querySelector<HTMLSpanElement>(".type").value;
+			var name = elem.querySelector<HTMLInputElement>(".name").value;
+			var type = elem.querySelector<HTMLInputElement>(".type").value;
 			if(!name || node.findInputSlotIndexByName(name) != -1)
 				return;
 			node.addInput(name,type);
@@ -1725,21 +1792,13 @@ export default class LGraphCanvas_UI {
         return panel;
     }
 
-    showConnectionMenu(this: LGraphCanvas, optPass: {
+    showConnectionMenu(this: LGraphCanvas, opts: {
         nodeFrom?: LGraphNode,
         slotFrom?: SlotNameOrIndex | INodeSlot,
         nodeTo?: LGraphNode,
         slotTo?: SlotNameOrIndex | INodeSlot,
-        e?: Event
+        e?: MouseEventExt
     } = {}) { // addNodeMenu for connection
-        var opts = Object.assign({   nodeFrom: null  // input
-                                     ,slotFrom: null // input
-                                     ,nodeTo: null   // output
-                                     ,slotTo: null   // output
-                                     ,e: null
-                                 }
-                                 ,optPass
-                                );
         var that = this;
 
         var isFrom = opts.nodeFrom && opts.slotFrom;
@@ -1812,9 +1871,9 @@ export default class LGraphCanvas_UI {
             //console.log("Process showConnectionMenu selection");
             switch (v.content) {
                 case "Add Node":
-                    LGraphCanvas.onMenuAdd(null, null, e, menu, function(node){
+                    LGraphCanvas.onMenuAdd(v, options, e, menu, function(node: LGraphNode){
                         if (isFrom){
-                            opts.nodeFrom.connectByType( iSlotConn, node, fromSlotType );
+                            opts.nodeFrom.connectByTypeInput( iSlotConn, node, fromSlotType );
                         }else{
                             opts.nodeTo.connectByTypeOutput( iSlotConn, node, fromSlotType );
                         }
@@ -1829,7 +1888,10 @@ export default class LGraphCanvas_UI {
                     break;
                 default:
 					// check for defaults nodes for this slottype
-					var nodeCreated = that.createDefaultNodeForSlot(v.content, Object.assign(opts,{ position: [opts.e.canvasX, opts.e.canvasY]}));
+                    const newOpts = Object.assign(opts,{
+                        position: [opts.e.canvasX, opts.e.canvasY] as Vector2
+                    })
+					var nodeCreated = that.createDefaultNodeForSlot(v.content, newOpts);
 					if (nodeCreated){
 						// new node created
 						//console.log("node "+v+" created")
@@ -1867,7 +1929,7 @@ export default class LGraphCanvas_UI {
         function inner_clicked(v: ContextMenuItem, options,e) {
             switch (v.content) {
                 case "Add Node":
-					LGraphCanvas.onMenuAdd(null, null, e, menu, null, function(node){
+					LGraphCanvas.onMenuAdd(null, null, e, menu, function(node){
 						// console.debug("node autoconnect");
 						if(!node.inputs || !node.inputs.length || !node.outputs || !node.outputs.length){
 							return;
@@ -2171,7 +2233,7 @@ export default class LGraphCanvas_UI {
         return options;
     }
 
-    getNodeMenuOptions(node: LGraphNode): ContextMenuItem[] {
+    getNodeMenuOptions(this: LGraphCanvas, node: LGraphNode): ContextMenuItem[] {
         let options: IContextMenuItem[] = [];
 
         if (node.getMenuOptions) {
@@ -2279,7 +2341,7 @@ export default class LGraphCanvas_UI {
         return options;
     }
 
-    getGroupMenuOptions(node: LGraphNode): ContextMenuItem[] {
+    getGroupMenuOptions(group: LGraphGroup): ContextMenuItem[] {
         var o = [
             { content: "Title", callback: LGraphCanvas.onShowPropertyEditor },
             {
@@ -2316,7 +2378,7 @@ export default class LGraphCanvas_UI {
         };
 
         if(node)
-            options.title = node.type;
+            options.title = node.typeName;
 
         //check if mouse is in input
         var slot = null;
@@ -2449,7 +2511,7 @@ export default class LGraphCanvas_UI {
                         dialog.close();
                     } else if (e.keyCode == 13) {
                         inner(); // save
-                    } else if (e.keyCode != 13 && e.target.localName != "textarea") {
+                    } else if (e.keyCode != 13 && e.target instanceof Element && e.target.localName != "textarea") {
                         return;
                     }
                     e.preventDefault();
@@ -2464,7 +2526,8 @@ export default class LGraphCanvas_UI {
     }
 
     createPanel(title: string, options:
-                { window?: Window, width?: number, height?: number, closable?: boolean, }
+                { window?: Window, width?: number, height?: number, closable?: boolean,
+                  onOpen?: () => void, onClose?: () => void }
         = {}) {
         var ref_window = options.window || window;
         var root = document.createElement("div") as IGraphPanel;
@@ -2490,6 +2553,10 @@ export default class LGraphCanvas_UI {
 			});
 			root.header.appendChild(close);
 		}
+        if(options.onOpen)
+            root.onOpen = options.onOpen;
+        if(options.onClose)
+            root.onClose = options.onClose;
 		root.title_element = root.querySelector(".dialog-title") as HTMLSpanElement;
 		root.title_element.innerText = title;
 		root.content = root.querySelector(".dialog-content") as HTMLDivElement;
@@ -2569,13 +2636,12 @@ export default class LGraphCanvas_UI {
             return elem;
 		}
 
-		root.addWidget = function(type: string, name: string, value: any, options?: any, callback?: ContextMenuEventListener): IGraphWidgetUI
+		root.addWidget = function<T extends IWidget<O, V>, O extends WidgetPanelOptions, V>(type: string, name: string, value: V, options: O = {} as O, callback?: WidgetPanelCallback): IGraphWidgetUI
 		{
-			options = options || {};
 			var str_value = String(value);
 			type = type.toLowerCase();
 			if(type == "number")
-				str_value = value.toFixed(3);
+				str_value = (value as number).toFixed(3);
 
 			var elem = document.createElement("div") as IGraphWidgetUI;
 			elem.className = "property";
@@ -2627,16 +2693,21 @@ export default class LGraphCanvas_UI {
 					innerChange(propname, v);
 				});
 			}
-			else if (type == "enum" || type == "combo") {
+			else if ((type == "enum" || type == "combo") && "values" in options) {
 				var str_value = LGraphCanvas.getPropertyPrintableValue( value, options.values );
 				value_element.innerText = str_value;
 
                 value_element.addEventListener("click", function(event: MouseEvent){
-                    var values = options.values || [];
+                    let values: string[] | Function = (options as any).values || [];
+                    if (typeof values === "function") {
+                        console.error("Values by callback not supported in panel.addWidget!", values)
+                        values = []; // TODO
+                    }
                     let parentNode = this.parentNode as HTMLElement;
                     var propname = parentNode.dataset["property"];
                     var elem_that = this;
-                    var menu = new ContextMenu(values, {
+                    let choices = Array.from(values).map((v) => { return { content: v } })
+                    var menu = new ContextMenu(choices, {
                         event: event as MouseEventExt,
                         className: "dark",
                         callback: inner_clicked
@@ -2644,8 +2715,8 @@ export default class LGraphCanvas_UI {
                     function inner_clicked(v: ContextMenuItem, option: IContextMenuOptions, event: MouseEventExt) {
                         //node.setProperty(propname,v);
                         //graphcanvas.dirty_canvas = true;
-                        elem_that.innerText = "" + v;
-                        innerChange(propname, v);
+                        elem_that.innerText = v.content;
+                        innerChange(propname, v.content);
                         return false;
                     }
                 });

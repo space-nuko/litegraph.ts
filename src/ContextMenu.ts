@@ -37,14 +37,14 @@ export interface IContextMenuOptions {
     allow_html?: boolean;
 }
 
+export type ContextMenuExtraArg = LGraphNode | any;
 export type ContextMenuItem = IContextMenuItem | null;
 export type ContextMenuEventListener = (
     value: ContextMenuItem,
     options: IContextMenuOptions,
     event: MouseEventExt,
     parentMenu?: ContextMenu,
-    node?: LGraphNode,
-    callback?: (node: LGraphNode) => void,
+    extra?: ContextMenuExtraArg
 ) => boolean | void;
 
 export default class ContextMenu {

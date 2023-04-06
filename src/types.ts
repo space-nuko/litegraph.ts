@@ -25,6 +25,7 @@ export type WidgetTypes =
     | "string"
     | "text"
     | "toggle"
+    | "enum"
     | "button";
 
 //shapes are used for nodes but also for slots

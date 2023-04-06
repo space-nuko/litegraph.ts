@@ -1,8 +1,9 @@
+import type { ContextMenuEventListener } from "./ContextMenu";
 import LGraphCanvas from "./LGraphCanvas"
 import LGraphNode from "./LGraphNode"
 import type { Vector2, WidgetTypes } from "./types"
 
-export type WidgetCallback<T extends IWidget = IWidget> = (
+export type WidgetCallback<T extends IWidget> = (
     this: T,
     value: T["value"],
     graphCanvas: LGraphCanvas,
@@ -11,7 +12,16 @@ export type WidgetCallback<T extends IWidget = IWidget> = (
     event?: MouseEvent
 ) => void;
 
-export default interface IWidget<TValue = any, TOptions = any> {
+export type WidgetPanelCallback = (name: string, value: any, options: any & WidgetPanelOptions) => void;
+
+export interface WidgetPanelOptions {
+    type?: string;
+    label?: string;
+    callback?: WidgetPanelCallback;
+    [rest: string]: any;
+}
+
+export default interface IWidget<TOptions = any, TValue = any> {
     name: string | null;
     value: TValue;
     options?: TOptions;
@@ -44,32 +54,46 @@ export default interface IWidget<TValue = any, TOptions = any> {
     /** Called by `LGraphNode.computeSize` */
     computeSize?(width: number): [number, number];
 }
-export interface IButtonWidget extends IWidget<null, {}> {
+export interface IButtonWidget extends IWidget<{}, null> {
     type: "button";
 }
+export interface IToggleWidgetOptions extends WidgetPanelOptions {
+    on?: string; off?: string
+}
 export interface IToggleWidget
-extends IWidget<boolean, { on?: string; off?: string }> {
+extends IWidget<IToggleWidgetOptions, boolean> {
     type: "toggle";
 }
+export interface ISliderWidgetOptions extends WidgetPanelOptions {
+    max: number; min: number
+}
 export interface ISliderWidget
-extends IWidget<number, { max: number; min: number }> {
+extends IWidget<ISliderWidgetOptions, number> {
     type: "slider";
 }
-export interface INumberWidget extends IWidget<number, { precision: number }> {
+export interface INumberWidgetOptions extends WidgetPanelOptions {
+    precision: number
+}
+export interface INumberWidget extends IWidget<INumberWidgetOptions, number> {
     type: "number";
 }
+export interface IComboWidgetOptions extends WidgetPanelOptions {
+    values:
+        | string[]
+        | ((widget: IComboWidget, node: LGraphNode) => string[]);
+}
 export interface IComboWidget
-extends IWidget<
-    string[],
-{
-        values:
-            | string[]
-            | ((widget: IComboWidget, node: LGraphNode) => string[]);
-    }
-    > {
+extends IWidget<IComboWidgetOptions, string[]> {
         type: "combo";
     }
 
-export interface ITextWidget extends IWidget<string, {}> {
+export interface ITextWidget extends IWidget<{}, string> {
     type: "text";
 }
+export interface IEnumWidgetOptions extends WidgetPanelOptions {
+    values: string[]
+}
+export interface IEnumWidget
+extends IWidget<IEnumWidgetOptions, string[]> {
+        type: "enum";
+    }

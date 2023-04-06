@@ -2,7 +2,7 @@ import LGraph from "./LGraph"
 import LGraphCanvas from "./LGraphCanvas"
 import LGraphNode from "./LGraphNode"
 import LiteGraph from "./LiteGraph"
-import { Vector2, Vector4 } from "./types"
+import type { Vector2, Vector4 } from "./types"
 
 export type SerializedLGraphGroup = {
     title: LGraphGroup["title"];

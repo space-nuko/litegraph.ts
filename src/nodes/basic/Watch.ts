@@ -1,7 +1,9 @@
-import { default as LGraphNode, SlotLayout, PropertyLayout } from "../../LGraphNode"
-import LiteGraph from "../../LiteGraph"
-import { INumberWidget } from "../../IWidget"
-import { BuiltInSlotType, Vector2 } from "../../types";
+import type { INumberWidget } from "../../IWidget";
+import type { PropertyLayout, SlotLayout } from "../../LGraphNode";
+import LGraphNode from "../../LGraphNode";
+import LiteGraph from "../../LiteGraph";
+import type { Vector2 } from "../../types";
+import { BuiltInSlotType } from "../../types";
 
 export interface WatchProperties extends Record<string, any> {
     value: any,

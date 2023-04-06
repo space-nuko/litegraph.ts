@@ -37,7 +37,7 @@ export default class ConstantNumber extends LGraphNode {
     }
 
     override onExecute() {
-        this.setOutputData(0, parseFloat(this.properties["value"]));
+        this.setOutputData(0, this.properties["value"]);
     }
 
     override getTitle(): string {
@@ -48,6 +48,8 @@ export default class ConstantNumber extends LGraphNode {
     }
 
     setValue(v: any) {
+        if (typeof v !== "number")
+            v = parseFloat(v);
         this.setProperty("value", v);
     }
 

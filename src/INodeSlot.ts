@@ -12,6 +12,7 @@ export default interface INodeSlot {
     shape?: SlotShape;
     locked?: boolean;
     nameLocked?: boolean;
+    optional?: boolean;
     _data?: any;
     pos?: Vector2
     slot_index?: number;

@@ -1,7 +1,9 @@
-import { default as LGraphNode, SlotLayout } from "../../LGraphNode"
-import LiteGraph from "../../LiteGraph"
-import { default as IWidget, ITextWidget } from "../../IWidget"
-import { BuiltInSlotType, SlotType, Vector2 } from "../../types";
+import type { default as IWidget, ITextWidget } from "../../IWidget";
+import type { SlotLayout } from "../../LGraphNode";
+import LGraphNode from "../../LGraphNode";
+import LiteGraph from "../../LiteGraph";
+import type { SlotType, Vector2 } from "../../types";
+import { BuiltInSlotType } from "../../types";
 
 export interface GraphOutputProperties extends Record<string, any> {
     name: string,
