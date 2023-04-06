@@ -1,3 +1,4 @@
+import type { IContextMenuItem } from "./ContextMenu";
 import type { SlotIndex } from "./INodeSlot";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
@@ -100,6 +101,7 @@ export default class LGraph {
     /** used to detect changes */
     private _version: number = -1;
     _last_trigger_time: number = 0;
+    _is_subgraph: boolean = false;
     _subgraph_node: LGraphNode | null = null;
 
     nodes_executing: boolean[] = [];
@@ -690,8 +692,10 @@ export default class LGraph {
      * Adds a new node instance to this graph
      * @param node the instance of the node
      */
-    add(node: LGraphNode, skip_compute_order: boolean = false, options: {
+    add(node: LGraphNode, options: {
+        skipComputeOrder?: boolean,
         doCalcSize?: boolean
+        doProcessChange?: boolean
     } = {}): LGraphNode | null {
         //nodes
         if (node.id != -1 && this._nodes_by_id[node.id] != null) {
@@ -726,7 +730,7 @@ export default class LGraph {
             node.alignToGrid();
         }
 
-        if (!skip_compute_order) {
+        if (!options.skipComputeOrder) {
             this.updateExecutionOrder();
         }
 
@@ -768,6 +772,8 @@ export default class LGraph {
     onAfterStep?(): void;
     onExecuteStep?(): void;
     onAfterExecute?(): void;
+
+    onGetNodeMenuOptions?(options: IContextMenuItem[], node: LGraphNode): IContextMenuItem[];
 
     /**
      * Called when a node's connection is changed
@@ -1480,7 +1486,7 @@ export default class LGraph {
                 }
 
                 node.id = n_info.id; //id it or it will create a new id
-                this.add(node, true); //add before configure, otherwise configure cannot create links
+                this.add(node, { skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
             }
 
             //configure nodes afterwards so they can reach each other

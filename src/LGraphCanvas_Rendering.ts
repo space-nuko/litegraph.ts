@@ -1,8 +1,10 @@
+import type LGraph from "./LGraph";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphNode from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
-import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleType, Vector2, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
+import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleType, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
+import type { Vector2 } from "./types"
 
 export default class LGraphCanvas_Rendering {
     onRender?(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void;
@@ -326,7 +328,7 @@ export default class LGraphCanvas_Rendering {
 				this.drawLinkTooltip( ctx, this.over_link_center );
 			else
 				if(this.onDrawLinkTooltip) //to remove
-					this.onDrawLinkTooltip(ctx,null);
+					this.onDrawLinkTooltip(ctx, null, this);
 
 			//custom info
             if (this.onDrawForeground) {
@@ -354,6 +356,254 @@ export default class LGraphCanvas_Rendering {
         //     //this is a function I use in webgl renderer
         //     ctx.finish2D();
         // }
+    }
+
+    /**
+     * draws the panel in the corner that shows subgraph properties
+     * @method drawSubgraphPanel
+     **/
+    drawSubgraphPanel(this: LGraphCanvas, ctx: CanvasRenderingContext2D) {
+        var subgraph = this.graph;
+        var subnode = subgraph._subgraph_node;
+        if (!subnode) {
+            console.warn("subgraph without subnode");
+            return;
+        }
+        this.drawSubgraphPanelLeft(subgraph, subnode, ctx)
+        this.drawSubgraphPanelRight(subgraph, subnode, ctx)
+    }
+
+    drawSubgraphPanelLeft(this: LGraphCanvas, subgraph: LGraph, subnode: LGraphNode, ctx: CanvasRenderingContext2D) {
+        var num = subnode.inputs ? subnode.inputs.length : 0;
+        var w = 200;
+        var h = Math.floor(LiteGraph.NODE_SLOT_HEIGHT * 1.6);
+
+        ctx.fillStyle = "#111";
+        ctx.globalAlpha = 0.8;
+        ctx.beginPath();
+        ctx.roundRect(10, 10, w, (num + 1) * h + 50, [8]);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = "#888";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "left";
+        ctx.fillText("Graph Inputs", 20, 34);
+        // var pos = this.mouse;
+
+        if (this.drawButton(w - 20, 20, 20, 20, "X", "#151515")) {
+            this.closeSubgraph();
+            return;
+        }
+
+        var y = 50;
+        ctx.font = "14px Arial";
+        if (subnode.inputs)
+            for (var i = 0; i < subnode.inputs.length; ++i) {
+                var input = subnode.inputs[i];
+                if (input.not_subgraph_input)
+                    continue;
+
+                //input button clicked
+                if (this.drawButton(20, y + 2, w - 20, h - 2)) {
+                    var type = subnode.constructor.input_node_type || "graph/input";
+                    this.graph.beforeChange();
+                    var newnode = LiteGraph.createNode(type);
+                    if (newnode) {
+                        subgraph.add(newnode);
+                        this.block_click = false;
+                        this.last_click_position = null;
+                        this.selectNodes([newnode]);
+                        this.node_dragged = newnode;
+                        this.dragging_canvas = false;
+                        newnode.setProperty("name", input.name);
+                        newnode.setProperty("type", input.type);
+                        this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
+                        this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
+                        this.graph.afterChange();
+                    }
+                    else
+                        console.error("graph input node not found:", type);
+                }
+                ctx.fillStyle = "#9C9";
+                ctx.beginPath();
+                ctx.arc(w - 16, y + h * 0.5, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = "#AAA";
+                ctx.fillText(input.name, 30, y + h * 0.75);
+                // var tw = ctx.measureText(input.name);
+                ctx.fillStyle = "#777";
+                ctx.fillText(input.type, 130, y + h * 0.75);
+                y += h;
+            }
+        //add + button
+        if (this.drawButton(20, y + 2, w - 20, h - 2, "+", "#151515", "#222")) {
+            this.showSubgraphPropertiesDialog(subnode);
+        }
+    }
+
+    drawSubgraphPanelRight(this: LGraphCanvas, subgraph: LGraph, subnode: LGraphNode, ctx: CanvasRenderingContext2D) {
+        var num = subnode.outputs ? subnode.outputs.length : 0;
+        var canvas_w = this.bgcanvas.width
+        var w = 200;
+        var h = Math.floor(LiteGraph.NODE_SLOT_HEIGHT * 1.6);
+
+        ctx.fillStyle = "#111";
+        ctx.globalAlpha = 0.8;
+        ctx.beginPath();
+        ctx.roundRect(canvas_w - w - 10, 10, w, (num + 1) * h + 50, [8]);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        ctx.fillStyle = "#888";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "left";
+        var title_text = "Graph Outputs"
+        var tw = ctx.measureText(title_text).width
+        ctx.fillText(title_text, (canvas_w - tw) - 20, 34);
+        // var pos = this.mouse;
+        if (this.drawButton(canvas_w - w, 20, 20, 20, "X", "#151515")) {
+            this.closeSubgraph();
+            return;
+        }
+
+        var y = 50;
+        ctx.font = "14px Arial";
+        if (subnode.outputs)
+            for (var i = 0; i < subnode.outputs.length; ++i) {
+                var output = subnode.outputs[i];
+                if (output.not_subgraph_input)
+                    continue;
+
+                //output button clicked
+                if (this.drawButton(canvas_w - w, y + 2, w - 20, h - 2)) {
+                    var type = subnode.constructor.output_node_type || "graph/output";
+                    this.graph.beforeChange();
+                    var newnode = LiteGraph.createNode(type);
+                    if (newnode) {
+                        subgraph.add(newnode);
+                        this.block_click = false;
+                        this.last_click_position = null;
+                        this.selectNodes([newnode]);
+                        this.node_dragged = newnode;
+                        this.dragging_canvas = false;
+                        newnode.setProperty("name", output.name);
+                        newnode.setProperty("type", output.type);
+                        this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
+                        this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
+                        this.graph.afterChange();
+                    }
+                    else
+                        console.error("graph input node not found:", type);
+                }
+                ctx.fillStyle = "#9C9";
+                ctx.beginPath();
+                ctx.arc(canvas_w - w + 16, y + h * 0.5, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.fillStyle = "#AAA";
+                ctx.fillText(output.name, canvas_w - w + 30, y + h * 0.75);
+                // var tw = ctx.measureText(input.name);
+                ctx.fillStyle = "#777";
+                ctx.fillText(output.type, canvas_w - w + 130, y + h * 0.75);
+                y += h;
+            }
+        //add + button
+        if (this.drawButton(canvas_w - w, y + 2, w - 20, h - 2, "+", "#151515", "#222")) {
+            this.showSubgraphPropertiesDialogRight(subnode);
+        }
+    }
+	//Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
+	drawButton(x: number,y: number,w: number,h: number, text: string, bgcolor: string, hovercolor: string, textcolor?: string )
+	{
+		var ctx = this.ctx;
+		bgcolor = bgcolor || LiteGraph.NODE_DEFAULT_COLOR;
+		hovercolor = hovercolor || "#555";
+		textcolor = textcolor || LiteGraph.NODE_TEXT_COLOR;
+		var yFix = y + LiteGraph.NODE_TITLE_HEIGHT + 2;	// fix the height with the title
+		var pos = this.mouse;
+		var hover = LiteGraph.isInsideRectangle( pos[0], pos[1], x,yFix,w,h );
+		pos = this.last_click_position;
+		var clicked = pos && LiteGraph.isInsideRectangle( pos[0], pos[1], x,yFix,w,h );
+
+		ctx.fillStyle = hover ? hovercolor : bgcolor;
+		if(clicked)
+			ctx.fillStyle = "#AAA";
+		ctx.beginPath();
+		ctx.roundRect(x,y,w,h,[4] );
+		ctx.fill();
+
+		if(text != null)
+		{
+			if(text.constructor == String)
+			{
+				ctx.fillStyle = textcolor;
+				ctx.textAlign = "center";
+				ctx.font = ((h * 0.65)|0) + "px Arial";
+				ctx.fillText( text, x + w * 0.5,y + h * 0.75 );
+				ctx.textAlign = "left";
+			}
+		}
+
+		var was_clicked = clicked && !this.block_click;
+		if(clicked)
+			this.blockClick();
+		return was_clicked;
+	}
+
+	LGraphCanvas.prototype.isAreaClicked = function( x,y,w,h, hold_click )
+	{
+		var pos = this.mouse;
+		var hover = LiteGraph.isInsideRectangle( pos[0], pos[1], x,y,w,h );
+		pos = this.last_click_position;
+		var clicked = pos && LiteGraph.isInsideRectangle( pos[0], pos[1], x,y,w,h );
+		var was_clicked = clicked && !this.block_click;
+		if(clicked && hold_click)
+			this.blockClick();
+		return was_clicked;
+	}
+
+    /** draws every group area in the background */
+    drawGroups(this: LGraphCanvas, canvas: any, ctx: CanvasRenderingContext2D): void {
+        if (!this.graph) {
+            return;
+        }
+
+        var groups = (this.graph as any)._groups;
+
+        ctx.save();
+        ctx.globalAlpha = 0.5 * this.editor_alpha;
+
+        for (var i = 0; i < groups.length; ++i) {
+            var group = groups[i];
+
+            if (!LiteGraph.overlapBounding(this.visible_area, group._bounding)) {
+                continue;
+            } //out of the visible area
+
+            ctx.fillStyle = group.color || "#335";
+            ctx.strokeStyle = group.color || "#335";
+            var pos = group._pos;
+            var size = group._size;
+            ctx.globalAlpha = 0.25 * this.editor_alpha;
+            ctx.beginPath();
+            ctx.rect(pos[0] + 0.5, pos[1] + 0.5, size[0], size[1]);
+            ctx.fill();
+            ctx.globalAlpha = this.editor_alpha;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(pos[0] + size[0], pos[1] + size[1]);
+            ctx.lineTo(pos[0] + size[0] - 10, pos[1] + size[1]);
+            ctx.lineTo(pos[0] + size[0], pos[1] + size[1] - 10);
+            ctx.fill();
+
+            var font_size = group.font_size || LiteGraph.DEFAULT_GROUP_FONT_SIZE;
+            ctx.font = font_size + "px Arial";
+			ctx.textAlign = "left";
+            ctx.fillText(group.title, pos[0] + 4, pos[1] + font_size);
+        }
+
+        ctx.restore();
     }
 
     /** draws some useful stats in the corner of the canvas */

@@ -27,7 +27,7 @@ export default class LiteGraph {
     static NODE_DEFAULT_SHAPE: string = "box";
     static NODE_BOX_OUTLINE_COLOR: string = "#FFF";
     static DEFAULT_SHADOW_COLOR: string = "rgba(0,0,0,0.5)";
-    static DEFAULT_GROUP_FONT: number = 24;
+    static DEFAULT_GROUP_FONT_SIZE: number = 24;
 
     static WIDGET_BGCOLOR: string = "#222";
     static WIDGET_OUTLINE_COLOR: string = "#666";

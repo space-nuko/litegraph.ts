@@ -15,7 +15,7 @@ export default class LGraphGroup {
     title: string;
     color: string;
     font: string;
-    fontSize: number = 24;
+    fontSize: number = LiteGraph.DEFAULT_GROUP_FONT_SIZE;
     private _nodes: LGraphNode[] = [];
     graph?: LGraph = null
     private _bounding: Float32Array = new Float32Array([10, 10, 140, 80]);

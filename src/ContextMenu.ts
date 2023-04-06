@@ -7,8 +7,8 @@ export interface ContextMenuRoot extends HTMLDivElement {
 }
 
 export interface IContextMenuItem {
-    value?: any,
     content: string;
+    value?: any,
     callback?: ContextMenuEventListener;
     /** Used as innerHTML for extra child element */
     title?: string;
@@ -34,6 +34,7 @@ export interface IContextMenuOptions {
     left?: number;
     top?: number;
     scale?: number;
+    allow_html?: boolean;
 }
 
 export type ContextMenuItem = IContextMenuItem | null;
@@ -41,7 +42,7 @@ export type ContextMenuEventListener = (
     value: ContextMenuItem,
     options: IContextMenuOptions,
     event: MouseEventExt,
-    parentMenu: ContextMenu | undefined,
+    parentMenu?: ContextMenu,
     node?: LGraphNode,
     callback?: (node: LGraphNode) => void,
 ) => boolean | void;

@@ -32,6 +32,7 @@ export type SearchboxExtra = {
     type: string;
 }
 
+export type NodeInput = [string, SlotType, Record<any, any>?];
 export type NodeOutput = [string, SlotType, Record<any, any>?];
 export type InputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
 export type OutputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
@@ -45,8 +46,9 @@ export type PropertyLayout = {
 }[];
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
-    type: new (title: string?) => T,
+    type: new (title?: string) => T,
     title: string,
+    title_color?: string,
     desc: string,
     category?: string,
     supported_extensions?: string[],
@@ -132,6 +134,8 @@ export default class LGraphNode {
     priority: number = 0;
     order: number;
     redraw_on_mouse: boolean;
+    removable: boolean = true;
+    clonable: boolean = true;
 
     optional_outputs: NodeOutput[] = [];
 
@@ -195,6 +199,10 @@ export default class LGraphNode {
     action_triggered: number = 0;
 
     onNodeCreated?(): void;
+
+    onDropFile?(file: File): void;
+    onDropData?(data: ArrayBuffer | string, filename: string, file: File): void;
+    onDropItem?(e: DragEvent): boolean | undefined;
 
     /** configure a node from an object containing the serialized info */
     configure(info: SerializedLGraphNode): void {
@@ -2432,12 +2440,16 @@ export default class LGraphNode {
     // https://github.com/jagenjo/litegraph.js/blob/master/guides/README.md#custom-node-appearance
     onDrawBackground?(
         ctx: CanvasRenderingContext2D,
-        canvas: HTMLCanvasElement
+        graphCanvas: LGraphCanvas,
+        canvas: HTMLCanvasElement,
+        pos: Vector2
     ): void;
 
     onDrawForeground?(
         ctx: CanvasRenderingContext2D,
-        canvas: HTMLCanvasElement
+        graphCanvas: LGraphCanvas,
+        canvas: HTMLCanvasElement,
+        pos: Vector2
     ): void;
 
 
@@ -2446,7 +2458,7 @@ export default class LGraphNode {
         event: MouseEventExt,
         pos: Vector2,
         graphCanvas: LGraphCanvas
-    ): boolean;
+    ): boolean | undefined;
 
     onMouseMove?(
         event: MouseEventExt,
@@ -2479,6 +2491,8 @@ export default class LGraphNode {
     ): void;
 
     onKey?(event: KeyboardEvent, pos: Vector2, graphCanvas: LGraphCanvas): void;
+    onKeyDown?(event: KeyboardEvent): void;
+    onKeyUp?(event: KeyboardEvent): void;
 
 
     /** Called by `LGraphCanvas.selectNodes` */
@@ -2598,14 +2612,12 @@ export default class LGraphNode {
 
     onOutputDblClick?(slot: SlotIndex, event: MouseEventExt): void;
 
+    onGetInputs?(): NodeInput[];
     onGetOutputs?(): NodeOutput[];
 
 
     /** Called by `LGraphCanvas.processContextMenu` */
-    getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[] {
-    }
-
-    getSlotMenuOptions?(slot: INodeSlot): ContextMenuItem[] {
-    }
-
+    getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];
+    getSlotMenuOptions?(slot: INodeSlot): ContextMenuItem[];
+    getExtraMenuOptions?(): ContextMenuItem[];
 }

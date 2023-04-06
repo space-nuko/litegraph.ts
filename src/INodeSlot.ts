@@ -19,9 +19,11 @@ export default interface INodeSlot {
 
 export interface INodeInputSlot extends INodeSlot {
     link: LLink["id"] | null;
+    not_subgraph_input?: boolean;
 }
 export interface INodeOutputSlot extends INodeSlot {
     links: LLink["id"][] | null;
+    not_subgraph_output?: boolean;
 }
 
 export type SlotInPosition = {

@@ -41,7 +41,7 @@ export type SlotShape =
     BuiltInSlotShape
     | number; // For custom shapes
 
-export const SlotShapeNames = ["default", "box", "round", "circle", "card", "arrow", "square"];
+export const SLOT_SHAPE_NAMES = ["default", "box", "round", "circle", "card", "arrow", "square"];
 
 
 export enum LConnectionKind {
