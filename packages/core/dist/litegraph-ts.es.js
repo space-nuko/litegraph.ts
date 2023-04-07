@@ -3670,6 +3670,7 @@ class N {
       K.SEPARATOR,
       {
         content: "Title",
+        value: { name: "title", type: "String" },
         callback: b.onShowPropertyEditor
       },
       {

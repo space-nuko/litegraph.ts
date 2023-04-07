@@ -1,4 +1,4 @@
-import ContextMenu from "./ContextMenu";
+import ContextMenu from "./ContextMenu"
 import type { MouseEventExt } from "./DragAndScale";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphNode from "./LGraphNode";

@@ -1,4 +1,4 @@
-import { BuiltInSlotShape, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
+import { LGraphNode, LiteGraph, SlotLayout, TitleMode } from "@litegraph-ts/core";
 
 export default class Reroute extends LGraphNode {
     static slotLayout: SlotLayout = {
@@ -12,10 +12,7 @@ export default class Reroute extends LGraphNode {
 
     static overrideSize = [40, 30];
     override resizable: boolean = false;
-
-    constructor(title?: string) {
-        super(" ")
-    }
+    override titleMode: TitleMode = TitleMode.NO_TITLE;
 
     override onExecute() {
         this.setOutputData(0, this.getInputData(0));

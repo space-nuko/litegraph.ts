@@ -16,6 +16,7 @@ export default interface INodeSlot {
     _data?: any;
     pos?: Vector2
     slot_index?: number;
+    removable?: boolean;
 }
 
 export interface INodeInputSlot extends INodeSlot {

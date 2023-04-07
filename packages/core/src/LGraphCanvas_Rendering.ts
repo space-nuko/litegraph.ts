@@ -3,7 +3,7 @@ import LGraphCanvas from "./LGraphCanvas";
 import LGraphNode from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
-import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleType, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
+import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleMode, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
 import type { Vector2 } from "./types"
 
 export default class LGraphCanvas_Rendering {
@@ -1288,12 +1288,12 @@ export default class LGraphCanvas_Rendering {
         var shape =
             node.shape || (node.constructor as any).shape || BuiltInSlotShape.ROUND_SHAPE;
 
-        var title_mode = (node.constructor as any).title_mode;
+        var titleMode = node.titleMode;
 
         var render_title = true;
-        if (title_mode == TitleType.TRANSPARENT_TITLE || title_mode == TitleType.NO_TITLE) {
+        if (titleMode == TitleMode.TRANSPARENT_TITLE || titleMode == TitleMode.NO_TITLE) {
             render_title = false;
-        } else if (title_mode == TitleType.AUTOHIDE_TITLE && mouseOver) {
+        } else if (titleMode == TitleMode.AUTOHIDE_TITLE && mouseOver) {
             render_title = true;
         }
 
@@ -1347,12 +1347,12 @@ export default class LGraphCanvas_Rendering {
         }
 
         //title bg (remember, it is rendered ABOVE the node)
-        if (render_title || title_mode == TitleType.TRANSPARENT_TITLE) {
+        if (render_title || titleMode == TitleMode.TRANSPARENT_TITLE) {
             //title bar
             if (node.onDrawTitleBar) {
                 node.onDrawTitleBar(ctx, this, title_height, size, this.ds.scale, fgColor);
             } else if (
-                title_mode != TitleType.TRANSPARENT_TITLE &&
+                titleMode != TitleMode.TRANSPARENT_TITLE &&
                 ((node.constructor as any).title_color || this.render_title_colored)
             ) {
                 var title_color = (node.constructor as any).title_color || fgColor;
@@ -1533,7 +1533,7 @@ export default class LGraphCanvas_Rendering {
                 node.onBounding(area);
             }
 
-            if (title_mode == TitleType.TRANSPARENT_TITLE) {
+            if (titleMode == TitleMode.TRANSPARENT_TITLE) {
                 area[1] -= title_height;
                 area[3] += title_height;
             }

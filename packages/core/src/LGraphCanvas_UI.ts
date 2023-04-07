@@ -27,7 +27,9 @@ export default class LGraphCanvas_UI {
         menu: ContextMenu,
         node?: LGraphNode
     ): void {
-        var property = /* TODO refactor :: item.property || */ "title";
+        var propInfo = item.value;
+
+        var property = propInfo.name;
         var value = node[property];
 
         // TODO refactor :: use createDialog ?
@@ -90,13 +92,16 @@ export default class LGraphCanvas_UI {
         }
 
         const setValue = (value: any) => {
-            // TODO refactor
-            // if (item.type == "Number") {
-            //     value = Number(value);
-            // } else if (item.type == "Boolean") {
-            //     value = Boolean(value);
-            // }
+            if (propInfo.type == "number") {
+                value = Number(value);
+            } else if (propInfo.type == "boolean") {
+                value = Boolean(value);
+            }
+            const oldValue = node[property];
             node[property] = value;
+            if (node.onJSPropertyChanged)
+                if (node.onJSPropertyChanged(property, value, oldValue) === false) // abort change
+                    node[property] = oldValue;
             if (dialog.parentNode) {
                 dialog.parentNode.removeChild(dialog);
             }
@@ -1868,7 +1873,7 @@ export default class LGraphCanvas_UI {
         return false;
     }
 
-    showLinkMenu(this: LGraphCanvas, link: LLink, e: any): false {
+    showLinkMenu(this: LGraphCanvas, link: LLink, e: any): boolean {
         var that = this;
         // console.log(link);
         var node_left = that.graph.getNodeById(link.origin_id);
@@ -2221,6 +2226,7 @@ export default class LGraphCanvas_UI {
                 ContextMenuSpecialItem.SEPARATOR,
                 {
                     content: "Title",
+                    value: { name: "title", type: "string" },
                     callback: LGraphCanvas.onShowPropertyEditor
                 },
                 {
@@ -2298,9 +2304,13 @@ export default class LGraphCanvas_UI {
         return options;
     }
 
-    getGroupMenuOptions(group: LGraphGroup): ContextMenuItem[] {
-        var o = [
-            { content: "Title", callback: LGraphCanvas.onShowPropertyEditor },
+    getGroupMenuOptions(this: LGraphCanvas, group: LGraphGroup): ContextMenuItem[] {
+        var o: ContextMenuItem[] = [
+            {
+                content: "Title",
+                value: { name: "title", type: "string" },
+                callback: LGraphCanvas.onShowPropertyEditor
+            },
             {
                 content: "Color",
                 has_submenu: true,
@@ -2308,8 +2318,7 @@ export default class LGraphCanvas_UI {
             },
             {
                 content: "Font size",
-                property: "font_size",
-                type: "Number",
+                value: { name: "fontSize", type: "number" },
                 callback: LGraphCanvas.onShowPropertyEditor
             },
             ContextMenuSpecialItem.SEPARATOR,
@@ -2487,7 +2496,7 @@ export default class LGraphCanvas_UI {
             window?: Window, width?: number, height?: number, closable?: boolean,
             onOpen?: () => void, onClose?: () => void
         }
-        = {}) {
+        = {}): IGraphPanel {
         var ref_window = options.window || window;
         var root = document.createElement("div") as IGraphPanel;
         root.className = "litegraph dialog";

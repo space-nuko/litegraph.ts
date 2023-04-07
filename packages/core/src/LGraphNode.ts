@@ -8,7 +8,7 @@ import LGraph from "./LGraph";
 import LGraphCanvas, { type INodePanel } from "./LGraphCanvas";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import type { SlotShape, SlotType, Vector2 } from "./types";
+import { SlotShape, SlotType, TitleMode, Vector2 } from "./types";
 import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./types";
 
 export type NodeTypeOpts = {
@@ -148,6 +148,9 @@ export default class LGraphNode {
     redraw_on_mouse: boolean;
     removable: boolean = true;
     clonable: boolean = true;
+    collapsable: boolean = true;
+    titleMode: TitleMode = TitleMode.NORMAL_TITLE;
+    class: new () => LGraphNode;
 
     id: number;
 
@@ -2392,7 +2395,7 @@ export default class LGraphNode {
     /** Collapse the node to make it smaller on the canvas */
     collapse(force: boolean = false): void {
         (this.graph as any)._version++;
-        if ((this.constructor as any).collapsable === false && !force) {
+        if (this.collapsable === false && !force) {
             return;
         }
         if (!this.flags.collapsed) {
@@ -2597,7 +2600,7 @@ export default class LGraphNode {
 
     /** a connection changed (new one or removed) (LiteGraph.INPUT or LiteGraph.OUTPUT, slot, true if connected, linkInfo, input_info or output_info ) */
     onConnectionsChange?(
-        type: number,
+        type: LConnectionKind,
         slotIndex: number,
         isConnected: boolean,
         link: LLink,
@@ -2613,6 +2616,11 @@ export default class LGraphNode {
      * @param prevValue
      */
     onPropertyChanged?(property: string, value: any, prevValue?: any): void | boolean;
+
+    /**
+     * Called when the node's title or other JS property changes
+     */
+    onJSPropertyChanged?(property: string, value: any, prevValue?: any): void | boolean;
 
     onGetPropertyInfo?(property: string): IPropertyInfo;
 

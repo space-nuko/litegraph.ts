@@ -132,6 +132,11 @@ export default class LiteGraph {
         const classname = config.name;
         const type = config.type;
 
+        if (!type) {
+            throw ("Config has no type: " + config);
+        }
+        console.debug(classname, type)
+
         const pos = type.lastIndexOf("/");
         config.category = type.substring(0, pos);
 
@@ -216,8 +221,7 @@ export default class LiteGraph {
         }
 
         if (!regConfig) {
-            console.error(type);
-            throw "Node not registered!"
+            throw "Node not registered!" + type
         }
 
         var sCN = (regConfig.class as any).__litegraph_type__;
@@ -372,6 +376,7 @@ export default class LiteGraph {
             node = new regConfig.class(title) as T;
         }
 
+        node.class = regConfig.class
         node.type = typeID;
 
         if (!node.title && title) {

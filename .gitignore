@@ -11,3 +11,4 @@ coverage/
 *.bak
 .project
 .turbo/
+dist/

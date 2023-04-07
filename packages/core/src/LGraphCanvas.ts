@@ -13,7 +13,7 @@ import LGraphGroup from "./LGraphGroup";
 import LGraphNode, { type NodeTypeOpts } from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
-import { BuiltInSlotType, LinkRenderMode, type Vector2, type Vector4 } from "./types";
+import { BuiltInSlotType, Dir, LinkRenderMode, SlotType, type Vector2, type Vector4 } from "./types";
 import { clamp } from "./utils";
 
 export interface IGraphPanel extends HTMLDivElement {
@@ -1880,55 +1880,241 @@ export default class LGraphCanvas
     static onMenuNodeClone = LGraphCanvas_UI.onMenuNodeClone;
     static onMenuNodeToSubgraph = LGraphCanvas_UI.onMenuNodeToSubgraph;
 
-    getCanvasMenuOptions = LGraphCanvas_UI.prototype.getCanvasMenuOptions;
-    getNodeMenuOptions = LGraphCanvas_UI.prototype.getNodeMenuOptions;
-    getGroupMenuOptions = LGraphCanvas_UI.prototype.getGroupMenuOptions;
-    checkPanels = LGraphCanvas_UI.prototype.checkPanels;
-    closePanels = LGraphCanvas_UI.prototype.closePanels;
-    createDialog = LGraphCanvas_UI.prototype.createDialog;
-    createPanel = LGraphCanvas_UI.prototype.createPanel;
-    showSearchBox = LGraphCanvas_UI.prototype.showSearchBox;
-    prompt = LGraphCanvas_UI.prototype.prompt;
-    showConnectionMenu = LGraphCanvas_UI.prototype.showConnectionMenu;
-    showLinkMenu = LGraphCanvas_UI.prototype.showLinkMenu;
-    showEditPropertyValue = LGraphCanvas_UI.prototype.showEditPropertyValue;
-    showShowNodePanel = LGraphCanvas_UI.prototype.showShowNodePanel;
-    showSubgraphPropertiesDialog = LGraphCanvas_UI.prototype.showSubgraphPropertiesDialog;
-    showSubgraphPropertiesDialogRight = LGraphCanvas_UI.prototype.showSubgraphPropertiesDialogRight;
-    processContextMenu = LGraphCanvas_UI.prototype.processContextMenu;
+    getCanvasMenuOptions(): ContextMenuItem[] {
+        return LGraphCanvas_UI.prototype.getCanvasMenuOptions.apply(this, arguments);
+    }
+
+    getNodeMenuOptions(node: LGraphNode): ContextMenuItem[] {
+        return LGraphCanvas_UI.prototype.getNodeMenuOptions.apply(this, arguments);
+    }
+
+    getGroupMenuOptions(group: LGraphGroup): ContextMenuItem[] {
+        return LGraphCanvas_UI.prototype.getGroupMenuOptions.apply(this, arguments);
+    }
+
+    checkPanels(): void {
+        LGraphCanvas_UI.prototype.checkPanels.apply(this, arguments);
+    }
+
+    closePanels() {
+        LGraphCanvas_UI.prototype.closePanels.apply(this, arguments);
+    }
+
+    createDialog(
+        this: LGraphCanvas,
+        html: string,
+        options?: { position?: Vector2; event?: MouseEvent, checkForInput?: boolean, closeOnLeave?: boolean, closeOnLeave_checkModified?: boolean }
+    ): IGraphDialog {
+        return LGraphCanvas_UI.prototype.createDialog.apply(this, arguments);
+    }
+
+    createPanel(title: string, options:
+        {
+            window?: Window, width?: number, height?: number, closable?: boolean,
+            onOpen?: () => void, onClose?: () => void
+        }
+        = {}): IGraphPanel {
+        return LGraphCanvas_UI.prototype.createPanel.apply(this, arguments);
+    }
+
+    showSearchBox(_event: MouseEvent, options: {
+        slotFrom?: SlotNameOrIndex | INodeSlot, node_from?: LGraphNode, node_to?: LGraphNode, do_type_filter?: boolean,
+        type_filter_in?: SlotType, type_filter_out?: SlotType,
+        show_general_if_none_on_typefilter?: boolean,
+        show_general_after_typefiltered?: boolean,
+        hide_on_mouse_leave?: boolean, show_all_if_empty?: boolean,
+        show_all_on_open?: boolean
+    } = {}
+    ): IGraphDialog {
+        return LGraphCanvas_UI.prototype.showSearchBox.apply(this, arguments);
+    }
+
+    prompt(
+        title: string = "",
+        value: any,
+        callback: Function,
+        event: any,
+        multiline: boolean = false
+    ): IGraphDialog {
+        return LGraphCanvas_UI.prototype.prompt.apply(this, arguments);
+    }
+
+    showConnectionMenu(opts: {
+        nodeFrom?: LGraphNode,
+        slotFrom?: SlotNameOrIndex | INodeSlot,
+        nodeTo?: LGraphNode,
+        slotTo?: SlotNameOrIndex | INodeSlot,
+        e?: MouseEventExt
+    } = {}) {
+        return LGraphCanvas_UI.prototype.showConnectionMenu.apply(this, arguments);
+    }
+
+    showLinkMenu(link: LLink, e: any): boolean {
+        return LGraphCanvas_UI.prototype.showLinkMenu.apply(this, arguments);
+    }
+
+    showEditPropertyValue(node: LGraphNode, property: any, options: any): IGraphDialog {
+        return LGraphCanvas_UI.prototype.showEditPropertyValue.apply(this, arguments);
+    }
+
+    showShowNodePanel(node: LGraphNode): void {
+        LGraphCanvas_UI.prototype.showShowNodePanel.apply(this, arguments);
+    }
+
+    showSubgraphPropertiesDialog(): ISubgraphPropertiesPanel {
+        return LGraphCanvas_UI.prototype.showSubgraphPropertiesDialog.apply(this, arguments);
+    }
+
+    showSubgraphPropertiesDialogRight(node: LGraphNode): ISubgraphPropertiesPanel {
+        return LGraphCanvas_UI.prototype.showSubgraphPropertiesDialogRight.apply(this, arguments);
+    }
+
+    processContextMenu(node: LGraphNode, _event: Event): void {
+        LGraphCanvas_UI.prototype.processContextMenu.apply(this, arguments);
+    }
+
 
     /*
      * Events
      */
 
-    processMouseMove = LGraphCanvas_Events.prototype.processMouseMove;
-    processMouseDown = LGraphCanvas_Events.prototype.processMouseDown;
-    processMouseUp = LGraphCanvas_Events.prototype.processMouseUp;
-    processMouseWheel = LGraphCanvas_Events.prototype.processMouseWheel;
+    processMouseMove(e: MouseEvent): boolean | undefined {
+        return LGraphCanvas_Events.prototype.processMouseMove.apply(this, arguments);
+    }
+
+    processMouseDown(e: MouseEvent): boolean | undefined {
+        return LGraphCanvas_Events.prototype.processMouseDown.apply(this, arguments);
+    }
+
+    processMouseUp(e: MouseEvent): boolean | undefined {
+        return LGraphCanvas_Events.prototype.processMouseUp.apply(this, arguments);
+    }
+
+    processMouseWheel(e: MouseEvent): boolean | undefined {
+        return LGraphCanvas_Events.prototype.processMouseWheel.apply(this, arguments);
+    }
+
 
     /*
      * Rendering
      */
 
-    setZoom = LGraphCanvas_Rendering.prototype.setZoom;
-    bringToFront = LGraphCanvas_Rendering.prototype.bringToFront;
-    sendToBack = LGraphCanvas_Rendering.prototype.sendToBack;
-    computeVisibleNodes = LGraphCanvas_Rendering.prototype.computeVisibleNodes;
-    draw = LGraphCanvas_Rendering.prototype.draw;
-    drawFrontCanvas = LGraphCanvas_Rendering.prototype.drawFrontCanvas;
-    drawSubgraphPanel = LGraphCanvas_Rendering.prototype.drawSubgraphPanel;
-    drawSubgraphPanelLeft = LGraphCanvas_Rendering.prototype.drawSubgraphPanelLeft;
-    drawSubgraphPanelRight = LGraphCanvas_Rendering.prototype.drawSubgraphPanelRight;
-    drawButton = LGraphCanvas_Rendering.prototype.drawButton;
-    drawBackCanvas = LGraphCanvas_Rendering.prototype.drawBackCanvas;
-    renderInfo = LGraphCanvas_Rendering.prototype.renderInfo;
-    drawNode = LGraphCanvas_Rendering.prototype.drawNode;
-    drawLinkTooltip = LGraphCanvas_Rendering.prototype.drawLinkTooltip;
-    drawNodeShape = LGraphCanvas_Rendering.prototype.drawNodeShape;
-    drawConnections = LGraphCanvas_Rendering.prototype.drawConnections;
-    renderLink = LGraphCanvas_Rendering.prototype.renderLink;
-    computeConnectionPoint = LGraphCanvas_Rendering.prototype.computeConnectionPoint;
-    drawExecutionOrder = LGraphCanvas_Rendering.prototype.drawExecutionOrder;
-    drawNodeWidgets = LGraphCanvas_Rendering.prototype.drawNodeWidgets;
-    drawGroups = LGraphCanvas_Rendering.prototype.drawGroups;
+    setZoom(value: number, center: Vector2): void {
+        LGraphCanvas_Rendering.prototype.setZoom.apply(this, arguments);
+    }
+
+    bringToFront(node: LGraphNode): void {
+        LGraphCanvas_Rendering.prototype.bringToFront.apply(this, arguments);
+    }
+
+    sendToBack(node: LGraphNode): void {
+        LGraphCanvas_Rendering.prototype.sendToBack.apply(this, arguments);
+    }
+
+    computeVisibleNodes(nodes: LGraphNode[], out: LGraphNode[] = []): LGraphNode[] {
+        return LGraphCanvas_Rendering.prototype.computeVisibleNodes.apply(this, arguments);
+    }
+
+    draw(forceFG: boolean = false, forceBG: boolean = false): void {
+        LGraphCanvas_Rendering.prototype.draw.apply(this, arguments);
+    }
+
+    drawFrontCanvas(): void {
+        LGraphCanvas_Rendering.prototype.drawFrontCanvas.apply(this, arguments);
+    }
+
+    drawSubgraphPanel(ctx: CanvasRenderingContext2D) {
+        LGraphCanvas_Rendering.prototype.drawSubgraphPanel.apply(this, arguments);
+    }
+
+    drawSubgraphPanelLeft(subgraph: LGraph, subnode: LGraphNode, ctx: CanvasRenderingContext2D) {
+        LGraphCanvas_Rendering.prototype.drawSubgraphPanelLeft.apply(this, arguments);
+    }
+
+    drawSubgraphPanelRight(subgraph: LGraph, subnode: LGraphNode, ctx: CanvasRenderingContext2D) {
+        LGraphCanvas_Rendering.prototype.drawSubgraphPanelRight.apply(this, arguments);
+    }
+
+    drawButton(
+        x: number, y: number, w: number, h: number,
+        text?: string,
+        bgcolor: string = LiteGraph.NODE_DEFAULT_COLOR,
+        hovercolor: string = "#555",
+        textcolor: string = LiteGraph.NODE_TEXT_COLOR): boolean {
+        return LGraphCanvas_Rendering.prototype.drawButton.apply(this, arguments);
+    }
+
+    drawBackCanvas() {
+        LGraphCanvas_Rendering.prototype.drawBackCanvas.apply(this, arguments);
+    }
+
+    renderInfo(ctx: CanvasRenderingContext2D, x: number = 10, y?: number): void {
+        LGraphCanvas_Rendering.prototype.renderInfo.apply(this, arguments);
+    }
+
+    drawNode(node: LGraphNode, ctx: CanvasRenderingContext2D): void {
+        LGraphCanvas_Rendering.prototype.drawNode.apply(this, arguments);
+    }
+
+    drawLinkTooltip(ctx: CanvasRenderingContext2D, link: LLink): void {
+        LGraphCanvas_Rendering.prototype.drawLinkTooltip.apply(this, arguments);
+    }
+
+    drawNodeShape(
+        node: LGraphNode,
+        ctx: CanvasRenderingContext2D,
+        size: Vector2,
+        fgColor: string,
+        bgColor: string,
+        selected: boolean,
+        mouseOver: boolean
+    ): void {
+        LGraphCanvas_Rendering.prototype.drawNodeShape.apply(this, arguments);
+    }
+
+    drawConnections(ctx: CanvasRenderingContext2D): void {
+        LGraphCanvas_Rendering.prototype.drawConnections.apply(this, arguments);
+    }
+
+    renderLink(
+        ctx: CanvasRenderingContext2D,
+        a: Vector2,
+        b: Vector2,
+        link: LLink,
+        skipBorder: boolean,
+        flow: boolean,
+        color?: string,
+        startDir?: Dir,
+        endDir?: Dir,
+        numSublines?: number
+    ): void {
+        LGraphCanvas_Rendering.prototype.renderLink.apply(this, arguments);
+    }
+
+    computeConnectionPoint(
+        a: Vector2,
+        b: Vector2,
+        t: number,
+        startDir: Dir = Dir.RIGHT,
+        endDir: Dir = Dir.LEFT
+    ): Vector2 {
+        return LGraphCanvas_Rendering.prototype.computeConnectionPoint.apply(this, arguments);
+    }
+
+    drawExecutionOrder(ctx: CanvasRenderingContext2D): void {
+        LGraphCanvas_Rendering.prototype.drawExecutionOrder.apply(this, arguments);
+    }
+
+    drawNodeWidgets(
+        node: LGraphNode,
+        posY: number,
+        ctx: CanvasRenderingContext2D,
+        activeWidget: object
+    ): void {
+        LGraphCanvas_Rendering.prototype.drawNodeWidgets.apply(this, arguments);
+    }
+
+    drawGroups(canvas: any, ctx: CanvasRenderingContext2D): void {
+        LGraphCanvas_Rendering.prototype.drawGroups.apply(this, arguments);
+    }
 }
