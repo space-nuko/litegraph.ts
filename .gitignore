@@ -10,3 +10,4 @@ coverage/
 !/.vscode/extensions.json
 *.bak
 .project
+.turbo/

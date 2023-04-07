@@ -9,7 +9,7 @@ export default defineConfig({
             entry: resolve(__dirname, "src/index.ts"),
             name: 'litegraph-ts',
             formats: ["es", "umd"],
-            fileName: (format) => `index.${format}.js`
+            fileName: (format) => `litegraph-ts.${format}.js`
         },
     },
     plugins: [
