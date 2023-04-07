@@ -71,8 +71,8 @@ export default class Watch extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: Watch,
+    class: Watch,
     title: "Watch",
     desc: "Show value of input",
-    typeName: "basic/watch"
+    type: "basic/watch"
 })

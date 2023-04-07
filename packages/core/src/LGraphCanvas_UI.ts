@@ -179,7 +179,7 @@ export default class LGraphCanvas_UI {
                     return;
 
                 var entry: IContextMenuItem = {
-                    value: node.type,
+                    value: node.class,
                     content: node.title,
                     has_submenu: false,
                     callback: function(value, _event, _mouseEvent, contextMenu) {
@@ -1498,7 +1498,7 @@ export default class LGraphCanvas_UI {
 
         function inner_refresh() {
             panel.content.innerHTML = ""; //clear
-            panel.addHTML("<span class='node_type'>" + node.typeName + "</span><span class='node_desc'>" + ((node.constructor as any).desc || "") + "</span><span class='separator'></span>");
+            panel.addHTML("<span class='node_type'>" + node.type + "</span><span class='node_desc'>" + ((node.constructor as any).desc || "") + "</span><span class='separator'></span>");
 
             panel.addHTML("<h3>Properties</h3>");
 
@@ -2335,7 +2335,7 @@ export default class LGraphCanvas_UI {
         };
 
         if (node)
-            options.title = node.typeName;
+            options.title = node.type;
 
         //check if mouse is in input
         var slot = null;

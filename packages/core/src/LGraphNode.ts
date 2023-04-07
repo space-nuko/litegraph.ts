@@ -1,4 +1,4 @@
-import type { ContextMenuItem, IContextMenuItem } from "./ContextMenu";
+import type { ContextMenuItem } from "./ContextMenu";
 import type { MouseEventExt } from "./DragAndScale";
 import type INodeConnection from "./INodeConnection";
 import type { INodeInputSlot, INodeOutputSlot, default as INodeSlot, SlotInPosition, SlotIndex, SlotNameOrIndex } from "./INodeSlot";
@@ -8,10 +8,8 @@ import LGraph from "./LGraph";
 import LGraphCanvas, { type INodePanel } from "./LGraphCanvas";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import { BuiltInSlotShape, LConnectionKind } from "./types"
 import type { SlotShape, SlotType, Vector2 } from "./types";
-import { NodeMode } from "./types";
-import { BuiltInSlotType } from "./types"
+import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./types";
 
 export type NodeTypeOpts = {
     node: string,
@@ -48,7 +46,7 @@ export type PropertyLayout = {
 }[];
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
-    type: new (title?: string) => T,
+    class: new (title?: string) => T,
     title: string,
     title_color?: string,
     desc: string,
@@ -57,7 +55,7 @@ export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
     /** Type name used for serialization, like "graph/input".
      * Should be unique across all nodes.
      * The part before the final slash is the category. */
-    typeName: string,
+    type: string,
     name?: string,
     filter?: string,
     skip_list?: boolean
@@ -77,18 +75,9 @@ export function getStaticPropertyOnInstance<T>(type: any, name: string): T {
     return null;
 }
 
-export interface LGraphNodeBase {
-    (this: LGraphNode),
-    title?: string,
-    category?: string,
-    supported_extensions?: string[],
-    type?: string,
-    name?: string
-}
-
 export type SerializedLGraphNode<T extends LGraphNode = LGraphNode> = {
     id: T["id"];
-    type: T["typeName"];
+    type: T["type"];
     pos: T["pos"];
     size: T["size"];
     flags: T["flags"];
@@ -120,14 +109,14 @@ export default class LGraphNode {
     static widgets_up: boolean;
     static registerCategory: string = "";
     constructor(title?: string) {
-        this.title = title || "Unnamed";
+        this.title = title || "Unnamed"
         this.size = [LiteGraph.NODE_WIDTH, 60];
         this.graph = null;
 
         this.pos = [10, 10];
 
         this.id = -1; //not know till not added
-        this.typeName = null;
+        this.type = null;
 
         //inputs available: array of inputs
         this.inputs = [];
@@ -143,7 +132,7 @@ export default class LGraphNode {
 
     title: string;
     desc: string = "";
-    typeName: null | string;
+    type: null | string;
     category: null | string;
     size: Vector2;
     pos: Vector2 = [0, 0]
@@ -258,7 +247,7 @@ export default class LGraphNode {
         }
 
         if (!info.title) {
-            this.title = (this.constructor as any).title;
+            this.title = getStaticPropertyOnInstance<string>(this, "title") || this.title;
         }
 
         if (this.inputs) {
@@ -318,7 +307,7 @@ export default class LGraphNode {
         //create serialization object
         let o: SerializedLGraphNode = {
             id: this.id,
-            type: this.typeName,
+            type: this.type,
             pos: this.pos,
             size: this.size,
             flags: LiteGraph.cloneObject(this.flags),
@@ -391,7 +380,7 @@ export default class LGraphNode {
 
     /** Creates a clone of this node  */
     clone(): LGraphNode {
-        var node = LiteGraph.createNode(this.typeName);
+        var node = LiteGraph.createNode(this.type);
         if (!node) {
             return null;
         }
@@ -1166,8 +1155,9 @@ export default class LGraphNode {
 
     /** computes the size of a node according to its inputs and output slots */
     computeSize(out: Vector2 = [0, 0]): Vector2 {
-        if ((this.constructor as any).size) {
-            return (this.constructor as any).size.concat();
+        const overrideSize = getStaticPropertyOnInstance<Vector2>(this, "overrideSize");
+        if (overrideSize) {
+            return overrideSize.concat() as Vector2;
         }
 
         var rows = Math.max(

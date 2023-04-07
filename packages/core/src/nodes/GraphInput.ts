@@ -175,8 +175,8 @@ export default class GraphInput extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: GraphInput,
+    class: GraphInput,
     title: "Input",
     desc: "Input of the graph",
-    typeName: "graph/input"
+    type: "graph/input"
 })

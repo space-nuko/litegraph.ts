@@ -126,11 +126,11 @@ export default class LiteGraph {
     /** Register a node class so it can be listed when the user wants to create a new one */
     static registerNodeType<T extends LGraphNode>(config: LGraphNodeConstructor): void {
         if (LiteGraph.debug) {
-            console.log("Node registered: " + config.typeName);
+            console.log("Node registered: " + config.type);
         }
 
         const classname = config.name;
-        const type = config.typeName;
+        const type = config.type;
 
         const pos = type.lastIndexOf("/");
         config.category = type.substring(0, pos);
@@ -154,10 +154,10 @@ export default class LiteGraph {
             }
         }
 
-        (config.type as any).__LITEGRAPH_TYPE__ = type;
+        (config.class as any).__LITEGRAPH_TYPE__ = type;
 
         LiteGraph.registered_node_types[type] = config;
-        if (config.type.name) {
+        if (config.class.name) {
             LiteGraph.Nodes[classname] = config;
         }
         if (LiteGraph.onNodeTypeRegistered) {
@@ -187,7 +187,7 @@ export default class LiteGraph {
         }
         if (!regConfig)
             throw ("node type not found: " + type);
-        delete LiteGraph.registered_node_types[regConfig.typeName];
+        delete LiteGraph.registered_node_types[regConfig.type];
         if ((regConfig.constructor as any).name)
             delete LiteGraph.Nodes[(regConfig.constructor as any).name];
     }
@@ -209,8 +209,8 @@ export default class LiteGraph {
             //     regConfig = type;
             // }
         }
-        else if ("typeName" in type)
-            regConfig = LiteGraph.registered_node_types[type.typeName]
+        else if ("type" in type)
+            regConfig = LiteGraph.registered_node_types[type.type]
         else {
             regConfig = type;
         }
@@ -220,7 +220,7 @@ export default class LiteGraph {
             throw "Node not registered!"
         }
 
-        var sCN = (regConfig.type as any).__litegraph_type__;
+        var sCN = (regConfig.class as any).__litegraph_type__;
 
         if (typeof slot_type == "string") {
             var aTypes = slot_type.split(",");
@@ -363,16 +363,16 @@ export default class LiteGraph {
 
         if (LiteGraph.catch_exceptions) {
             try {
-                node = new regConfig.type(title) as T;
+                node = new regConfig.class(title) as T;
             } catch (err) {
                 console.error(err);
                 return null;
             }
         } else {
-            node = new regConfig.type(title) as T;
+            node = new regConfig.class(title) as T;
         }
 
-        node.typeName = typeID;
+        node.type = typeID;
 
         if (!node.title && title) {
             node.title = title;
@@ -404,7 +404,7 @@ export default class LiteGraph {
             }
         }
 
-        const propertyLayout = getStaticProperty<PropertyLayout>(regConfig.type, "propertyLayout")
+        const propertyLayout = getStaticProperty<PropertyLayout>(regConfig.class, "propertyLayout")
         if (propertyLayout) {
             console.log("Found property layout!", propertyLayout);
             for (const item of propertyLayout) {
@@ -413,7 +413,7 @@ export default class LiteGraph {
             }
         }
 
-        const slotLayout = getStaticProperty<SlotLayout>(regConfig.type, "slotLayout")
+        const slotLayout = getStaticProperty<SlotLayout>(regConfig.class, "slotLayout")
         if (slotLayout) {
             console.log("Found slot layout!", slotLayout);
             if (slotLayout.inputs) {

@@ -29,8 +29,8 @@ export default class Time extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: Time,
+    class: Time,
     title: "Time",
     desc: "Current time",
-    typeName: "basic/time"
+    type: "basic/time"
 })

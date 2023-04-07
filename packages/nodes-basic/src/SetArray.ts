@@ -56,8 +56,8 @@ export default class SetArray extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: SetArray,
+    class: SetArray,
     title: "Set Array",
     desc: "Sets index of array",
-    typeName: "basic/set_array"
+    type: "basic/set_array"
 })

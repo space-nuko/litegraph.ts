@@ -137,8 +137,8 @@ export default class ConstantJSON extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantJSON,
+    class: ConstantJSON,
     title: "Const JSON",
     desc: "Parses a string to JSON object",
-    typeName: "basic/json"
+    type: "basic/json"
 })

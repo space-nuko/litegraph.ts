@@ -58,8 +58,8 @@ export default class ConstantBoolean extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantBoolean,
+    class: ConstantBoolean,
     title: "Const Boolean",
     desc: "Constant boolean",
-    typeName: "basic/boolean"
+    type: "basic/boolean"
 })

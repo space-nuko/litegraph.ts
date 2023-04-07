@@ -269,7 +269,7 @@ export default class Subgraph extends LGraphNode {
     //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
 
     override clone() {
-        var node = LiteGraph.createNode(this.typeName);
+        var node = LiteGraph.createNode(this.type);
         var data = this.serialize();
         delete data["id"];
         delete data["inputs"];
@@ -363,9 +363,9 @@ export default class Subgraph extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: Subgraph,
+    class: Subgraph,
     title: "Subgraph",
     desc: "Graph inside a node",
     title_color: "#334",
-    typeName: "basic/subgraph"
+    type: "basic/subgraph"
 })

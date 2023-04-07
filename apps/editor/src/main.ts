@@ -2,9 +2,11 @@ import { LiteGraph } from "@litegraph-ts/core";
 import Editor from "./Editor"
 import configure from "./configure"
 
+import * as basic from "@litegraph-ts/nodes-basic"
+
 import { demo } from "./demos"
 
-import "litegraph-ts/css/litegraph.css"
+import "@litegraph-ts/core/css/litegraph.css"
 import "../css/litegraph-editor.css"
 
 interface OptionElemExt extends HTMLOptionElement {

@@ -53,6 +53,8 @@ export default class LGraphGroup {
         this.color = LGraphCanvas.node_colors.pale_blue
             ? LGraphCanvas.node_colors.pale_blue.groupcolor
             : "#AAA";
+        this._pos = this._bounding.subarray(0, 2)
+        this._size = this._bounding.subarray(2, 4)
     }
 
     configure(o: SerializedLGraphGroup): void {
@@ -106,6 +108,34 @@ export default class LGraphGroup {
         }
     }
 
-    isPointInside: LGraphNode["isPointInside"];
-    setDirtyCanvas: LGraphNode["setDirtyCanvas"];
+    /** checks if a point is inside the shape of a node */
+    isPointInside(
+        x: number,
+        y: number,
+        margin: number = 0,
+        skipTitle: boolean = false
+    ): boolean {
+        var margin_top = this.graph && this.graph.isLive() ? 0 : LiteGraph.NODE_TITLE_HEIGHT;
+        if (skipTitle) {
+            margin_top = 0;
+        }
+
+        if (
+            this.pos[0] - 4 - margin < x &&
+            this.pos[0] + this.size[0] + 4 + margin > x &&
+            this.pos[1] - margin_top - margin < y &&
+            this.pos[1] + this.size[1] + margin > y
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Forces to redraw or the main canvas (LGraphNode) or the bg canvas (links) */
+    setDirtyCanvas(fg: boolean, bg: boolean = false): void {
+        if (!this.graph) {
+            return;
+        }
+        this.graph.sendActionToCanvas("setDirty", [fg, bg]);
+    }
 }

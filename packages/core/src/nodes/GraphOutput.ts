@@ -119,8 +119,8 @@ export default class GraphOutput extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: GraphOutput,
+    class: GraphOutput,
     title: "Output",
     desc: "Output of the graph",
-    typeName: "graph/output"
+    type: "graph/output"
 })

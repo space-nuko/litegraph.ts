@@ -1340,7 +1340,7 @@ export default class LGraphCanvas
             var nodetype = LiteGraph.node_types_by_file_extension[ext];
             if (nodetype) {
                 this.graph.beforeChange();
-                var node = LiteGraph.createNode(nodetype.typeName);
+                var node = LiteGraph.createNode(nodetype.type);
                 node.pos = [e.canvasX, e.canvasY];
                 this.graph.add(node);
                 if (node.onDropFile) {

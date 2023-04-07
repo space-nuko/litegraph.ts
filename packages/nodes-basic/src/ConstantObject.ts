@@ -37,8 +37,8 @@ export default class ConstantObject extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantObject,
+    class: ConstantObject,
     title: "Const Object",
     desc: "Constant object",
-    typeName: "basic/object"
+    type: "basic/object"
 })

@@ -57,8 +57,8 @@ export default class ConstantNumber extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantNumber,
+    class: ConstantNumber,
     title: "Const Number",
     desc: "Constant number",
-    typeName: "basic/number"
+    type: "basic/number"
 })

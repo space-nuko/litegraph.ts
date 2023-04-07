@@ -59,8 +59,8 @@ export default class ConstantString extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantString,
+    class: ConstantString,
     title: "Const String",
     desc: "Constant string",
-    typeName: "basic/string"
+    type: "basic/string"
 })

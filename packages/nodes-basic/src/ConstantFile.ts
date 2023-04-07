@@ -123,8 +123,8 @@ export default class ConstantFile extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    type: ConstantFile,
+    class: ConstantFile,
     title: "Const File",
     desc: "Fetches a file from an url",
-    typeName: "basic/file"
+    type: "basic/file"
 })
