@@ -1641,7 +1641,7 @@ export default class LGraphCanvas
 
                         var delta = x < 40 ? -1 : x > widget_width - 40 ? 1 : 0;
                         if (w.type == "number") {
-                            w.value += delta * 0.1 * (w.options.step || 1);
+                            w.value += delta * (w.options.step || 0.1);
                             if (w.options.min != null && w.value < w.options.min) {
                                 w.value = w.options.min;
                             }

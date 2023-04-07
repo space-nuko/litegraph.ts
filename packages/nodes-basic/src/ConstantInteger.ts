@@ -1,4 +1,4 @@
-import type { IIntegerWidget, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
+import type { INumberWidget, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
 import { LiteGraph, LGraphNode } from "@litegraph-ts/core"
 
 export interface ConstantIntegerProperties extends Record<string, any> {
@@ -18,10 +18,10 @@ export default class ConstantInteger extends LGraphNode {
     }
 
     static propertyLayout: PropertyLayout = [
-        { name: "value", defaultValue: 1 }
+        { name: "value", defaultValue: 1.0 }
     ]
 
-    widget: IIntegerWidget;
+    widget: INumberWidget;
 
     nameInGraph: string = "";
 
@@ -29,7 +29,7 @@ export default class ConstantInteger extends LGraphNode {
 
     constructor(title?: string) {
         super(title)
-        this.widget = this.addWidget("number", "value", 1, "value");
+        this.widget = this.addWidget("number", "value", 1, "value", { step: 1, precision: 0 });
         this.widgets_up = true;
     }
 
