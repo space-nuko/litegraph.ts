@@ -1168,11 +1168,11 @@ export default class LGraphCanvas_Rendering {
                 ctx.fillStyle = "#686";
                 ctx.beginPath();
                 if (
-                    slot.type === BuiltInSlotType.EVENT ||
-                    slot.shape === BuiltInSlotShape.BOX_SHAPE
+                    input_slot.type === BuiltInSlotType.EVENT ||
+                    input_slot.shape === BuiltInSlotShape.BOX_SHAPE
                 ) {
                     ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
-                } else if (slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
+                } else if (input_slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
                     ctx.moveTo(x + 8, y);
                     ctx.lineTo(x + -4, y - 4);
                     ctx.lineTo(x + -4, y + 4);
@@ -1194,11 +1194,11 @@ export default class LGraphCanvas_Rendering {
                 ctx.strokeStyle = "black";
                 ctx.beginPath();
                 if (
-                    slot.type === BuiltInSlotType.EVENT ||
-                    slot.shape === BuiltInSlotShape.BOX_SHAPE
+                    output_slot.type === BuiltInSlotType.EVENT ||
+                    output_slot.shape === BuiltInSlotShape.BOX_SHAPE
                 ) {
                     ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
-                } else if (slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
+                } else if (output_slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
                     ctx.moveTo(x + 6, y);
                     ctx.lineTo(x - 6, y - 4);
                     ctx.lineTo(x - 6, y + 4);
