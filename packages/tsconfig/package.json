@@ -1,5 +1,5 @@
 {
-    "name": "tsconfig",
+    "name": "@litegraph-ts/tsconfig",
     "version": "0.0.0",
     "private": true,
     "license": "MIT",

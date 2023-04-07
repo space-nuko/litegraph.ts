@@ -12,3 +12,4 @@ coverage/
 .project
 .turbo/
 dist/
+/packages/tsconfig/build/

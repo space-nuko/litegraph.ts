@@ -1,9 +1,9 @@
-class se {
+class ne {
   constructor(e, i, n, s, r, a) {
     this.data = null, this._pos = [0, 0], this._last_time = 0, this.id = e, this.type = i, this.origin_id = n, this.origin_slot = s, this.target_id = r, this.target_slot = a;
   }
   static configure(e) {
-    return e instanceof Array ? new se(e[0], e[5], e[1], e[2], e[3], e[4]) : new se(e.id, e.type, e.origin_id, e.origin_slot, e.target_id, e.target_slot);
+    return e instanceof Array ? new ne(e[0], e[5], e[1], e[2], e[3], e[4]) : new ne(e.id, e.type, e.origin_id, e.origin_slot, e.target_id, e.target_slot);
   }
   serialize() {
     return [
@@ -16,19 +16,22 @@ class se {
     ];
   }
 }
-var A = /* @__PURE__ */ ((t) => (t[t.UP = 1] = "UP", t[t.DOWN = 2] = "DOWN", t[t.LEFT = 3] = "LEFT", t[t.RIGHT = 4] = "RIGHT", t[t.CENTER = 5] = "CENTER", t))(A || {}), x = /* @__PURE__ */ ((t) => (t[t.ALWAYS = 0] = "ALWAYS", t[t.ON_EVENT = 1] = "ON_EVENT", t[t.NEVER = 2] = "NEVER", t[t.ON_TRIGGER = 3] = "ON_TRIGGER", t[t.ON_REQUEST = 4] = "ON_REQUEST", t))(x || {});
-const te = ["Always", "On Event", "Never", "On Trigger"], Te = ["#666", "#422", "#333", "#224", "#626"];
+var k = /* @__PURE__ */ ((t) => (t[t.UP = 1] = "UP", t[t.DOWN = 2] = "DOWN", t[t.LEFT = 3] = "LEFT", t[t.RIGHT = 4] = "RIGHT", t[t.CENTER = 5] = "CENTER", t))(k || {}), j = /* @__PURE__ */ ((t) => (t[t.ALWAYS = 0] = "ALWAYS", t[t.ON_EVENT = 1] = "ON_EVENT", t[t.NEVER = 2] = "NEVER", t[t.ON_TRIGGER = 3] = "ON_TRIGGER", t[t.ON_REQUEST = 4] = "ON_REQUEST", t))(j || {});
+const ie = ["Always", "On Event", "Never", "On Trigger"], ye = ["#666", "#422", "#333", "#224", "#626"];
 var S = /* @__PURE__ */ ((t) => (t[t.DEFAULT = 0] = "DEFAULT", t[t.BOX_SHAPE = 1] = "BOX_SHAPE", t[t.ROUND_SHAPE = 2] = "ROUND_SHAPE", t[t.CIRCLE_SHAPE = 3] = "CIRCLE_SHAPE", t[t.CARD_SHAPE = 4] = "CARD_SHAPE", t[t.ARROW_SHAPE = 5] = "ARROW_SHAPE", t[t.GRID_SHAPE = 6] = "GRID_SHAPE", t))(S || {});
-const Ee = ["default", "box", "round", "circle", "card", "arrow", "square"];
-var U = /* @__PURE__ */ ((t) => (t[t.INPUT = 0] = "INPUT", t[t.OUTPUT = 1] = "OUTPUT", t))(U || {}), oe = /* @__PURE__ */ ((t) => (t[t.STRAIGHT_LINK = 0] = "STRAIGHT_LINK", t[t.LINEAR_LINK = 1] = "LINEAR_LINK", t[t.SPLINE_LINK = 2] = "SPLINE_LINK", t))(oe || {});
-const Pe = ["Straight", "Linear", "Spline"];
-var ee = /* @__PURE__ */ ((t) => (t[t.NORMAL_TITLE = 0] = "NORMAL_TITLE", t[t.NO_TITLE = 1] = "NO_TITLE", t[t.TRANSPARENT_TITLE = 2] = "TRANSPARENT_TITLE", t[t.AUTOHIDE_TITLE = 3] = "AUTOHIDE_TITLE", t))(ee || {}), I = /* @__PURE__ */ ((t) => (t[t.EVENT = -2] = "EVENT", t[t.ACTION = -1] = "ACTION", t[t.DEFAULT = 0] = "DEFAULT", t))(I || {}), ie = /* @__PURE__ */ ((t) => (t.VERTICAL_LAYOUT = "vertical", t.HORIZONTAL_LAYOUT = "horizontal", t))(ie || {});
-function Ce(t, e) {
+const be = ["default", "box", "round", "circle", "card", "arrow", "square"];
+var W = /* @__PURE__ */ ((t) => (t[t.INPUT = 0] = "INPUT", t[t.OUTPUT = 1] = "OUTPUT", t))(W || {}), le = /* @__PURE__ */ ((t) => (t[t.STRAIGHT_LINK = 0] = "STRAIGHT_LINK", t[t.LINEAR_LINK = 1] = "LINEAR_LINK", t[t.SPLINE_LINK = 2] = "SPLINE_LINK", t))(le || {});
+const we = ["Straight", "Linear", "Spline"];
+var ee = /* @__PURE__ */ ((t) => (t[t.NORMAL_TITLE = 0] = "NORMAL_TITLE", t[t.NO_TITLE = 1] = "NO_TITLE", t[t.TRANSPARENT_TITLE = 2] = "TRANSPARENT_TITLE", t[t.AUTOHIDE_TITLE = 3] = "AUTOHIDE_TITLE", t))(ee || {}), A = /* @__PURE__ */ ((t) => (t[t.EVENT = -2] = "EVENT", t[t.ACTION = -1] = "ACTION", t[t.DEFAULT = 0] = "DEFAULT", t))(A || {}), se = /* @__PURE__ */ ((t) => (t.VERTICAL_LAYOUT = "vertical", t.HORIZONTAL_LAYOUT = "horizontal", t))(se || {});
+function Te(t, e) {
   return e in t ? t[e] : null;
 }
-const fe = class {
+function de(t, e) {
+  return e in t.constructor ? t.constructor[e] : null;
+}
+const ge = class {
   constructor(t) {
-    this.desc = "", this.pos = [0, 0], this.subgraph = null, this.skip_subgraph_button = !1, this.priority = 0, this.removable = !0, this.clonable = !0, this.optional_outputs = [], this.serialize_widgets = !1, this.skip_list = !1, this.block_delete = !1, this.ignore_remove = !1, this.last_serialization = null, this._relative_id = null, this.exec_version = 0, this.action_call = null, this.execute_triggered = 0, this.action_triggered = 0, this.console = [], this.title = t || "Unnamed", this.size = [u.NODE_WIDTH, 60], this.graph = null, this.pos = [10, 10], this.id = -1, this.typeName = null, this.inputs = [], this.outputs = [], this.connections = [], this.properties = {}, this.properties_info = [], this.flags = {};
+    this.desc = "", this.pos = [0, 0], this.subgraph = null, this.skip_subgraph_button = !1, this.priority = 0, this.removable = !0, this.clonable = !0, this.collapsable = !0, this.titleMode = ee.NORMAL_TITLE, this.serialize_widgets = !1, this.skip_list = !1, this.block_delete = !1, this.ignore_remove = !1, this.last_serialization = null, this._relative_id = null, this.exec_version = 0, this.action_call = null, this.execute_triggered = 0, this.action_triggered = 0, this.console = [], this.title = t || "Unnamed", this.size = [u.NODE_WIDTH, 60], this.graph = null, this.pos = [10, 10], this.id = -1, this.type = null, this.inputs = [], this.outputs = [], this.connections = [], this.properties = {}, this.properties_info = [], this.flags = {};
   }
   get slotLayout() {
     return "slotLayout" in this.constructor ? this.constructor.slotLayout : null;
@@ -44,18 +47,18 @@ const fe = class {
       }
       t[e] != null && (typeof t[e] == "object" ? this[e] && this[e].configure ? this[e].configure(t[e]) : this[e] = u.cloneObject(t[e], this[e]) : this[e] = t[e]);
     }
-    if (t.title || (this.title = this.constructor.title), this.inputs)
+    if (t.title || (this.title = de(this, "title") || this.title), this.inputs)
       for (let r = 0; r < this.inputs.length; ++r) {
-        let a = this.inputs[r], o = this.graph ? this.graph.links[a.link] : null;
-        this.onConnectionsChange && this.onConnectionsChange(U.INPUT, r, !0, o, a), this.onInputAdded && this.onInputAdded(a);
+        let a = this.inputs[r], l = this.graph ? this.graph.links[a.link] : null;
+        this.onConnectionsChange && this.onConnectionsChange(W.INPUT, r, !0, l, a), this.onInputAdded && this.onInputAdded(a);
       }
     if (this.outputs)
       for (var n = 0; n < this.outputs.length; ++n) {
         let r = this.outputs[n];
         if (r.links) {
           for (let a = 0; a < r.links.length; ++a) {
-            let o = this.graph ? this.graph.links[r.links[a]] : null;
-            this.onConnectionsChange && this.onConnectionsChange(U.OUTPUT, n, !0, o, r);
+            let l = this.graph ? this.graph.links[r.links[a]] : null;
+            this.onConnectionsChange && this.onConnectionsChange(W.OUTPUT, n, !0, l, r);
           }
           this.onOutputAdded && this.onOutputAdded(r);
         }
@@ -75,14 +78,14 @@ const fe = class {
   serialize() {
     let t = {
       id: this.id,
-      type: this.typeName,
+      type: this.type,
       pos: this.pos,
       size: this.size,
       flags: u.cloneObject(this.flags),
       order: this.order,
       mode: this.mode
     };
-    if (this.constructor === fe && this.last_serialization)
+    if (this.constructor === ge && this.last_serialization)
       return this.last_serialization;
     if (this.inputs && (t.inputs = this.inputs), this.outputs) {
       for (var e = 0; e < this.outputs.length; e++)
@@ -100,7 +103,7 @@ const fe = class {
   }
   /** Creates a clone of this node  */
   clone() {
-    var t = u.createNode(this.typeName);
+    var t = u.createNode(this.type);
     if (!t)
       return null;
     var e = u.cloneObject(this.serialize());
@@ -124,7 +127,7 @@ const fe = class {
   setProperty(t, e) {
     if (this.properties || (this.properties = {}), e !== this.properties[t]) {
       var i = this.properties[t];
-      if (this.properties[t] = e, this.onPropertyChanged && this.onPropertyChanged(t, e, i) === !1 && (this.properties[t] = i), this.widgets)
+      if (this.properties[t] = e, this.graph && this.graph._version++, this.onPropertyChanged && this.onPropertyChanged(t, e, i) === !1 && (this.properties[t] = i), this.widgets)
         for (var n = 0; n < this.widgets.length; ++n) {
           var s = this.widgets[n];
           if (s && s.options.property == t) {
@@ -208,6 +211,20 @@ const fe = class {
   getInputInfo(t) {
     return this.inputs && t < this.inputs.length ? this.inputs[t] : null;
   }
+  /**
+   * Returns the link info in the connection of an input slot
+   * @param {number} slot
+   * @return {LLink} object or null
+   */
+  getInputLink(t) {
+    if (!this.inputs)
+      return null;
+    if (t < this.inputs.length) {
+      var e = this.inputs[t];
+      return this.graph.links[e.link];
+    }
+    return null;
+  }
   /** returns the node connected in the input slot */
   getInputNode(t) {
     if (!this.inputs)
@@ -242,6 +259,22 @@ const fe = class {
       return null;
     var e = this.outputs[t];
     return e._data;
+  }
+  /**
+   * Returns the link info in the connection of an output slot
+   * @param {number} slot
+   * @return {LLink} object or null
+   */
+  getOutputLinks(t) {
+    if (!this.outputs)
+      return null;
+    if (t >= 0 && t < this.outputs.length) {
+      var e = this.outputs[t], i = [];
+      for (const n in e.links)
+        i.push(this.graph.links[n]);
+      return i;
+    }
+    return null;
   }
   /** tells you info about an output connection (which node, type, etc) */
   getOutputInfo(t) {
@@ -280,7 +313,7 @@ const fe = class {
     var t = this.findInputSlotIndexByName("onTrigger");
     if (t == -1) {
       //!trigS ||
-      return this.addInput("onTrigger", I.EVENT, { optional: !0, nameLocked: !0 }), this.findInputSlotIndexByName("onTrigger");
+      return this.addInput("onTrigger", A.EVENT, { optional: !0, nameLocked: !0 }), this.findInputSlotIndexByName("onTrigger");
     }
     return t;
   }
@@ -288,7 +321,7 @@ const fe = class {
     var t = this.findOutputSlotIndexByName("onExecuted");
     if (t == -1) {
       //!trigS ||
-      return this.addOutput("onExecuted", I.ACTION, { optional: !0, nameLocked: !0 }), this.findOutputSlotIndexByName("onExecuted");
+      return this.addOutput("onExecuted", A.ACTION, { optional: !0, nameLocked: !0 }), this.findOutputSlotIndexByName("onExecuted");
     }
     return t;
   }
@@ -298,16 +331,16 @@ const fe = class {
   }
   changeMode(t) {
     switch (t) {
-      case x.ON_EVENT:
+      case j.ON_EVENT:
         break;
-      case x.ON_TRIGGER:
+      case j.ON_TRIGGER:
         this.addOnTriggerInput(), this.addOnExecutedOutput();
         break;
-      case x.NEVER:
+      case j.NEVER:
         break;
-      case x.ALWAYS:
+      case j.ALWAYS:
         break;
-      case x.ON_REQUEST:
+      case j.ON_REQUEST:
         break;
       default:
         return !1;
@@ -332,7 +365,7 @@ const fe = class {
       this.graph && (this.graph._last_trigger_time = u.getTime());
       for (var n = 0; n < this.outputs.length; ++n) {
         var s = this.outputs[n];
-        !s || s.type !== I.EVENT || t && s.name != t || this.triggerSlot(n, e, null, i);
+        !s || s.type !== A.EVENT || t && s.name != t || this.triggerSlot(n, e, null, i);
       }
     }
   }
@@ -355,19 +388,19 @@ const fe = class {
         if (!(!r || !r.length)) {
           this.graph && (this.graph._last_trigger_time = u.getTime());
           for (var a = 0; a < r.length; ++a) {
-            var o = r[a];
-            if (!(i != null && i != o)) {
-              var l = this.graph.links[r[a]];
-              if (l) {
-                l._last_time = u.getTime();
-                var h = this.graph.getNodeById(l.target_id);
+            var l = r[a];
+            if (!(i != null && i != l)) {
+              var o = this.graph.links[r[a]];
+              if (o) {
+                o._last_time = u.getTime();
+                var h = this.graph.getNodeById(o.target_id);
                 if (h) {
-                  var p = h.inputs[l.target_slot];
-                  if (h.mode === x.ON_TRIGGER)
+                  var p = h.inputs[o.target_slot];
+                  if (h.mode === j.ON_TRIGGER)
                     n.action_call || (n.action_call = this.id + "_trigg_" + Math.floor(Math.random() * 9999)), h.onExecute && h.doExecute(e, n);
                   else if (h.onAction) {
                     n.action_call || (n.action_call = this.id + "_act_" + Math.floor(Math.random() * 9999));
-                    var p = h.inputs[l.target_slot];
+                    var p = h.inputs[o.target_slot];
                     h.actionDo(p.name, e, n);
                   }
                 }
@@ -427,27 +460,12 @@ const fe = class {
    * @param type string defining the output type ("vec3","number",...)
    * @param extra_info this can be used to have special properties of an output (label, special color, position, etc)
    */
-  addOutput(t, e = I.DEFAULT, i) {
+  addOutput(t, e = A.DEFAULT, i) {
     var n = { name: t, type: e, links: null };
     if (i)
       for (var s in i)
         n[s] = i[s];
-    return this.outputs || (this.outputs = []), this.outputs.push(n), this.onOutputAdded && this.onOutputAdded(n), u.auto_load_slot_types && u.registerNodeAndSlotType(this, e, !0), this.setSize(this.computeSize()), this.setDirtyCanvas(!0, !0), n;
-  }
-  /**
-   * add a new output slot to use in this node
-   * @param array of triplets like [[name,type,extra_info],[...]]
-   */
-  addOutputs(t) {
-    for (var e = 0; e < t.length; ++e) {
-      let [s, r, a] = t[e];
-      var i = { name: s, type: r, links: null };
-      if (a)
-        for (var n in a)
-          i[n] = a[n];
-      this.outputs || (this.outputs = []), this.outputs.push(i), this.onOutputAdded && this.onOutputAdded(i), u.auto_load_slot_types && u.registerNodeAndSlotType(this, r, !0);
-    }
-    this.setSize(this.computeSize()), this.setDirtyCanvas(!0, !0);
+    return e == "array" && (n.shape == null || n.shape == S.DEFAULT) && (n.shape = S.GRID_SHAPE), this.outputs || (this.outputs = []), this.outputs.push(n), this.onOutputAdded && this.onOutputAdded(n), u.auto_load_slot_types && u.registerNodeAndSlotType(this, e, !0), this.setSize(this.computeSize()), this.setDirtyCanvas(!0, !0), n;
   }
   /** remove an existing output slot */
   removeOutput(t) {
@@ -467,26 +485,12 @@ const fe = class {
    * @param type string defining the input type ("vec3","number",...), it its a generic one use 0
    * @param extra_info this can be used to have special properties of an input (label, color, position, etc)
    */
-  addInput(t, e = I.DEFAULT, i) {
+  addInput(t, e = A.DEFAULT, i) {
     var n = { name: t, type: e, link: null };
     if (i)
       for (var s in i)
         n[s] = i[s];
-    return this.inputs || (this.inputs = []), this.inputs.push(n), this.setSize(this.computeSize()), this.onInputAdded && this.onInputAdded(n), u.registerNodeAndSlotType(this, e), this.setDirtyCanvas(!0, !0), n;
-  }
-  /**
-   * add several new input slots in this node
-   * @param array of triplets like [[name,type,extra_info],[...]]
-   */
-  addInputs(t) {
-    for (var e = 0; e < t.length; ++e) {
-      var i = t[e], n = { name: i[0], type: i[1], link: null };
-      if (t[2])
-        for (var s in i[2])
-          n[s] = i[2][s];
-      this.inputs || (this.inputs = []), this.inputs.push(n), this.onInputAdded && this.onInputAdded(n), u.registerNodeAndSlotType(this, i[1]);
-    }
-    this.setSize(this.computeSize()), this.setDirtyCanvas(!0, !0);
+    return e == "array" && (n.shape == null || n.shape == S.DEFAULT) && (n.shape = S.GRID_SHAPE), this.inputs || (this.inputs = []), this.inputs.push(n), this.setSize(this.computeSize()), this.onInputAdded && this.onInputAdded(n), u.registerNodeAndSlotType(this, e), this.setDirtyCanvas(!0, !0), n;
   }
   /** remove an existing input slot */
   removeInput(t) {
@@ -517,36 +521,37 @@ const fe = class {
   }
   /** computes the size of a node according to its inputs and output slots */
   computeSize(t = [0, 0]) {
-    if (this.constructor.size)
-      return this.constructor.size.concat();
-    var e = Math.max(
+    const e = de(this, "overrideSize");
+    if (e)
+      return e.concat();
+    var i = Math.max(
       this.inputs ? this.inputs.length : 1,
       this.outputs ? this.outputs.length : 1
-    ), i = t;
-    e = Math.max(e, 1);
-    var n = u.NODE_TEXT_SIZE, s = f(this.title), r = 0, a = 0;
+    ), n = t;
+    i = Math.max(i, 1);
+    var s = u.NODE_TEXT_SIZE, r = g(this.title), a = 0, l = 0;
     if (this.inputs)
-      for (var o = 0, l = this.inputs.length; o < l; ++o) {
-        var h = this.inputs[o], p = h.label || h.name || "", d = f(p);
-        r < d && (r = d);
+      for (var o = 0, h = this.inputs.length; o < h; ++o) {
+        var p = this.inputs[o], d = p.label || p.name || "", c = g(d);
+        a < c && (a = c);
       }
     if (this.outputs)
-      for (var o = 0, l = this.outputs.length; o < l; ++o) {
-        var c = this.outputs[o], p = c.label || c.name || "", d = f(p);
-        a < d && (a = d);
+      for (var o = 0, h = this.outputs.length; o < h; ++o) {
+        var _ = this.outputs[o], d = _.label || _.name || "", c = g(d);
+        l < c && (l = c);
       }
-    i[0] = Math.max(r + a + 10, s), i[0] = Math.max(i[0], u.NODE_WIDTH), this.widgets && this.widgets.length && (i[0] = Math.max(i[0], u.NODE_WIDTH * 1.5)), i[1] = (this.constructor.slot_start_y || 0) + e * u.NODE_SLOT_HEIGHT;
-    var m = 0;
+    n[0] = Math.max(a + l + 10, r), n[0] = Math.max(n[0], u.NODE_WIDTH), this.widgets && this.widgets.length && (n[0] = Math.max(n[0], u.NODE_WIDTH * 1.5)), n[1] = (this.constructor.slot_start_y || 0) + i * u.NODE_SLOT_HEIGHT;
+    var f = 0;
     if (this.widgets && this.widgets.length) {
-      for (var o = 0, l = this.widgets.length; o < l; ++o)
-        this.widgets[o].computeSize ? m += this.widgets[o].computeSize(i[0])[1] + 4 : m += u.NODE_WIDGET_HEIGHT + 4;
-      m += 8;
+      for (var o = 0, h = this.widgets.length; o < h; ++o)
+        this.widgets[o].computeSize ? f += this.widgets[o].computeSize(n[0])[1] + 4 : f += u.NODE_WIDGET_HEIGHT + 4;
+      f += 8;
     }
-    this.widgets_up ? i[1] = Math.max(i[1], m) : this.widgets_start_y != null ? i[1] = Math.max(i[1], m + this.widgets_start_y) : i[1] += m;
-    function f(_) {
-      return _ ? n * _.length * 0.6 : 0;
+    this.widgets_up ? n[1] = Math.max(n[1], f) : this.widgets_start_y != null ? n[1] = Math.max(n[1], f + this.widgets_start_y) : n[1] += f;
+    function g(m) {
+      return m ? s * m.length * 0.6 : 0;
     }
-    return this.constructor.min_height && i[1] < this.constructor.min_height && (i[1] = this.constructor.min_height), i[1] += 6, i;
+    return this.constructor.min_height && n[1] < this.constructor.min_height && (n[1] = this.constructor.min_height), n[1] += 6, n;
   }
   /**
    * returns all the info available about a property of this node.
@@ -721,25 +726,25 @@ const fe = class {
     if (!r)
       return i ? null : -1;
     (e == "" || e == "*") && (e = 0);
-    for (var a = 0, o = r.length; a < o; ++a) {
-      var l = (e + "").toLowerCase().split(","), h = r[a].type == "0" || r[a].type == "*" ? "0" : r[a].type;
+    for (var a = 0, l = r.length; a < l; ++a) {
+      var o = (e + "").toLowerCase().split(","), h = r[a].type == "0" || r[a].type == "*" ? "0" : r[a].type;
       let p = (h + "").toLowerCase().split(",");
-      for (let d = 0; d < l.length; d++)
+      for (let d = 0; d < o.length; d++)
         for (let c = 0; c < p.length; c++)
-          if (l[d] == "_event_" && (l[d] = I.EVENT), p[d] == "_event_" && (p[d] = I.EVENT), l[d] == "*" && (l[d] = I.DEFAULT), p[d] == "*" && (p[d] = I.DEFAULT), l[d] == p[c]) {
-            let m = r[a];
-            if (n && m.links && m.links !== null || m.link && m.link !== null)
+          if (o[d] == "_event_" && (o[d] = A.EVENT), p[d] == "_event_" && (p[d] = A.EVENT), o[d] == "*" && (o[d] = A.DEFAULT), p[d] == "*" && (p[d] = A.DEFAULT), o[d] == p[c]) {
+            let _ = r[a];
+            if (n && _.links && _.links !== null || _.link && _.link !== null)
               continue;
-            return i ? m : a;
+            return i ? _ : a;
           }
     }
     if (n && !s)
-      for (var a = 0, o = r.length; a < o; ++a) {
-        var l = (e + "").toLowerCase().split(","), h = r[a].type == "0" || r[a].type == "*" ? "0" : r[a].type;
+      for (var a = 0, l = r.length; a < l; ++a) {
+        var o = (e + "").toLowerCase().split(","), h = r[a].type == "0" || r[a].type == "*" ? "0" : r[a].type;
         let f = (h + "").toLowerCase().split(",");
-        for (let _ = 0; _ < l.length; _++)
-          for (let v = 0; v < f.length; v++)
-            if (l[_] == "*" && (l[_] = I.DEFAULT), f[_] == "*" && (f[_] = I.DEFAULT), l[_] == f[v])
+        for (let g = 0; g < o.length; g++)
+          for (let m = 0; m < f.length; m++)
+            if (o[g] == "*" && (o[g] = A.DEFAULT), f[g] == "*" && (f[g] = A.DEFAULT), o[g] == f[m])
               return i ? r[a] : a;
       }
     return i ? null : -1;
@@ -762,17 +767,17 @@ const fe = class {
     let a = e.findInputSlotIndexByType(i, !0);
     if (a >= 0 && a !== null)
       return u.debug && console.debug("CONNbyTYPE type " + i + " for " + a), this.connect(t, e, a);
-    if (u.debug && console.log("type " + i + " not found or not free?"), r.createEventInCase && i == I.EVENT)
+    if (u.debug && console.log("type " + i + " not found or not free?"), r.createEventInCase && i == A.EVENT)
       return u.debug && console.debug("connect WILL CREATE THE onTrigger " + i + " to " + e), this.connect(t, e, -1);
     if (r.generalTypeInCase) {
-      let o = e.findInputSlotIndexByType(I.DEFAULT, !0, !0);
-      if (u.debug && console.debug("connect TO a general type (*, 0), if not found the specific type ", i, " to ", e, "RES_SLOT:", o), o >= 0)
-        return this.connect(t, e, o);
+      let l = e.findInputSlotIndexByType(A.DEFAULT, !0, !0);
+      if (u.debug && console.debug("connect TO a general type (*, 0), if not found the specific type ", i, " to ", e, "RES_SLOT:", l), l >= 0)
+        return this.connect(t, e, l);
     }
     if (r.firstFreeIfOutputGeneralInCase && (i == 0 || i == "*" || i == "")) {
-      let o = e.findInputSlotIndexByName(null, !0, [I.EVENT]);
-      if (u.debug && console.debug("connect TO TheFirstFREE ", i, " to ", e, "RES_SLOT:", o), o >= 0)
-        return this.connect(t, e, o);
+      let l = e.findInputSlotIndexByName(null, !0, [A.EVENT]);
+      if (u.debug && console.debug("connect TO TheFirstFREE ", i, " to ", e, "RES_SLOT:", l), l >= 0)
+        return this.connect(t, e, l);
     }
     return u.debug && console.error("no way to connect type: ", i, " to targetNODE ", e), null;
   }
@@ -797,14 +802,14 @@ const fe = class {
       if (a >= 0)
         return e.connect(a, this, t);
     }
-    if (r.createEventInCase && i == I.EVENT && u.do_add_triggers_slots) {
+    if (r.createEventInCase && i == A.EVENT && u.do_add_triggers_slots) {
       var a = e.addOnExecutedOutput();
       return e.connect(a, this, t);
     }
     if (r.firstFreeIfInputGeneralInCase && (i == 0 || i == "*" || i == "")) {
-      let o = e.findOutputSlotIndexByName(null, !0, [I.EVENT]);
-      if (o >= 0)
-        return e.connect(o, this, t);
+      let l = e.findOutputSlotIndexByName(null, !0, [A.EVENT]);
+      if (l >= 0)
+        return e.connect(l, this, t);
     }
     return console.error("no way to connect byOUT type: ", i, " to sourceNODE ", e), console.error("type OUT! " + i + " not found or not free?"), null;
   }
@@ -834,9 +839,9 @@ const fe = class {
         return u.debug && console.log(
           "Connect: Error, no slot of name " + i
         ), null;
-    } else if (i === I.EVENT)
+    } else if (i === A.EVENT)
       if (u.do_add_triggers_slots)
-        e.changeMode(x.ON_TRIGGER), i = e.findInputSlotIndexByName("onTrigger");
+        e.changeMode(j.ON_TRIGGER), i = e.findInputSlotIndexByName("onTrigger");
       else
         return null;
     else if (!e.inputs || i >= e.inputs.length)
@@ -850,11 +855,11 @@ const fe = class {
       return null;
     if (e.inputs[i] && e.inputs[i].link != null && (this.graph.beforeChange(), e.disconnectInput(i, { doProcessChange: !1 }), n = !0), a.links !== null && a.links.length)
       switch (a.type) {
-        case I.EVENT:
+        case A.EVENT:
           u.allow_multi_output_for_events || (this.graph.beforeChange(), this.disconnectOutput(t, null, { doProcessChange: !1 }), n = !0);
           break;
       }
-    return r = new se(
+    return r = new ne(
       ++this.graph.last_link_id,
       s.type || a.type,
       this.id,
@@ -862,25 +867,25 @@ const fe = class {
       e.id,
       i
     ), this.graph.links[r.id] = r, a.links == null && (a.links = []), a.links.push(r.id), e.inputs[i].link = r.id, this.graph && this.graph._version++, this.onConnectionsChange && this.onConnectionsChange(
-      U.OUTPUT,
+      W.OUTPUT,
       t,
       !0,
       r,
       a
     ), e.onConnectionsChange && e.onConnectionsChange(
-      U.INPUT,
+      W.INPUT,
       i,
       !0,
       r,
       s
     ), this.graph && this.graph.onNodeConnectionChange && (this.graph.onNodeConnectionChange(
-      U.INPUT,
+      W.INPUT,
       e,
       i,
       this,
       t
     ), this.graph.onNodeConnectionChange(
-      U.OUTPUT,
+      W.OUTPUT,
       this,
       t,
       e,
@@ -906,67 +911,67 @@ const fe = class {
       if (e.constructor === Number && (e = this.graph.getNodeById(e)), !e)
         throw "Target Node not found";
       for (var s = 0, r = n.links.length; s < r; s++) {
-        var a = n.links[s], o = this.graph.links[a];
-        if (o.target_id == e.id) {
+        var a = n.links[s], l = this.graph.links[a];
+        if (l.target_id == e.id) {
           n.links.splice(s, 1);
-          var l = e.inputs[o.target_slot];
-          l.link = null, delete this.graph.links[a], this.graph && this.graph._version++, e.onConnectionsChange && e.onConnectionsChange(
-            U.INPUT,
-            o.target_slot,
+          var o = e.inputs[l.target_slot];
+          o.link = null, delete this.graph.links[a], this.graph && this.graph._version++, e.onConnectionsChange && e.onConnectionsChange(
+            W.INPUT,
+            l.target_slot,
             !1,
-            o,
-            l
+            l,
+            o
           ), this.onConnectionsChange && this.onConnectionsChange(
-            U.OUTPUT,
+            W.OUTPUT,
             t,
             !1,
-            o,
+            l,
             n
           ), this.graph && this.graph.onNodeConnectionChange && this.graph.onNodeConnectionChange(
-            U.OUTPUT,
+            W.OUTPUT,
             this,
             t
           ), this.graph && this.graph.onNodeConnectionChange && (this.graph.onNodeConnectionChange(
-            U.OUTPUT,
+            W.OUTPUT,
             this,
             t
           ), this.graph.onNodeConnectionChange(
-            U.INPUT,
+            W.INPUT,
             e,
-            o.target_slot
+            l.target_slot
           ));
           break;
         }
       }
     } else {
       for (var s = 0, r = n.links.length; s < r; s++) {
-        var a = n.links[s], o = this.graph.links[a];
-        if (o) {
-          var e = this.graph.getNodeById(o.target_id), l = null;
-          this.graph && this.graph._version++, e && (l = e.inputs[o.target_slot], l.link = null, e.onConnectionsChange && e.onConnectionsChange(
-            U.INPUT,
-            o.target_slot,
+        var a = n.links[s], l = this.graph.links[a];
+        if (l) {
+          var e = this.graph.getNodeById(l.target_id), o = null;
+          this.graph && this.graph._version++, e && (o = e.inputs[l.target_slot], o.link = null, e.onConnectionsChange && e.onConnectionsChange(
+            W.INPUT,
+            l.target_slot,
             !1,
-            o,
-            l
+            l,
+            o
           ), this.graph && this.graph.onNodeConnectionChange && this.graph.onNodeConnectionChange(
-            U.INPUT,
+            W.INPUT,
             e,
-            o.target_slot
+            l.target_slot
           )), delete this.graph.links[a], this.onConnectionsChange && this.onConnectionsChange(
-            U.OUTPUT,
+            W.OUTPUT,
             t,
             !1,
-            o,
+            l,
             n
           ), this.graph && this.graph.onNodeConnectionChange && (this.graph.onNodeConnectionChange(
-            U.OUTPUT,
+            W.OUTPUT,
             this,
             t
           ), this.graph.onNodeConnectionChange(
-            U.INPUT,
+            W.INPUT,
             e,
-            o.target_slot
+            l.target_slot
           ));
         }
       }
@@ -999,28 +1004,28 @@ const fe = class {
         var a = r.outputs[s.origin_slot];
         if (!a || !a.links || a.links.length == 0)
           return !1;
-        for (var o = 0, l = a.links.length; o < l; o++)
-          if (a.links[o] == n) {
-            a.links.splice(o, 1);
+        for (var l = 0, o = a.links.length; l < o; l++)
+          if (a.links[l] == n) {
+            a.links.splice(l, 1);
             break;
           }
         delete this.graph.links[n], this.graph && this.graph._version++, this.onConnectionsChange && this.onConnectionsChange(
-          U.INPUT,
+          W.INPUT,
           t,
           !1,
           s,
           i
         ), r.onConnectionsChange && r.onConnectionsChange(
-          U.OUTPUT,
-          o,
+          W.OUTPUT,
+          l,
           !1,
           s,
           a
         ), this.graph && this.graph.onNodeConnectionChange && (this.graph.onNodeConnectionChange(
-          U.OUTPUT,
+          W.OUTPUT,
           r,
-          o
-        ), this.graph.onNodeConnectionChange(U.INPUT, this, t));
+          l
+        ), this.graph.onNodeConnectionChange(W.INPUT, this, t));
       }
     }
     return this.setDirtyCanvas(!1, !0), this.graph && this.graph.connectionChange(this), !0;
@@ -1048,7 +1053,7 @@ const fe = class {
   }
   /** Console output */
   trace(t) {
-    this.console || (this.console = []), this.console.push(t), this.console.length > fe.MAX_CONSOLE && this.console.shift(), this.graph.onNodeTrace && this.graph.onNodeTrace(this, t);
+    this.console || (this.console = []), this.console.push(t), this.console.length > ge.MAX_CONSOLE && this.console.shift(), this.graph.onNodeTrace && this.graph.onNodeTrace(this, t);
   }
   /** Forces to redraw or the main canvas (LGraphNode) or the bg canvas (links) */
   setDirtyCanvas(t, e = !1) {
@@ -1072,7 +1077,7 @@ const fe = class {
   }
   /** Collapse the node to make it smaller on the canvas */
   collapse(t = !1) {
-    this.graph._version++, !(this.constructor.collapsable === !1 && !t) && (this.flags.collapsed ? this.flags.collapsed = !1 : this.flags.collapsed = !0, this.setDirtyCanvas(!0, !0));
+    this.graph._version++, !(this.collapsable === !1 && !t) && (this.flags.collapsed ? this.flags.collapsed = !1 : this.flags.collapsed = !0, this.setDirtyCanvas(!0, !0));
   }
   /** Forces the node to do not move or realign on Z */
   pin(t) {
@@ -1084,30 +1089,37 @@ const fe = class {
       (e + this.pos[1]) * i.ds.scale + i.ds.offset[1]
     ];
   }
+  getOptionalSlots() {
+    return de(this, "optionalSlots");
+  }
 };
-let J = fe;
-J.registerCategory = "";
-J.MAX_CONSOLE = 100;
-const k = class {
+let te = ge;
+te.registerCategory = "";
+te.MAX_CONSOLE = 100;
+const I = class {
   /** Register a node class so it can be listed when the user wants to create a new one */
   static registerNodeType(t) {
-    k.debug && console.log("Node registered: " + t.typeName);
-    const e = t.name, i = t.typeName, n = i.lastIndexOf("/");
+    I.debug && console.log("Node registered: " + t.type);
+    const e = t.name, i = t.type;
+    if (!i)
+      throw "Config has no type: " + t;
+    console.debug(e, i);
+    const n = i.lastIndexOf("/");
     t.category = i.substring(0, n), t.title || (t.title = e);
-    const s = k.registered_node_types[i];
+    const s = I.registered_node_types[i];
     if (s && console.warn("replacing node type: " + i), t.supported_extensions)
       for (let r in t.supported_extensions) {
         const a = t.supported_extensions[r];
-        a && a.constructor === String && (k.node_types_by_file_extension[a.toLowerCase()] = t);
+        a && a.constructor === String && (I.node_types_by_file_extension[a.toLowerCase()] = t);
       }
-    t.type.__LITEGRAPH_TYPE__ = i, k.registered_node_types[i] = t, t.type.name && (k.Nodes[e] = t), k.onNodeTypeRegistered && k.onNodeTypeRegistered(i, t), s && k.onNodeTypeReplaced && k.onNodeTypeReplaced(i, t, s);
+    t.class.__LITEGRAPH_TYPE__ = i, I.registered_node_types[i] = t, t.class.name && (I.Nodes[e] = t), I.onNodeTypeRegistered && I.onNodeTypeRegistered(i, t), s && I.onNodeTypeReplaced && I.onNodeTypeReplaced(i, t, s);
   }
   /** removes a node type from the system */
   static unregisterNodeType(t) {
     let e;
-    if (typeof t == "string" ? e = k.registered_node_types[t] : e = t, !e)
+    if (typeof t == "string" ? e = I.registered_node_types[t] : e = t, !e)
       throw "node type not found: " + t;
-    delete k.registered_node_types[e.typeName], e.constructor.name && delete k.Nodes[e.constructor.name];
+    delete I.registered_node_types[e.type], e.constructor.name && delete I.Nodes[e.constructor.name];
   }
   /**
    * Save a slot type and his node
@@ -1117,25 +1129,25 @@ const k = class {
    */
   static registerNodeAndSlotType(t, e, i = !1) {
     let n;
-    if (typeof t == "string" ? n = k.registered_node_types[t] : "typeName" in t ? n = k.registered_node_types[t.typeName] : n = t, !n)
-      throw console.error(t), "Node not registered!";
-    var s = n.type.__litegraph_type__;
+    if (typeof t == "string" ? n = I.registered_node_types[t] : "type" in t ? n = I.registered_node_types[t.type] : n = t, !n)
+      throw "Node not registered!" + t;
+    var s = n.class.__litegraph_type__;
     if (typeof e == "string")
       var r = e.split(",");
-    else if (e == I.EVENT || e == I.ACTION)
+    else if (e == A.EVENT || e == A.ACTION)
       var r = ["_event_"];
     else
       var r = ["*"];
     for (var a = 0; a < r.length; ++a) {
-      var o = r[a];
-      o === "" && (o = "*");
-      var l = i ? "registered_slot_out_types" : "registered_slot_in_types";
-      typeof this[l][o] > "u" && (this[l][o] = { nodes: [] }), this[l][o].nodes.push(s), i ? k.slot_types_out.includes(o.toLowerCase()) || (k.slot_types_out.push(o.toLowerCase()), k.slot_types_out.sort()) : k.slot_types_in.includes(o.toLowerCase()) || (k.slot_types_in.push(o.toLowerCase()), k.slot_types_in.sort());
+      var l = r[a];
+      l === "" && (l = "*");
+      var o = i ? "registered_slot_out_types" : "registered_slot_in_types";
+      typeof this[o][l] > "u" && (this[o][l] = { nodes: [] }), this[o][l].nodes.push(s), i ? I.slot_types_out.includes(l.toLowerCase()) || (I.slot_types_out.push(l.toLowerCase()), I.slot_types_out.sort()) : I.slot_types_in.includes(l.toLowerCase()) || (I.slot_types_in.push(l.toLowerCase()), I.slot_types_in.sort());
     }
   }
   /** Removes all previously registered node's types. */
   static clearRegisteredTypes() {
-    k.registered_node_types = {}, k.node_types_by_file_extension = {}, k.Nodes = {}, k.searchbox_extras = {};
+    I.registered_node_types = {}, I.node_types_by_file_extension = {}, I.Nodes = {}, I.searchbox_extras = {};
   }
   /**
    * Create a new node type by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
@@ -1212,38 +1224,38 @@ const k = class {
       s = t;
     else if (s = t.__LITEGRAPH_TYPE__, !s)
       throw console.error(t), "Node was not registered yet!";
-    if (n = k.registered_node_types[s], !n)
+    if (n = I.registered_node_types[s], !n)
       return console.warn(
         'GraphNode type "' + t + '" not registered.'
       ), null;
     e = e || n.title || s;
     var r = null;
-    if (k.catch_exceptions)
+    if (I.catch_exceptions)
       try {
-        r = new n.type(e);
+        r = new n.class(e);
       } catch (h) {
         return console.error(h), null;
       }
     else
-      r = new n.type(e);
-    if (r.typeName = s, !r.title && e && (r.title = e), r.properties || (r.properties = {}), r.properties_info || (r.properties_info = []), r.flags || (r.flags = {}), r.size || (r.size = r.computeSize()), r.pos || (r.pos = [k.DEFAULT_POSITION[0], k.DEFAULT_POSITION[1]]), r.mode || (r.mode = x.ALWAYS), i)
+      r = new n.class(e);
+    if (r.class = n.class, r.type = s, !r.title && e && (r.title = e), r.properties || (r.properties = {}), r.properties_info || (r.properties_info = []), r.flags || (r.flags = {}), r.size || (r.size = r.computeSize()), r.pos || (r.pos = [I.DEFAULT_POSITION[0], I.DEFAULT_POSITION[1]]), r.mode || (r.mode = j.ALWAYS), i)
       for (var a in i)
         r[a] = i[a];
-    const o = Ce(n.type, "propertyLayout");
-    if (o) {
-      console.log("Found property layout!", o);
-      for (const h of o) {
-        const { name: p, defaultValue: d, type: c, options: m } = h;
-        r.addProperty(p, d, c, m);
+    const l = Te(n.class, "propertyLayout");
+    if (l) {
+      console.log("Found property layout!", l);
+      for (const h of l) {
+        const { name: p, defaultValue: d, type: c, options: _ } = h;
+        r.addProperty(p, d, c, _);
       }
     }
-    const l = Ce(n.type, "slotLayout");
-    if (l && (console.log("Found slot layout!", l), l.inputs)) {
-      for (const h of l.inputs) {
+    const o = Te(n.class, "slotLayout");
+    if (o && (console.log("Found slot layout!", o), o.inputs)) {
+      for (const h of o.inputs) {
         const { name: p, type: d, options: c } = h;
         r.addInput(p, d, c);
       }
-      for (const h of l.outputs) {
+      for (const h of o.outputs) {
         const { name: p, type: d, options: c } = h;
         r.addOutput(p, d, c);
       }
@@ -1255,7 +1267,7 @@ const k = class {
    * @param type full name of the node class. p.e. "math/sin"
    */
   static getNodeType(t) {
-    return k.registered_node_types[t];
+    return I.registered_node_types[t];
   }
   /**
    * Returns a list of node types matching one category
@@ -1266,11 +1278,11 @@ const k = class {
    */
   static getNodeTypesInCategory(t, e) {
     var i = [];
-    for (var n in k.registered_node_types) {
-      var s = k.registered_node_types[n];
+    for (var n in I.registered_node_types) {
+      var s = I.registered_node_types[n];
       s.filter == e && (t == "" ? s.category == null && i.push(s) : s.category == t && i.push(s));
     }
-    return k.auto_sort_node_types && i.sort(function(r, a) {
+    return I.auto_sort_node_types && i.sort(function(r, a) {
       return r.title.localeCompare(a.title);
     }), i;
   }
@@ -1282,8 +1294,8 @@ const k = class {
    */
   static getNodeTypesCategories(t) {
     var e = { "": 1 };
-    for (var i in k.registered_node_types) {
-      var n = k.registered_node_types[i];
+    for (var i in I.registered_node_types) {
+      var n = I.registered_node_types[i];
       if (n.category && !n.skip_list) {
         if (n.filter != t)
           continue;
@@ -1293,7 +1305,7 @@ const k = class {
     var s = [];
     for (var i in e)
       s.push(i);
-    return k.auto_sort_node_types ? s.sort() : s;
+    return I.auto_sort_node_types ? s.sort() : s;
   }
   /** debug purposes: reloads all the js scripts that matches a wildcard */
   static reloadNodes(t) {
@@ -1305,16 +1317,16 @@ const k = class {
       var r = i[n].src;
       if (!(!r || r.substr(0, t.length) != t))
         try {
-          k.debug && console.log("Reloading: " + r);
+          I.debug && console.log("Reloading: " + r);
           var a = document.createElement("script");
           a.type = "text/javascript", a.src = r, s.appendChild(a), s.removeChild(i[n]);
-        } catch (l) {
-          if (k.throw_errors)
-            throw l;
-          k.debug && console.log("Error while reloading " + r);
+        } catch (o) {
+          if (I.throw_errors)
+            throw o;
+          I.debug && console.log("Error while reloading " + r);
         }
     }
-    k.debug && console.log("Nodes reloaded");
+    I.debug && console.log("Nodes reloaded");
   }
   // TODO move
   //separated just to improve if it doesn't work
@@ -1336,7 +1348,7 @@ const k = class {
    * @return {Boolean} true if they can be connected
    */
   static isValidConnection(t, e) {
-    if ((t == "" || t === "*") && (t = 0), (e == "" || e === "*") && (e = 0), !t || !e || t == e || t == I.EVENT && e == I.ACTION)
+    if ((t == "" || t === "*") && (t = 0), (e == "" || e === "*") && (e = 0), !t || !e || t == e || t == A.EVENT && e == A.ACTION)
       return !0;
     if (t = String(t), e = String(e), t = t.toLowerCase(), e = e.toLowerCase(), t.indexOf(",") == -1 && e.indexOf(",") == -1)
       return t == e;
@@ -1406,7 +1418,7 @@ const k = class {
      used by LGraphCanvas DragAndScale ContextMenu*/
   static pointerListenerAdd(t, e, i, n = !1) {
     if (!(!t || !t.addEventListener || !e || typeof i != "function")) {
-      var s = k.pointerevents_method, r = e;
+      var s = I.pointerevents_method, r = e;
       if (s == "pointer" && !window.PointerEvent)
         switch (console.warn("sMethod=='pointer' && !window.PointerEvent"), console.log("Converting pointer[" + r + "] : down move up cancel enter TO touchstart touchmove touchend, etc .."), r) {
           case "down": {
@@ -1460,23 +1472,23 @@ const k = class {
         case "over":
         case "out":
         case "enter":
-          (k.pointerevents_method == "pointer" || k.pointerevents_method == "mouse") && t.removeEventListener(k.pointerevents_method + e, i, n);
+          (I.pointerevents_method == "pointer" || I.pointerevents_method == "mouse") && t.removeEventListener(I.pointerevents_method + e, i, n);
         case "leave":
         case "cancel":
         case "gotpointercapture":
         case "lostpointercapture":
-          if (k.pointerevents_method == "pointer")
-            return t.removeEventListener(k.pointerevents_method + e, i, n);
+          if (I.pointerevents_method == "pointer")
+            return t.removeEventListener(I.pointerevents_method + e, i, n);
         default:
           return t.removeEventListener(e, i, n);
       }
   }
 };
-let u = k;
+let u = I;
 u.VERSION = 10;
 u.CANVAS_GRID_SIZE = 10;
 u.NODE_TITLE_HEIGHT = 20;
-u.NODE_TITLE_TEXT_Y = 20;
+u.NODE_TITLE_TEXT_Y = 15;
 u.NODE_SLOT_HEIGHT = 20;
 u.NODE_WIDGET_HEIGHT = 20;
 u.NODE_WIDTH = 140;
@@ -1538,8 +1550,9 @@ u.do_add_triggers_slots = !1;
 u.allow_multi_output_for_events = !0;
 u.middle_click_slot_add_default_node = !1;
 u.release_link_on_empty_shows_menu = !1;
+u.ignore_all_widget_events = !1;
 u.pointerevents_method = "mouse";
-var K = /* @__PURE__ */ ((t) => (t[t.SEPARATOR = 0] = "SEPARATOR", t))(K || {});
+var x = /* @__PURE__ */ ((t) => (t[t.SEPARATOR = 0] = "SEPARATOR", t))(x || {});
 class X {
   static trigger(e, i, n, s) {
     var r = document.createEvent("CustomEvent");
@@ -1574,14 +1587,14 @@ class X {
     }, 100), u.pointerListenerAdd(
       a,
       "up",
-      function(_) {
-        return _.preventDefault(), !0;
+      function(g) {
+        return g.preventDefault(), !0;
       },
       !0
     ), a.addEventListener(
       "contextmenu",
-      function(_) {
-        return _.button != 2 || _.preventDefault(), !1;
+      function(g) {
+        return g.button != 2 || g.preventDefault(), !1;
       },
       !0
     ), a.close = () => {
@@ -1589,26 +1602,26 @@ class X {
     }, u.pointerListenerAdd(
       a,
       "down",
-      function(_) {
-        if (_.button == 2)
-          return s.close(), _.preventDefault(), !0;
+      function(g) {
+        if (g.button == 2)
+          return s.close(), g.preventDefault(), !0;
       },
       !0
     );
-    function o(_) {
-      var v = parseInt(a.style.top);
-      return a.style.top = (v + _.deltaY * i.scroll_speed).toFixed() + "px", _.preventDefault(), !0;
+    function l(g) {
+      var m = parseInt(a.style.top);
+      return a.style.top = (m + g.deltaY * i.scroll_speed).toFixed() + "px", g.preventDefault(), !0;
     }
-    if (i.scroll_speed || (i.scroll_speed = 0.1), a.addEventListener("wheel", o, !0), a.addEventListener("mousewheel", o, !0), this.root = a, i.title) {
-      var l = document.createElement("div");
-      l.className = "litemenu-title", l.innerHTML = i.title, a.appendChild(l);
+    if (i.scroll_speed || (i.scroll_speed = 0.1), a.addEventListener("wheel", l, !0), a.addEventListener("mousewheel", l, !0), this.root = a, i.title) {
+      var o = document.createElement("div");
+      o.className = "litemenu-title", o.innerHTML = i.title, a.appendChild(o);
     }
     this.values = [];
-    for (let _ = 0; _ < e.length; _++) {
-      let v = e[_], y = "";
-      v === 0 ? y = "" : typeof v == "string" ? y = v : y = v.content, this.addItem(y, v, i);
+    for (let g = 0; g < e.length; g++) {
+      let m = e[g], y = "";
+      m === 0 ? y = "" : typeof m == "string" ? y = m : y = m.content, this.addItem(y, m, i);
     }
-    u.pointerListenerAdd(a, "enter", function(_) {
+    u.pointerListenerAdd(a, "enter", function(g) {
       a.closing_timer && clearTimeout(a.closing_timer);
     });
     var h = document;
@@ -1619,8 +1632,8 @@ class X {
         var c = i.parentMenu.root.getBoundingClientRect();
         p = c.left + c.width;
       }
-      var m = document.body.getBoundingClientRect(), f = a.getBoundingClientRect();
-      m.height == 0 && console.error("document.body height is 0. That is dangerous, set html,body { height: 100%; }"), m.width && p > m.width - f.width - 10 && (p = m.width - f.width - 10), m.height && d > m.height - f.height - 10 && (d = m.height - f.height - 10);
+      var _ = document.body.getBoundingClientRect(), f = a.getBoundingClientRect();
+      _.height == 0 && console.error("document.body height is 0. That is dangerous, set html,body { height: 100%; }"), _.width && p > _.width - f.width - 10 && (p = _.width - f.width - 10), _.height && d > _.height - f.height - 10 && (d = _.height - f.height - 10);
     }
     a.style.left = p + "px", a.style.top = d + "px", i.scale && (a.style.transform = "scale(" + i.scale + ")");
   }
@@ -1628,17 +1641,17 @@ class X {
     var s = this, r = document.createElement("div");
     r.className = "litemenu-entry submenu";
     var a = !1;
-    typeof i == "string" && (i = { content: i }), i === 0 ? r.classList.add("separator") : (r.innerHTML = i.title ? i.title : e, i.disabled && (a = !0, r.classList.add("disabled")), (i.submenu || i.has_submenu) && r.classList.add("has_submenu"), typeof i == "function" ? r.dataset.value = e : r.dataset.value = "" + this.values.length, i.className && (r.className += " " + i.className)), this.values.push(i), this.root.appendChild(r), a || r.addEventListener("click", h), n.autoopen && u.pointerListenerAdd(r, "enter", l);
-    let o = this;
-    function l(p) {
+    typeof i == "string" && (i = { content: i }), i === 0 ? r.classList.add("separator") : (r.innerHTML = i.title ? i.title : e, i.disabled && (a = !0, r.classList.add("disabled")), (i.submenu || i.has_submenu) && r.classList.add("has_submenu"), typeof i == "function" ? r.dataset.value = e : r.dataset.value = "" + this.values.length, i.className && (r.className += " " + i.className)), this.values.push(i), this.root.appendChild(r), a || r.addEventListener("click", h), n.autoopen && u.pointerListenerAdd(r, "enter", o);
+    let l = this;
+    function o(p) {
       var d = this.value;
       !d || !d.has_submenu || h.call(this, p);
     }
     function h(p) {
       let d = parseInt(this.dataset.value);
-      var c = o.values[d];
+      var c = l.values[d];
       u.debug && console.debug("ContextMenu inner_onclick", d, c);
-      var m = !0;
+      var _ = !0;
       if (s.current_submenu && s.current_submenu.close(p), n.callback) {
         var f = n.callback.call(
           this,
@@ -1648,7 +1661,7 @@ class X {
           s,
           n.node
         );
-        f === !0 && (m = !1);
+        f === !0 && (_ = !1);
       }
       if (c && typeof c == "object") {
         if (c.callback && !n.ignore_item_callbacks && c.disabled !== !0) {
@@ -1660,7 +1673,7 @@ class X {
             s,
             n.extra
           );
-          f === !0 && (m = !1);
+          f === !0 && (_ = !1);
         }
         if (c.submenu) {
           if (!c.submenu.options)
@@ -1673,10 +1686,10 @@ class X {
             title: c.submenu.title,
             extra: c.submenu.extra,
             autoopen: n.autoopen
-          }), m = !1;
+          }), _ = !1;
         }
       }
-      m && !s.lock && s.close();
+      _ && !s.lock && s.close();
     }
     return r;
   }
@@ -1690,7 +1703,7 @@ class X {
     return this.options.parentMenu ? this.options.parentMenu.getFirstEvent() : this.options.event;
   }
 }
-class Le {
+class Ae {
   constructor(e, i = !1) {
     this.offset = [0, 0], this.scale = 1, this.max_scale = 10, this.min_scale = 0.1, this.onredraw = null, this.enabled = !0, this.last_mouse = [0, 0], this.element = null, this.visible_area = new Float32Array([0, 0, 0, 0]), this.viewport = null, this.dragging = !1, this._binded_mouse_callback = null, e && (this.element = e, i || this.bindEvents(e));
   }
@@ -1708,8 +1721,8 @@ class Le {
     }
     var i = this.element.width, n = this.element.height, s = -this.offset[0], r = -this.offset[1];
     e && (s += e[0] / this.scale, r += e[1] / this.scale, i = e[2], n = e[3]);
-    var a = s + i / this.scale, o = r + n / this.scale;
-    this.visible_area[0] = s, this.visible_area[1] = r, this.visible_area[2] = a - s, this.visible_area[3] = o - r;
+    var a = s + i / this.scale, l = r + n / this.scale;
+    this.visible_area[0] = s, this.visible_area[1] = r, this.visible_area[2] = a - s, this.visible_area[3] = l - r;
   }
   onMouse(e) {
     if (!this.enabled)
@@ -1718,15 +1731,15 @@ class Le {
     let s = e;
     var r = s.clientX - n.left, a = s.clientY - n.top;
     s.canvasX = r, s.canvasX = a, s.dragging = this.dragging;
-    var o = !this.viewport || this.viewport && r >= this.viewport[0] && r < this.viewport[0] + this.viewport[2] && a >= this.viewport[1] && a < this.viewport[1] + this.viewport[3];
-    if (s.type == u.pointerevents_method + "down" && o)
+    var l = !this.viewport || this.viewport && r >= this.viewport[0] && r < this.viewport[0] + this.viewport[2] && a >= this.viewport[1] && a < this.viewport[1] + this.viewport[3];
+    if (s.type == u.pointerevents_method + "down" && l)
       this.dragging = !0, u.pointerListenerRemove(i, "move", this._binded_mouse_callback), u.pointerListenerAdd(document, "move", this._binded_mouse_callback), u.pointerListenerAdd(document, "up", this._binded_mouse_callback);
     else if (s.type == u.pointerevents_method + "move") {
-      var l = r - this.last_mouse[0], h = a - this.last_mouse[1];
-      this.dragging && this.mouseDrag(l, h);
+      var o = r - this.last_mouse[0], h = a - this.last_mouse[1];
+      this.dragging && this.mouseDrag(o, h);
     } else
-      s.type == u.pointerevents_method + "up" ? (this.dragging = !1, u.pointerListenerRemove(document, "move", this._binded_mouse_callback), u.pointerListenerRemove(document, "up", this._binded_mouse_callback), u.pointerListenerAdd(i, "move", this._binded_mouse_callback)) : o && (s.type == "mousewheel" || s.type == "wheel" || s.type == "DOMMouseScroll") && (s.eventType = "mousewheel", s.type == "wheel" ? s.wheel = -s.deltaY : s.wheel = s.wheelDeltaY != null ? s.wheelDeltaY : s.detail * -60, s.delta = s.wheelDelta ? s.wheelDelta / 40 : s.deltaY ? -s.deltaY / 3 : 0, this.changeDeltaScale(1 + s.delta * 0.05));
-    if (this.last_mouse[0] = r, this.last_mouse[1] = a, o)
+      s.type == u.pointerevents_method + "up" ? (this.dragging = !1, u.pointerListenerRemove(document, "move", this._binded_mouse_callback), u.pointerListenerRemove(document, "up", this._binded_mouse_callback), u.pointerListenerAdd(i, "move", this._binded_mouse_callback)) : l && (s.type == "mousewheel" || s.type == "wheel" || s.type == "DOMMouseScroll") && (s.eventType = "mousewheel", s.type == "wheel" ? s.wheel = -s.deltaY : s.wheel = s.wheelDeltaY != null ? s.wheelDeltaY : s.detail * -60, s.delta = s.wheelDelta ? s.wheelDelta / 40 : s.deltaY ? -s.deltaY / 3 : 0, this.changeDeltaScale(1 + s.delta * 0.05));
+    if (this.last_mouse[0] = r, this.last_mouse[1] = a, l)
       return s.preventDefault(), s.stopPropagation(), !1;
   }
   toCanvasContext(e) {
@@ -1776,34 +1789,34 @@ class he {
     let i = e;
     this.adjustMouseEvent(i);
     var n = this.getCanvasWindow();
-    n.document, b.active_canvas = this;
+    n.document, T.active_canvas = this;
     var s = this, r = i.clientX, a = i.clientY;
     this.ds.viewport = this.viewport;
-    var o = !this.viewport || this.viewport && r >= this.viewport[0] && r < this.viewport[0] + this.viewport[2] && a >= this.viewport[1] && a < this.viewport[1] + this.viewport[3];
-    if (this.skip_events || (u.pointerListenerRemove(this.canvas, "move", this._mousemove_callback), u.pointerListenerAdd(n.document, "move", this._mousemove_callback, !0), u.pointerListenerAdd(n.document, "up", this._mouseup_callback, !0)), !!o) {
-      var l = this.graph.getNodeOnPos(i.canvasX, i.canvasY, this.visible_nodes, 5), h = !1, p = u.getTime(), d = !(i instanceof PointerEvent) || !i.isPrimary, c = p - this.last_mouseclick < 300 && d;
+    var l = !this.viewport || this.viewport && r >= this.viewport[0] && r < this.viewport[0] + this.viewport[2] && a >= this.viewport[1] && a < this.viewport[1] + this.viewport[3];
+    if (this.skip_events || (u.pointerListenerRemove(this.canvas, "move", this._mousemove_callback), u.pointerListenerAdd(n.document, "move", this._mousemove_callback, !0), u.pointerListenerAdd(n.document, "up", this._mouseup_callback, !0)), !!l) {
+      var o = this.graph.getNodeOnPos(i.canvasX, i.canvasY, this.visible_nodes, 5), h = !1, p = u.getTime(), d = !(i instanceof PointerEvent) || !i.isPrimary, c = p - this.last_mouseclick < 300 && d;
       if (this.mouse[0] = i.clientX, this.mouse[1] = i.clientY, this.graph_mouse[0] = i.canvasX, this.graph_mouse[1] = i.canvasY, this.last_click_position = [this.mouse[0], this.mouse[1]], this.pointer_is_down && d ? this.pointer_is_double = !0 : this.pointer_is_double = !1, this.pointer_is_down = !0, this.canvas.focus(), X.closeAllContextMenus(n), !(this.onMouse && this.onMouse(i) == !0)) {
         if (i.which == 1 && !this.pointer_is_double) {
-          if (i.ctrlKey && (this.dragging_rectangle = new Float32Array(4), this.dragging_rectangle[0] = i.canvasX, this.dragging_rectangle[1] = i.canvasY, this.dragging_rectangle[2] = 1, this.dragging_rectangle[3] = 1, h = !0), u.alt_drag_do_clone_nodes && i.altKey && l && this.allow_interaction && !h && !this.read_only) {
-            let W = l.clone();
-            W && (W.pos[0] += 5, W.pos[1] += 5, this.graph.add(W, { doCalcSize: !1 }), l = W, h = !0, E || (this.allow_dragnodes && (this.graph.beforeChange(), this.node_dragged = l), this.selected_nodes[l.id] || this.processNodeSelected(l, i)));
+          if (i.ctrlKey && (this.dragging_rectangle = new Float32Array(4), this.dragging_rectangle[0] = i.canvasX, this.dragging_rectangle[1] = i.canvasY, this.dragging_rectangle[2] = 1, this.dragging_rectangle[3] = 1, h = !0), u.alt_drag_do_clone_nodes && i.altKey && o && this.allow_interaction && !h && !this.read_only) {
+            let J = o.clone();
+            J && (J.pos[0] += 5, J.pos[1] += 5, this.graph.add(J, { doCalcSize: !1 }), o = J, h = !0, b || (this.allow_dragnodes && (this.graph.beforeChange(), this.node_dragged = o), this.selected_nodes[o.id] || this.processNodeSelected(o, i)));
           }
-          var m = !1;
-          if (l && this.allow_interaction && !h && !this.read_only) {
-            if (!this.live_mode && !l.flags.pinned && this.bringToFront(l), !this.connecting_node && !l.flags.collapsed && !this.live_mode)
-              if (!h && l.resizable !== !1 && u.isInsideRectangle(
+          var _ = !1;
+          if (o && this.allow_interaction && !h && !this.read_only) {
+            if (!this.live_mode && !o.flags.pinned && this.bringToFront(o), !this.connecting_node && !o.flags.collapsed && !this.live_mode)
+              if (!h && o.resizable !== !1 && u.isInsideRectangle(
                 i.canvasX,
                 i.canvasY,
-                l.pos[0] + l.size[0] - 5,
-                l.pos[1] + l.size[1] - 5,
+                o.pos[0] + o.size[0] - 5,
+                o.pos[1] + o.size[1] - 5,
                 10,
                 10
               ))
-                this.graph.beforeChange(), this.resizing_node = l, this.canvas.style.cursor = "se-resize", h = !0;
+                this.graph.beforeChange(), this.resizing_node = o, this.canvas.style.cursor = "se-resize", h = !0;
               else {
-                if (l.outputs)
-                  for (var f = 0, _ = l.outputs.length; f < _; ++f) {
-                    var v = l.outputs[f], y = l.getConnectionPos(!1, f);
+                if (o.outputs)
+                  for (var f = 0, g = o.outputs.length; f < g; ++f) {
+                    var m = o.outputs[f], y = o.getConnectionPos(!1, f);
                     if (u.isInsideRectangle(
                       i.canvasX,
                       i.canvasY,
@@ -1812,13 +1825,13 @@ class he {
                       30,
                       20
                     )) {
-                      this.connecting_node = l, this.connecting_output = v, this.connecting_output.slot_index = f, this.connecting_pos = l.getConnectionPos(!1, f), this.connecting_slot = f, u.shift_click_do_break_link_from && i.shiftKey && l.disconnectOutput(f), c ? l.onOutputDblClick && l.onOutputDblClick(f, i) : l.onOutputClick && l.onOutputClick(f, i), h = !0;
+                      this.connecting_node = o, this.connecting_output = m, this.connecting_output.slot_index = f, this.connecting_pos = o.getConnectionPos(!1, f), this.connecting_slot = f, u.shift_click_do_break_link_from && i.shiftKey && o.disconnectOutput(f), c ? o.onOutputDblClick && o.onOutputDblClick(f, i) : o.onOutputClick && o.onOutputClick(f, i), h = !0;
                       break;
                     }
                   }
-                if (l.inputs)
-                  for (var f = 0, _ = l.inputs.length; f < _; ++f) {
-                    var T = l.inputs[f], y = l.getConnectionPos(!0, f);
+                if (o.inputs)
+                  for (var f = 0, g = o.inputs.length; f < g; ++f) {
+                    var E = o.inputs[f], y = o.getConnectionPos(!0, f);
                     if (u.isInsideRectangle(
                       i.canvasX,
                       i.canvasY,
@@ -1827,36 +1840,36 @@ class he {
                       30,
                       20
                     )) {
-                      if (c ? l.onInputDblClick && l.onInputDblClick(f, i) : l.onInputClick && l.onInputClick(f, i), T.link !== null) {
-                        var g = this.graph.links[T.link];
-                        u.click_do_break_link_to && (l.disconnectInput(f), this.dirty_bgcanvas = !0, h = !0), (this.allow_reconnect_links || //this.move_destination_link_without_shift ||
-                        i.shiftKey) && (u.click_do_break_link_to || l.disconnectInput(f), this.connecting_node = this.graph._nodes_by_id[g.origin_id], this.connecting_slot = g.origin_slot, this.connecting_output = this.connecting_node.outputs[this.connecting_slot], this.connecting_pos = this.connecting_node.getConnectionPos(!1, this.connecting_slot), this.dirty_bgcanvas = !0, h = !0);
+                      if (c ? o.onInputDblClick && o.onInputDblClick(f, i) : o.onInputClick && o.onInputClick(f, i), E.link !== null) {
+                        var v = this.graph.links[E.link];
+                        u.click_do_break_link_to && (o.disconnectInput(f), this.dirty_bgcanvas = !0, h = !0), (this.allow_reconnect_links || //this.move_destination_link_without_shift ||
+                        i.shiftKey) && (u.click_do_break_link_to || o.disconnectInput(f), this.connecting_node = this.graph._nodes_by_id[v.origin_id], this.connecting_slot = v.origin_slot, this.connecting_output = this.connecting_node.outputs[this.connecting_slot], this.connecting_pos = this.connecting_node.getConnectionPos(!1, this.connecting_slot), this.dirty_bgcanvas = !0, h = !0);
                       }
-                      h || (this.connecting_node = l, this.connecting_input = T, this.connecting_input.slot_index = f, this.connecting_pos = l.getConnectionPos(!0, f), this.connecting_slot = f, this.dirty_bgcanvas = !0, h = !0);
+                      h || (this.connecting_node = o, this.connecting_input = E, this.connecting_input.slot_index = f, this.connecting_pos = o.getConnectionPos(!0, f), this.connecting_slot = f, this.dirty_bgcanvas = !0, h = !0);
                     }
                   }
               }
             if (!h) {
-              var E = !1, C = [i.canvasX - l.pos[0], i.canvasY - l.pos[1]], O = this.processNodeWidgets(l, this.graph_mouse, i);
-              if (O && (E = !0, this.node_widget = [l, O]), c && this.selected_nodes[l.id] && (l.onDblClick && l.onDblClick(i, C, this), this.processNodeDblClicked(l), E = !0), l.onMouseDown && l.onMouseDown(i, C, this))
-                E = !0;
+              var b = !1, C = [i.canvasX - o.pos[0], i.canvasY - o.pos[1]], O = this.processNodeWidgets(o, this.graph_mouse, i);
+              if (O && (b = !0, this.node_widget = [o, O]), c && this.selected_nodes[o.id] && (o.onDblClick && o.onDblClick(i, C, this), this.processNodeDblClicked(o), b = !0), o.onMouseDown && o.onMouseDown(i, C, this))
+                b = !0;
               else {
-                if (l.subgraph && !l.skip_subgraph_button && !l.flags.collapsed && C[0] > l.size[0] - u.NODE_TITLE_HEIGHT && C[1] < 0) {
+                if (o.subgraph && !o.skip_subgraph_button && !o.flags.collapsed && C[0] > o.size[0] - u.NODE_TITLE_HEIGHT && C[1] < 0) {
                   var s = this;
                   setTimeout(function() {
-                    s.openSubgraph(l.subgraph);
+                    s.openSubgraph(o.subgraph);
                   }, 10);
                 }
-                this.live_mode && (m = !0, E = !0);
+                this.live_mode && (_ = !0, b = !0);
               }
-              E || (this.allow_dragnodes && (this.graph.beforeChange(), this.node_dragged = l), this.selected_nodes[l.id] || this.processNodeSelected(l, i)), this.dirty_canvas = !0;
+              b || (this.allow_dragnodes && (this.graph.beforeChange(), this.node_dragged = o), this.selected_nodes[o.id] || this.processNodeSelected(o, i)), this.dirty_canvas = !0;
             }
           } else if (!h) {
             if (!this.read_only)
               for (var f = 0; f < this.visible_links.length; ++f) {
-                var G = this.visible_links[f], B = G._pos;
-                if (!(!B || i.canvasX < B[0] - 4 || i.canvasX > B[0] + 4 || i.canvasY < B[1] - 4 || i.canvasY > B[1] + 4)) {
-                  this.showLinkMenu(G, i), this.over_link_center = null;
+                var M = this.visible_links[f], G = M._pos;
+                if (!(!G || i.canvasX < G[0] - 4 || i.canvasX > G[0] + 4 || i.canvasY < G[1] - 4 || i.canvasY > G[1] + 4)) {
+                  this.showLinkMenu(M, i), this.over_link_center = null;
                   break;
                 }
               }
@@ -1865,38 +1878,38 @@ class he {
               var F = u.distance([i.canvasX, i.canvasY], [this.selected_group.pos[0] + this.selected_group.size[0], this.selected_group.pos[1] + this.selected_group.size[1]]);
               F * this.ds.scale < 10 ? this.selected_group_resizing = !0 : this.selected_group.recomputeInsideNodes();
             }
-            c && !this.read_only && this.allow_searchbox && (this.showSearchBox(i), i.preventDefault(), i.stopPropagation()), m = !0;
+            c && !this.read_only && this.allow_searchbox && (this.showSearchBox(i), i.preventDefault(), i.stopPropagation()), _ = !0;
           }
-          !h && m && this.allow_dragcanvas && (this.dragging_canvas = !0);
+          !h && _ && this.allow_dragcanvas && (this.dragging_canvas = !0);
         } else if (i.which == 2) {
-          if (u.middle_click_slot_add_default_node && l && this.allow_interaction && !h && !this.read_only && !this.connecting_node && !l.flags.collapsed && !this.live_mode) {
-            var H = null, D = null, w = null;
-            if (l.outputs)
-              for (var f = 0, _ = l.outputs.length; f < _; ++f) {
-                var v = l.outputs[f], y = l.getConnectionPos(!1, f);
+          if (u.middle_click_slot_add_default_node && o && this.allow_interaction && !h && !this.read_only && !this.connecting_node && !o.flags.collapsed && !this.live_mode) {
+            var B = null, D = null, w = null;
+            if (o.outputs)
+              for (var f = 0, g = o.outputs.length; f < g; ++f) {
+                var m = o.outputs[f], y = o.getConnectionPos(!1, f);
                 if (u.isInsideRectangle(i.canvasX, i.canvasY, y[0] - 15, y[1] - 10, 30, 20)) {
-                  H = v, D = f, w = !0;
+                  B = m, D = f, w = !0;
                   break;
                 }
               }
-            if (l.inputs)
-              for (var f = 0, _ = l.inputs.length; f < _; ++f) {
-                var T = l.inputs[f], y = l.getConnectionPos(!0, f);
+            if (o.inputs)
+              for (var f = 0, g = o.inputs.length; f < g; ++f) {
+                var E = o.inputs[f], y = o.getConnectionPos(!0, f);
                 if (u.isInsideRectangle(i.canvasX, i.canvasY, y[0] - 15, y[1] - 10, 30, 20)) {
-                  H = T, D = f, w = !1;
+                  B = E, D = f, w = !1;
                   break;
                 }
               }
-            if (H && D !== !1) {
-              var L = 0.5 - (D + 1) / (w ? l.outputs.length : l.inputs.length), P = l.getBounding(), z = [
+            if (B && D !== !1) {
+              var L = 0.5 - (D + 1) / (w ? o.outputs.length : o.inputs.length), P = o.getBounding(), z = [
                 w ? P[0] + P[2] : P[0],
                 i.canvasY - 80
                 // + node_bounding[0]/this.canvas.width*66 // vertical "derive"
               ];
               this.createDefaultNodeForSlot("AUTO", {
-                nodeFrom: w ? l : null,
+                nodeFrom: w ? o : null,
                 slotFrom: w ? D : null,
-                nodeTo: w ? null : l,
+                nodeTo: w ? null : o,
                 slotTo: w ? null : D,
                 position: z,
                 posAdd: [w ? 30 : -30, -L * 130],
@@ -1906,7 +1919,11 @@ class he {
             }
           }
         } else
-          (i.which == 3 || this.pointer_is_double) && this.allow_interaction && !h && !this.read_only && (l && (Object.keys(this.selected_nodes).length && (this.selected_nodes[l.id] || i.shiftKey || i.ctrlKey || i.metaKey) ? this.selected_nodes[l.id] || this.selectNodes([l], !0) : this.selectNodes([l])), this.processContextMenu(l, i));
+          (i.which == 3 || this.pointer_is_double) && this.allow_interaction && !h && !this.read_only && (o && (Object.keys(this.selected_nodes).length && (this.selected_nodes[o.id] || i.shiftKey || i.ctrlKey || i.metaKey) ? this.selected_nodes[o.id] || this.selectNodes([o], !0) : this.selectNodes([o])), this.processContextMenu(o, i));
+        if (this.selected_group_moving = !1, this.selected_group && !this.selected_group_resizing) {
+          var K = this.selected_group.fontSize || u.DEFAULT_GROUP_FONT_SIZE, R = K * 1.4;
+          u.isInsideRectangle(i.canvasX, i.canvasY, this.selected_group.pos[0], this.selected_group.pos[1], this.selected_group.size[0], R) && (this.selected_group_moving = !0);
+        }
         return this.last_mouse[0] = i.clientX, this.last_mouse[1] = i.clientY, this.last_mouseclick = u.getTime(), this.last_mouse_dragging = !0, this.graph.change(), (!n.document.activeElement || n.document.activeElement.nodeName.toLowerCase() != "input" && n.document.activeElement.nodeName.toLowerCase() != "textarea") && i.preventDefault(), i.stopPropagation(), this.onMouseDown && this.onMouseDown(i), !1;
       }
     }
@@ -1915,7 +1932,7 @@ class he {
     let i = e;
     if (this.autoresize && this.resize(), this.set_canvas_dirty_on_mouse_event && (this.dirty_canvas = !0), !this.graph)
       return;
-    b.active_canvas = this, this.adjustMouseEvent(i);
+    T.active_canvas = this, this.adjustMouseEvent(i);
     let n = [i.clientX, i.clientY];
     this.mouse[0] = n[0], this.mouse[1] = n[1];
     let s = [
@@ -1924,12 +1941,14 @@ class he {
     ];
     if (this.last_mouse = n, this.graph_mouse[0] = i.canvasX, this.graph_mouse[1] = i.canvasY, this.block_click)
       return i.preventDefault(), !1;
-    if (i.dragging = this.last_mouse_dragging, this.node_widget && (this.processNodeWidgets(
+    i.dragging = this.last_mouse_dragging, this.node_widget && (this.processNodeWidgets(
       this.node_widget[0],
       this.graph_mouse,
       i,
       this.node_widget[1]
-    ), this.dirty_canvas = !0), this.dragging_rectangle)
+    ), this.dirty_canvas = !0);
+    const r = this.selected_group;
+    if (this.selected_group && !this.selected_group_resizing && !this.selected_group_moving && (this.selected_group = null), this.dragging_rectangle)
       this.dragging_rectangle[2] = i.canvasX - this.dragging_rectangle[0], this.dragging_rectangle[3] = i.canvasY - this.dragging_rectangle[1], this.dirty_canvas = !0;
     else if (this.selected_group && !this.read_only) {
       if (this.selected_group_resizing)
@@ -1938,37 +1957,37 @@ class he {
           i.canvasY - this.selected_group.pos[1]
         ];
       else {
-        var r = s[0] / this.ds.scale, a = s[1] / this.ds.scale;
-        this.selected_group.move(r, a, i.ctrlKey), this.selected_group._nodes.length && (this.dirty_canvas = !0);
+        var a = s[0] / this.ds.scale, l = s[1] / this.ds.scale;
+        this.selected_group.move(a, l, i.ctrlKey), this.selected_group._nodes.length && (this.dirty_canvas = !0);
       }
       this.dirty_bgcanvas = !0;
     } else if (this.dragging_canvas)
       this.ds.offset[0] += s[0] / this.ds.scale, this.ds.offset[1] += s[1] / this.ds.scale, this.dirty_canvas = !0, this.dirty_bgcanvas = !0;
     else if (this.allow_interaction && !this.read_only) {
       this.connecting_node && (this.dirty_canvas = !0);
-      for (var o = this.graph.getNodeOnPos(i.canvasX, i.canvasY, this.visible_nodes), l = 0, h = this.graph._nodes.length; l < h; ++l) {
-        let g = this.graph._nodes[l];
-        g.mouseOver && o != g && (g.mouseOver = !1, this.node_over && this.node_over.onMouseLeave && this.node_over.onMouseLeave(i, [i.canvasX - this.node_over.pos[0], i.canvasY - this.node_over.pos[1]], this), this.node_over = null, this.dirty_canvas = !0);
+      for (var o = this.graph.getNodeOnPos(i.canvasX, i.canvasY, this.visible_nodes), h = 0, p = this.graph._nodes.length; h < p; ++h) {
+        let b = this.graph._nodes[h];
+        b.mouseOver && o != b && (b.mouseOver = !1, this.node_over && this.node_over.onMouseLeave && this.node_over.onMouseLeave(i, [i.canvasX - this.node_over.pos[0], i.canvasY - this.node_over.pos[1]], this), this.node_over = null, this.dirty_canvas = !0);
       }
       if (o) {
         if (o.redraw_on_mouse && (this.dirty_canvas = !0), o.mouseOver || (o.mouseOver = !0, this.node_over = o, this.dirty_canvas = !0, o.onMouseEnter && o.onMouseEnter(i, [i.canvasX - o.pos[0], i.canvasY - o.pos[1]], this)), o.onMouseMove && o.onMouseMove(i, [i.canvasX - o.pos[0], i.canvasY - o.pos[1]], this), this.connecting_node) {
           if (this.connecting_output) {
-            var p = this._highlight_input || [0, 0];
+            var d = this._highlight_input || [0, 0];
             if (!this.isOverNodeBox(o, i.canvasX, i.canvasY)) {
-              var d = this.isOverNodeInput(o, i.canvasX, i.canvasY, p);
-              if (d != -1 && o.inputs[d]) {
-                var c = o.inputs[d].type;
-                u.isValidConnection(this.connecting_output.type, c) && (this._highlight_input = p, this._highlight_input_slot = o.inputs[d]);
+              var c = this.isOverNodeInput(o, i.canvasX, i.canvasY, d);
+              if (c != -1 && o.inputs[c]) {
+                var _ = o.inputs[c].type;
+                u.isValidConnection(this.connecting_output.type, _) && (this._highlight_input = d, this._highlight_input_slot = o.inputs[c]);
               } else
                 this._highlight_input = null, this._highlight_input_slot = null;
             }
           } else if (this.connecting_input) {
-            var p = this._highlight_output || [0, 0];
+            var d = this._highlight_output || [0, 0];
             if (!this.isOverNodeBox(o, i.canvasX, i.canvasY)) {
-              var d = this.isOverNodeOutput(o, i.canvasX, i.canvasY, p);
-              if (d != -1 && o.outputs[d]) {
-                var c = o.outputs[d].type;
-                u.isValidConnection(this.connecting_input.type, c) && (this._highlight_output = p);
+              var c = this.isOverNodeOutput(o, i.canvasX, i.canvasY, d);
+              if (c != -1 && o.outputs[c]) {
+                var _ = o.outputs[c].type;
+                u.isValidConnection(this.connecting_input.type, _) && (this._highlight_output = d);
               } else
                 this._highlight_output = null;
             }
@@ -1983,28 +2002,28 @@ class he {
           5
         ) ? this.canvas.style.cursor = "se-resize" : this.canvas.style.cursor = "crosshair");
       } else {
-        for (var m = null, l = 0; l < this.visible_links.length; ++l) {
-          var f = this.visible_links[l], _ = f._pos;
-          if (!(!_ || i.canvasX < _[0] - 4 || i.canvasX > _[0] + 4 || i.canvasY < _[1] - 4 || i.canvasY > _[1] + 4)) {
-            m = f;
+        for (var f = null, h = 0; h < this.visible_links.length; ++h) {
+          var g = this.visible_links[h], m = g._pos;
+          if (!(!m || i.canvasX < m[0] - 4 || i.canvasX > m[0] + 4 || i.canvasY < m[1] - 4 || i.canvasY > m[1] + 4)) {
+            f = g;
             break;
           }
         }
-        m != this.over_link_center && (this.over_link_center = m, this.dirty_canvas = !0), this.canvas && (this.canvas.style.cursor = "");
+        f != this.over_link_center && (this.over_link_center = f, this.dirty_canvas = !0), this.canvas && (this.canvas.style.cursor = "");
       }
       if (this.node_capturing_input && this.node_capturing_input != o && this.node_capturing_input.onMouseMove && this.node_capturing_input.onMouseMove(i, [i.canvasX - this.node_capturing_input.pos[0], i.canvasY - this.node_capturing_input.pos[1]], this), this.node_dragged && !this.live_mode) {
-        for (const g in this.selected_nodes) {
-          var v = this.selected_nodes[g];
-          v.pos[0] += s[0] / this.ds.scale, v.pos[1] += s[1] / this.ds.scale;
+        for (const b in this.selected_nodes) {
+          var y = this.selected_nodes[b];
+          y.pos[0] += s[0] / this.ds.scale, y.pos[1] += s[1] / this.ds.scale;
         }
         this.dirty_canvas = !0, this.dirty_bgcanvas = !0;
       }
       if (this.resizing_node && !this.live_mode) {
-        var y = [i.canvasX - this.resizing_node.pos[0], i.canvasY - this.resizing_node.pos[1]], T = this.resizing_node.computeSize();
-        y[0] = Math.max(T[0], y[0]), y[1] = Math.max(T[1], y[1]), this.resizing_node.setSize(y), this.canvas.style.cursor = "se-resize", this.dirty_canvas = !0, this.dirty_bgcanvas = !0;
+        var E = [i.canvasX - this.resizing_node.pos[0], i.canvasY - this.resizing_node.pos[1]], v = this.resizing_node.computeSize();
+        E[0] = Math.max(v[0], E[0]), E[1] = Math.max(v[1], E[1]), this.resizing_node.setSize(E), this.canvas.style.cursor = "se-resize", this.dirty_canvas = !0, this.dirty_bgcanvas = !0;
       }
     }
-    return i.preventDefault(), !1;
+    return r && !this.selected_group_resizing && !this.selected_group_moving && (this.selected_group = r), i.preventDefault(), !1;
   }
   processMouseUp(e) {
     let i = e;
@@ -2013,12 +2032,12 @@ class he {
       return !1;
     if (this.set_canvas_dirty_on_mouse_event && (this.dirty_canvas = !0), !!this.graph) {
       var s = this.getCanvasWindow(), r = s.document;
-      b.active_canvas = this, this.skip_events || (u.pointerListenerRemove(r, "move", this._mousemove_callback, !0), u.pointerListenerAdd(this.canvas, "move", this._mousemove_callback, !0), u.pointerListenerRemove(r, "up", this._mouseup_callback, !0)), this.adjustMouseEvent(i);
+      T.active_canvas = this, this.skip_events || (u.pointerListenerRemove(r, "move", this._mousemove_callback, !0), u.pointerListenerAdd(this.canvas, "move", this._mousemove_callback, !0), u.pointerListenerRemove(r, "up", this._mouseup_callback, !0)), this.adjustMouseEvent(i);
       var a = u.getTime();
       if (i.click_time = a - this.last_mouseclick, this.last_mouse_dragging = !1, this.last_click_position = null, this.block_click && (this.block_click = !1), i.which == 1) {
         if (this.node_widget && this.processNodeWidgets(this.node_widget[0], this.graph_mouse, i), this.node_widget = null, this.selected_group) {
-          var o = this.selected_group.pos[0] - Math.round(this.selected_group.pos[0]), l = this.selected_group.pos[1] - Math.round(this.selected_group.pos[1]);
-          this.selected_group.move(o, l, i.ctrlKey), this.selected_group.pos[0] = Math.round(
+          var l = this.selected_group.pos[0] - Math.round(this.selected_group.pos[0]), o = this.selected_group.pos[1] - Math.round(this.selected_group.pos[1]);
+          this.selected_group.move(l, o, i.ctrlKey), this.selected_group.pos[0] = Math.round(
             this.selected_group.pos[0]
           ), this.selected_group.pos[1] = Math.round(
             this.selected_group.pos[1]
@@ -2032,23 +2051,23 @@ class he {
         );
         if (this.dragging_rectangle) {
           if (this.graph) {
-            var p = this.graph._nodes, d = new Float32Array(4), c = Math.abs(this.dragging_rectangle[2]), m = Math.abs(this.dragging_rectangle[3]), f = this.dragging_rectangle[2] < 0 ? this.dragging_rectangle[0] - c : this.dragging_rectangle[0], _ = this.dragging_rectangle[3] < 0 ? this.dragging_rectangle[1] - m : this.dragging_rectangle[1];
-            if (this.dragging_rectangle[0] = f, this.dragging_rectangle[1] = _, this.dragging_rectangle[2] = c, this.dragging_rectangle[3] = m, !h || c > 10 && m > 10) {
-              for (var v = [], y = 0; y < p.length; ++y) {
-                var T = p[y];
-                T.getBounding(d), u.overlapBounding(
+            var p = this.graph._nodes, d = new Float32Array(4), c = Math.abs(this.dragging_rectangle[2]), _ = Math.abs(this.dragging_rectangle[3]), f = this.dragging_rectangle[2] < 0 ? this.dragging_rectangle[0] - c : this.dragging_rectangle[0], g = this.dragging_rectangle[3] < 0 ? this.dragging_rectangle[1] - _ : this.dragging_rectangle[1];
+            if (this.dragging_rectangle[0] = f, this.dragging_rectangle[1] = g, this.dragging_rectangle[2] = c, this.dragging_rectangle[3] = _, !h || c > 10 && _ > 10) {
+              for (var m = [], y = 0; y < p.length; ++y) {
+                var E = p[y];
+                E.getBounding(d), u.overlapBounding(
                   this.dragging_rectangle,
                   d
-                ) && v.push(T);
+                ) && m.push(E);
               }
-              v.length && this.selectNodes(v, i.shiftKey);
+              m.length && this.selectNodes(m, i.shiftKey);
             } else
               this.selectNodes([h], i.shiftKey || i.ctrlKey);
           }
           this.dragging_rectangle = null;
         } else if (this.connecting_node) {
           this.dirty_canvas = !0, this.dirty_bgcanvas = !0;
-          var g = this.connecting_output || this.connecting_input, E = g.type;
+          var v = this.connecting_output || this.connecting_input, b = v.type;
           if (h) {
             if (this.connecting_output) {
               var C = this.isOverNodeInput(
@@ -2056,14 +2075,14 @@ class he {
                 i.canvasX,
                 i.canvasY
               );
-              C != -1 ? this.connecting_node.connect(this.connecting_slot, h, C) : this.connecting_node.connectByTypeInput(this.connecting_slot, h, E);
+              C != -1 ? this.connecting_node.connect(this.connecting_slot, h, C) : this.connecting_node.connectByTypeInput(this.connecting_slot, h, b);
             } else if (this.connecting_input) {
               var C = this.isOverNodeOutput(
                 h,
                 i.canvasX,
                 i.canvasY
               );
-              C != -1 ? h.connect(C, this.connecting_node, this.connecting_slot) : this.connecting_node.connectByTypeOutput(this.connecting_slot, h, E);
+              C != -1 ? h.connect(C, this.connecting_node, this.connecting_slot) : this.connecting_node.connectByTypeOutput(this.connecting_slot, h, b);
             }
           } else
             u.release_link_on_empty_shows_menu && (i.shiftKey && this.allow_searchbox ? this.connecting_output ? this.showSearchBox(i, { node_from: this.connecting_node, slotFrom: this.connecting_output, type_filter_in: this.connecting_output.type }) : this.connecting_input && this.showSearchBox(i, { node_to: this.connecting_node, slotFrom: this.connecting_input, type_filter_out: this.connecting_input.type }) : this.connecting_output ? this.showConnectionMenu({ nodeFrom: this.connecting_node, slotFrom: this.connecting_output, e: i }) : this.connecting_input && this.showConnectionMenu({ nodeTo: this.connecting_node, slotTo: this.connecting_input, e: i }));
@@ -2103,8 +2122,8 @@ class he {
       this.adjustMouseEvent(i);
       var s = i.clientX, r = i.clientY, a = !this.viewport || this.viewport && s >= this.viewport[0] && s < this.viewport[0] + this.viewport[2] && r >= this.viewport[1] && r < this.viewport[1] + this.viewport[3];
       if (a) {
-        var o = this.ds.scale;
-        return n > 0 ? o *= 1.1 : n < 0 && (o *= 1 / 1.1), this.ds.changeScale(o, [i.clientX, i.clientY]), this.graph.change(), i.preventDefault(), !1;
+        var l = this.ds.scale;
+        return n > 0 ? l *= 1.1 : n < 0 && (l *= 1 / 1.1), this.ds.changeScale(l, [i.clientX, i.clientY]), this.graph.change(), i.preventDefault(), !1;
       }
     }
   }
@@ -2158,11 +2177,11 @@ const $ = class {
         }
         if (this.render_execution_order && this.drawExecutionOrder(t), this.graph.config.links_ontop && (this.live_mode || this.drawConnections(t)), this.connecting_pos != null) {
           t.lineWidth = this.connections_width;
-          var a = null, o = this.connecting_output || this.connecting_input, l = o.type, h = o.dir;
-          h == null && (this.connecting_output ? h = this.connecting_node.horizontal ? A.DOWN : A.RIGHT : h = this.connecting_node.horizontal ? A.UP : A.LEFT);
-          var p = o.shape;
-          switch (l) {
-            case I.EVENT:
+          var a = null, l = this.connecting_output || this.connecting_input, o = l.type, h = l.dir;
+          h == null && (this.connecting_output ? h = this.connecting_node.horizontal ? k.DOWN : k.RIGHT : h = this.connecting_node.horizontal ? k.UP : k.LEFT);
+          var p = l.shape;
+          switch (o) {
+            case A.EVENT:
               a = u.EVENT_LINK_COLOR;
               break;
             default:
@@ -2177,8 +2196,8 @@ const $ = class {
             null,
             a,
             h,
-            A.CENTER
-          ), t.beginPath(), l === I.EVENT || p === S.BOX_SHAPE ? (t.rect(
+            k.CENTER
+          ), t.beginPath(), o === A.EVENT || p === S.BOX_SHAPE ? (t.rect(
             this.connecting_pos[0] - 6 + 0.5,
             this.connecting_pos[1] - 5 + 0.5,
             14,
@@ -2249,16 +2268,16 @@ const $ = class {
     }
     var a = 50;
     if (i.font = "14px Arial", e.inputs)
-      for (var o = 0; o < e.inputs.length; ++o) {
-        var l = e.inputs[o];
-        if (!l.not_subgraph_input) {
+      for (var l = 0; l < e.inputs.length; ++l) {
+        var o = e.inputs[l];
+        if (!o.not_subgraph_input) {
           if (this.drawButton(20, a + 2, s - 20, r - 2)) {
             var h = e.constructor.input_node_type || "graph/input";
             this.graph.beforeChange();
             var p = u.createNode(h);
-            p ? (t.add(p), this.block_click = !1, this.last_click_position = null, this.selectNodes([p]), this.node_dragged = p, this.dragging_canvas = !1, p.setProperty("name", l.name), p.setProperty("type", l.type), this.node_dragged.pos[0] = this.graph_mouse[0] - 5, this.node_dragged.pos[1] = this.graph_mouse[1] - 5, this.graph.afterChange()) : console.error("graph input node not found:", h);
+            p ? (t.add(p), this.block_click = !1, this.last_click_position = null, this.selectNodes([p]), this.node_dragged = p, this.dragging_canvas = !1, p.setProperty("name", o.name), p.setProperty("type", o.type), this.node_dragged.pos[0] = this.graph_mouse[0] - 5, this.node_dragged.pos[1] = this.graph_mouse[1] - 5, this.graph.afterChange()) : console.error("graph input node not found:", h);
           }
-          i.fillStyle = "#9C9", i.beginPath(), i.arc(s - 16, a + r * 0.5, 5, 0, 2 * Math.PI), i.fill(), i.fillStyle = "#AAA", i.fillText(l.name, 30, a + r * 0.75), i.fillStyle = "#777", i.fillText("" + l.type, 130, a + r * 0.75), a += r;
+          i.fillStyle = "#9C9", i.beginPath(), i.arc(s - 16, a + r * 0.5, 5, 0, 2 * Math.PI), i.fill(), i.fillStyle = "#AAA", i.fillText(o.name, 30, a + r * 0.75), i.fillStyle = "#777", i.fillText("" + o.type, 130, a + r * 0.75), a += r;
         }
       }
     this.drawButton(20, a + 2, s - 20, r - 2, "+", "#151515", "#222") && this.showSubgraphPropertiesDialog(e);
@@ -2266,8 +2285,8 @@ const $ = class {
   drawSubgraphPanelRight(t, e, i) {
     var n = e.outputs ? e.outputs.length : 0, s = this.bgcanvas.width, r = 200, a = Math.floor(u.NODE_SLOT_HEIGHT * 1.6);
     i.fillStyle = "#111", i.globalAlpha = 0.8, i.beginPath(), i.roundRect(s - r - 10, 10, r, (n + 1) * a + 50, [8]), i.fill(), i.globalAlpha = 1, i.fillStyle = "#888", i.font = "14px Arial", i.textAlign = "left";
-    var o = "Graph Outputs", l = i.measureText(o).width;
-    if (i.fillText(o, s - l - 20, 34), this.drawButton(s - r, 20, 20, 20, "X", "#151515")) {
+    var l = "Graph Outputs", o = i.measureText(l).width;
+    if (i.fillText(l, s - o - 20, 34), this.drawButton(s - r, 20, 20, 20, "X", "#151515")) {
       this.closeSubgraph();
       return;
     }
@@ -2279,8 +2298,8 @@ const $ = class {
           if (this.drawButton(s - r, h + 2, r - 20, a - 2)) {
             var c = e.constructor.output_node_type || "graph/output";
             this.graph.beforeChange();
-            var m = u.createNode(c);
-            m ? (t.add(m), this.block_click = !1, this.last_click_position = null, this.selectNodes([m]), this.node_dragged = m, this.dragging_canvas = !1, m.setProperty("name", d.name), m.setProperty("type", d.type), this.node_dragged.pos[0] = this.graph_mouse[0] - 5, this.node_dragged.pos[1] = this.graph_mouse[1] - 5, this.graph.afterChange()) : console.error("graph input node not found:", c);
+            var _ = u.createNode(c);
+            _ ? (t.add(_), this.block_click = !1, this.last_click_position = null, this.selectNodes([_]), this.node_dragged = _, this.dragging_canvas = !1, _.setProperty("name", d.name), _.setProperty("type", d.type), this.node_dragged.pos[0] = this.graph_mouse[0] - 5, this.node_dragged.pos[1] = this.graph_mouse[1] - 5, this.graph.afterChange()) : console.error("graph input node not found:", c);
           }
           i.fillStyle = "#9C9", i.beginPath(), i.arc(s - r + 16, h + a * 0.5, 5, 0, 2 * Math.PI), i.fill(), i.fillStyle = "#AAA", i.fillText(d.name, s - r + 30, h + a * 0.75), i.fillStyle = "#777", i.fillText("" + d.type, s - r + 130, h + a * 0.75), h += a;
         }
@@ -2288,13 +2307,13 @@ const $ = class {
     this.drawButton(s - r, h + 2, r - 20, a - 2, "+", "#151515", "#222") && this.showSubgraphPropertiesDialogRight(e);
   }
   //Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
-  drawButton(t, e, i, n, s, r = u.NODE_DEFAULT_COLOR, a = "#555", o = u.NODE_TEXT_COLOR) {
-    var l = this.ctx, h = e + u.NODE_TITLE_HEIGHT + 2, p = this.mouse, d = u.isInsideRectangle(p[0], p[1], t, h, i, n);
+  drawButton(t, e, i, n, s, r = u.NODE_DEFAULT_COLOR, a = "#555", l = u.NODE_TEXT_COLOR) {
+    var o = this.ctx, h = e + u.NODE_TITLE_HEIGHT + 2, p = this.mouse, d = u.isInsideRectangle(p[0], p[1], t, h, i, n);
     p = this.last_click_position;
     var c = p && u.isInsideRectangle(p[0], p[1], t, h, i, n);
-    l.fillStyle = d ? a : r, c && (l.fillStyle = "#AAA"), l.beginPath(), l.roundRect(t, e, i, n, [4]), l.fill(), s != null && s.constructor == String && (l.fillStyle = o, l.textAlign = "center", l.font = (n * 0.65 | 0) + "px Arial", l.fillText(s, t + i * 0.5, e + n * 0.75), l.textAlign = "left");
-    var m = c && !this.block_click;
-    return c && this.blockClick(), m;
+    o.fillStyle = d ? a : r, c && (o.fillStyle = "#AAA"), o.beginPath(), o.roundRect(t, e, i, n, [4]), o.fill(), s != null && s.constructor == String && (o.fillStyle = l, o.textAlign = "center", o.font = (n * 0.65 | 0) + "px Arial", o.fillText(s, t + i * 0.5, e + n * 0.75), o.textAlign = "left");
+    var _ = c && !this.block_click;
+    return c && this.blockClick(), _;
   }
   /** draws every group area in the background */
   drawGroups(t, e) {
@@ -2307,8 +2326,8 @@ const $ = class {
           e.fillStyle = s.color || "#335", e.strokeStyle = s.color || "#335";
           var r = s._pos, a = s._size;
           e.globalAlpha = 0.25 * this.editor_alpha, e.beginPath(), e.rect(r[0] + 0.5, r[1] + 0.5, a[0], a[1]), e.fill(), e.globalAlpha = this.editor_alpha, e.stroke(), e.beginPath(), e.moveTo(r[0] + a[0], r[1] + a[1]), e.lineTo(r[0] + a[0] - 10, r[1] + a[1]), e.lineTo(r[0] + a[0], r[1] + a[1] - 10), e.fill();
-          var o = s.font_size || u.DEFAULT_GROUP_FONT_SIZE;
-          e.font = o + "px Arial", e.textAlign = "left", e.fillText(s.title, r[0] + 4, r[1] + o);
+          var l = s.font_size || u.DEFAULT_GROUP_FONT_SIZE;
+          e.font = l + "px Arial", e.textAlign = "left", e.fillText(s.title, r[0] + 4, r[1] + l);
         }
       }
       e.restore();
@@ -2342,8 +2361,8 @@ const $ = class {
         this.zoom_modify_alpha ? e.globalAlpha = (1 - 0.5 / this.ds.scale) * this.editor_alpha : e.globalAlpha = this.editor_alpha, e.imageSmoothingEnabled = e.imageSmoothingEnabled = !1, (!this._bg_img || this._bg_img.name != this.background_image) && (this._bg_img = new Image(), this._bg_img.name = this.background_image, this._bg_img.src = this.background_image, this._bg_img.onload = () => {
           this.draw(!0, !0);
         });
-        var o = null;
-        this._pattern == null && this._bg_img.width > 0 ? (o = e.createPattern(this._bg_img, "repeat"), this._pattern_img = this._bg_img, this._pattern = o) : o = this._pattern, o && (e.fillStyle = o, e.fillRect(
+        var l = null;
+        this._pattern == null && this._bg_img.width > 0 ? (l = e.createPattern(this._bg_img, "repeat"), this._pattern_img = this._bg_img, this._pattern = l) : l = this._pattern, l && (e.fillStyle = l, e.fillRect(
           this.visible_area[0],
           this.visible_area[1],
           this.visible_area[2],
@@ -2366,115 +2385,115 @@ const $ = class {
     }
     var r = this.editor_alpha;
     if (e.globalAlpha = r, this.render_shadows && !s ? (e.shadowColor = u.DEFAULT_SHADOW_COLOR, e.shadowOffsetX = 2 * this.ds.scale, e.shadowOffsetY = 2 * this.ds.scale, e.shadowBlur = 3 * this.ds.scale) : e.shadowColor = "transparent", !(t.flags.collapsed && t.onDrawCollapsed && t.onDrawCollapsed(e, this) == !0)) {
-      var a = t.shape || S.BOX_SHAPE, o = $.temp_vec2;
+      var a = t.shape || S.BOX_SHAPE, l = $.temp_vec2;
       $.temp_vec2.set(t.size);
-      var l = t.horizontal;
+      var o = t.horizontal;
       if (t.flags.collapsed) {
         e.font = this.inner_text_font;
         var h = t.getTitle ? t.getTitle() : t.title;
         h != null && (t._collapsed_width = Math.min(
           t.size[0],
           e.measureText(h).width + u.NODE_TITLE_HEIGHT * 2
-        ), o[0] = t._collapsed_width, o[1] = 0);
+        ), l[0] = t._collapsed_width, l[1] = 0);
       }
-      t.clip_area && (e.save(), e.beginPath(), a == S.BOX_SHAPE ? e.rect(0, 0, o[0], o[1]) : a == S.ROUND_SHAPE ? e.roundRect(0, 0, o[0], o[1], [10]) : a == S.CIRCLE_SHAPE && e.arc(
-        o[0] * 0.5,
-        o[1] * 0.5,
-        o[0] * 0.5,
+      t.clip_area && (e.save(), e.beginPath(), a == S.BOX_SHAPE ? e.rect(0, 0, l[0], l[1]) : a == S.ROUND_SHAPE ? e.roundRect(0, 0, l[0], l[1], [10]) : a == S.CIRCLE_SHAPE && e.arc(
+        l[0] * 0.5,
+        l[1] * 0.5,
+        l[0] * 0.5,
         0,
         Math.PI * 2
       ), e.clip()), t.has_errors && (n = "red"), this.drawNodeShape(
         t,
         e,
-        [o[0], o[1]],
+        [l[0], l[1]],
         i,
         n,
         t.is_selected,
         t.mouseOver
-      ), e.shadowColor = "transparent", t.onDrawForeground && t.onDrawForeground(e, this, this.canvas), e.textAlign = l ? "center" : "left", e.font = this.inner_text_font;
+      ), e.shadowColor = "transparent", t.onDrawForeground && t.onDrawForeground(e, this, this.canvas), e.textAlign = o ? "center" : "left", e.font = this.inner_text_font;
       var p = !s, d = this.connecting_output, c = this.connecting_input;
       e.lineWidth = 1;
-      var m = 0, f = [0, 0];
+      var _ = 0, f = [0, 0];
       if (t.flags.collapsed) {
         if (this.render_collapsed_slots) {
-          var G = null, B = null;
+          var M = null, G = null;
           if (t.inputs)
             for (let D = 0; D < t.inputs.length; D++) {
               let w = t.inputs[D];
               if (w.link != null) {
-                G = w;
+                M = w;
                 break;
               }
             }
           if (t.outputs)
             for (let D = 0; D < t.outputs.length; D++) {
               let w = t.outputs[D];
-              !w.links || !w.links.length || (B = w);
+              !w.links || !w.links.length || (G = w);
             }
-          if (G) {
-            var F = 0, H = u.NODE_TITLE_HEIGHT * -0.5;
-            l && (F = t._collapsed_width * 0.5, H = -u.NODE_TITLE_HEIGHT), e.fillStyle = "#686", e.beginPath(), v.type === I.EVENT || v.shape === S.BOX_SHAPE ? e.rect(F - 7 + 0.5, H - 4, 14, 8) : v.shape === S.ARROW_SHAPE ? (e.moveTo(F + 8, H), e.lineTo(F + -4, H - 4), e.lineTo(F + -4, H + 4), e.closePath()) : e.arc(F, H, 4, 0, Math.PI * 2), e.fill();
+          if (M) {
+            var F = 0, B = u.NODE_TITLE_HEIGHT * -0.5;
+            o && (F = t._collapsed_width * 0.5, B = -u.NODE_TITLE_HEIGHT), e.fillStyle = "#686", e.beginPath(), M.type === A.EVENT || M.shape === S.BOX_SHAPE ? e.rect(F - 7 + 0.5, B - 4, 14, 8) : M.shape === S.ARROW_SHAPE ? (e.moveTo(F + 8, B), e.lineTo(F + -4, B - 4), e.lineTo(F + -4, B + 4), e.closePath()) : e.arc(F, B, 4, 0, Math.PI * 2), e.fill();
           }
-          if (B) {
-            var F = t._collapsed_width, H = u.NODE_TITLE_HEIGHT * -0.5;
-            l && (F = t._collapsed_width * 0.5, H = 0), e.fillStyle = "#686", e.strokeStyle = "black", e.beginPath(), v.type === I.EVENT || v.shape === S.BOX_SHAPE ? e.rect(F - 7 + 0.5, H - 4, 14, 8) : v.shape === S.ARROW_SHAPE ? (e.moveTo(F + 6, H), e.lineTo(F - 6, H - 4), e.lineTo(F - 6, H + 4), e.closePath()) : e.arc(F, H, 4, 0, Math.PI * 2), e.fill();
+          if (G) {
+            var F = t._collapsed_width, B = u.NODE_TITLE_HEIGHT * -0.5;
+            o && (F = t._collapsed_width * 0.5, B = 0), e.fillStyle = "#686", e.strokeStyle = "black", e.beginPath(), G.type === A.EVENT || G.shape === S.BOX_SHAPE ? e.rect(F - 7 + 0.5, B - 4, 14, 8) : G.shape === S.ARROW_SHAPE ? (e.moveTo(F + 6, B), e.lineTo(F - 6, B - 4), e.lineTo(F - 6, B + 4), e.closePath()) : e.arc(F, B, 4, 0, Math.PI * 2), e.fill();
           }
         }
       } else {
         if (t.inputs)
-          for (var _ = 0; _ < t.inputs.length; _++) {
-            var v = t.inputs[_], y = v.type, T = v.shape;
-            e.globalAlpha = r, this.connecting_output && !u.isValidConnection(v.type, d.type) && (e.globalAlpha = 0.4 * r), e.fillStyle = v.link != null ? v.color_on || // this.default_connection_color_byType[slot_type] ||
-            this.default_connection_color.input_on : v.color_off || // this.default_connection_color_byTypeOff[slot_type] ||
+          for (var g = 0; g < t.inputs.length; g++) {
+            var m = t.inputs[g], y = m.type, E = m.shape;
+            e.globalAlpha = r, this.connecting_output && !u.isValidConnection(m.type, d.type) && (e.globalAlpha = 0.4 * r), e.fillStyle = m.link != null ? m.color_on || // this.default_connection_color_byType[slot_type] ||
+            this.default_connection_color.input_on : m.color_off || // this.default_connection_color_byTypeOff[slot_type] ||
             // this.default_connection_color_byType[slot_type] ||
             this.default_connection_color.input_off;
-            var g = t.getConnectionPos(!0, _, [f[0], f[1]]);
-            g[0] -= t.pos[0], g[1] -= t.pos[1], m < g[1] + u.NODE_SLOT_HEIGHT * 0.5 && (m = g[1] + u.NODE_SLOT_HEIGHT * 0.5), e.beginPath(), y == "array" && (T = S.GRID_SHAPE);
-            var E = !0;
-            if (v.type === I.EVENT || v.shape === S.BOX_SHAPE ? l ? e.rect(
-              g[0] - 5 + 0.5,
-              g[1] - 8 + 0.5,
+            var v = t.getConnectionPos(!0, g, [f[0], f[1]]);
+            v[0] -= t.pos[0], v[1] -= t.pos[1], _ < v[1] + u.NODE_SLOT_HEIGHT * 0.5 && (_ = v[1] + u.NODE_SLOT_HEIGHT * 0.5), e.beginPath();
+            var b = !0;
+            if (m.type === A.EVENT || m.shape === S.BOX_SHAPE ? o ? e.rect(
+              v[0] - 5 + 0.5,
+              v[1] - 8 + 0.5,
               10,
               14
             ) : e.rect(
-              g[0] - 6 + 0.5,
-              g[1] - 5 + 0.5,
+              v[0] - 6 + 0.5,
+              v[1] - 5 + 0.5,
               14,
               10
-            ) : T === S.ARROW_SHAPE ? (e.moveTo(g[0] + 8, g[1] + 0.5), e.lineTo(g[0] - 4, g[1] + 6 + 0.5), e.lineTo(g[0] - 4, g[1] - 6 + 0.5), e.closePath()) : T === S.GRID_SHAPE ? (e.rect(g[0] - 4, g[1] - 4, 2, 2), e.rect(g[0] - 1, g[1] - 4, 2, 2), e.rect(g[0] + 2, g[1] - 4, 2, 2), e.rect(g[0] - 4, g[1] - 1, 2, 2), e.rect(g[0] - 1, g[1] - 1, 2, 2), e.rect(g[0] + 2, g[1] - 1, 2, 2), e.rect(g[0] - 4, g[1] + 2, 2, 2), e.rect(g[0] - 1, g[1] + 2, 2, 2), e.rect(g[0] + 2, g[1] + 2, 2, 2), E = !1) : s ? e.rect(g[0] - 4, g[1] - 4, 8, 8) : e.arc(g[0], g[1], 4, 0, Math.PI * 2), e.fill(), p) {
-              var C = v.label != null ? v.label : v.name;
-              C && (e.fillStyle = u.NODE_TEXT_COLOR, l || v.dir == A.UP ? e.fillText(C, g[0], g[1] - 10) : e.fillText(C, g[0] + 10, g[1] + 5));
+            ) : E === S.ARROW_SHAPE ? (e.moveTo(v[0] + 8, v[1] + 0.5), e.lineTo(v[0] - 4, v[1] + 6 + 0.5), e.lineTo(v[0] - 4, v[1] - 6 + 0.5), e.closePath()) : E === S.GRID_SHAPE ? (e.rect(v[0] - 4, v[1] - 4, 2, 2), e.rect(v[0] - 1, v[1] - 4, 2, 2), e.rect(v[0] + 2, v[1] - 4, 2, 2), e.rect(v[0] - 4, v[1] - 1, 2, 2), e.rect(v[0] - 1, v[1] - 1, 2, 2), e.rect(v[0] + 2, v[1] - 1, 2, 2), e.rect(v[0] - 4, v[1] + 2, 2, 2), e.rect(v[0] - 1, v[1] + 2, 2, 2), e.rect(v[0] + 2, v[1] + 2, 2, 2), b = !1) : s ? e.rect(v[0] - 4, v[1] - 4, 8, 8) : e.arc(v[0], v[1], 4, 0, Math.PI * 2), e.fill(), p) {
+              var C = m.label != null ? m.label : m.name;
+              C && (e.fillStyle = u.NODE_TEXT_COLOR, o || m.dir == k.UP ? e.fillText(C, v[0], v[1] - 10) : e.fillText(C, v[0] + 10, v[1] + 5));
             }
           }
-        if (e.textAlign = l ? "center" : "right", e.strokeStyle = "black", t.outputs)
+        if (e.textAlign = o ? "center" : "right", e.strokeStyle = "black", t.outputs)
           for (let D = 0; D < t.outputs.length; D++) {
             let w = t.outputs[D];
-            var y = w.type, T = w.shape;
+            var y = w.type, E = w.shape;
             this.connecting_input && !u.isValidConnection(y, c.type) && (e.globalAlpha = 0.4 * r);
-            var g = t.getConnectionPos(!1, D, f);
-            g[0] -= t.pos[0], g[1] -= t.pos[1], m < g[1] + u.NODE_SLOT_HEIGHT * 0.5 && (m = g[1] + u.NODE_SLOT_HEIGHT * 0.5), e.fillStyle = w.links && w.links.length ? w.color_on || // this.default_connection_color_byType[slot_type] ||
+            var v = t.getConnectionPos(!1, D, f);
+            v[0] -= t.pos[0], v[1] -= t.pos[1], _ < v[1] + u.NODE_SLOT_HEIGHT * 0.5 && (_ = v[1] + u.NODE_SLOT_HEIGHT * 0.5), e.fillStyle = w.links && w.links.length ? w.color_on || // this.default_connection_color_byType[slot_type] ||
             this.default_connection_color.output_on : w.color_off || // this.default_connection_color_byTypeOff[slot_type] ||
             // this.default_connection_color_byType[slot_type] ||
-            this.default_connection_color.output_off, e.beginPath(), y == "array" && (T = S.GRID_SHAPE);
-            var E = !0;
-            if (y === I.EVENT || T === S.BOX_SHAPE ? l ? e.rect(
-              g[0] - 5 + 0.5,
-              g[1] - 8 + 0.5,
+            this.default_connection_color.output_off, e.beginPath();
+            var b = !0;
+            if (y === A.EVENT || E === S.BOX_SHAPE ? o ? e.rect(
+              v[0] - 5 + 0.5,
+              v[1] - 8 + 0.5,
               10,
               14
             ) : e.rect(
-              g[0] - 6 + 0.5,
-              g[1] - 5 + 0.5,
+              v[0] - 6 + 0.5,
+              v[1] - 5 + 0.5,
               14,
               10
-            ) : T === S.ARROW_SHAPE ? (e.moveTo(g[0] + 8, g[1] + 0.5), e.lineTo(g[0] - 4, g[1] + 6 + 0.5), e.lineTo(g[0] - 4, g[1] - 6 + 0.5), e.closePath()) : T === S.GRID_SHAPE ? (e.rect(g[0] - 4, g[1] - 4, 2, 2), e.rect(g[0] - 1, g[1] - 4, 2, 2), e.rect(g[0] + 2, g[1] - 4, 2, 2), e.rect(g[0] - 4, g[1] - 1, 2, 2), e.rect(g[0] - 1, g[1] - 1, 2, 2), e.rect(g[0] + 2, g[1] - 1, 2, 2), e.rect(g[0] - 4, g[1] + 2, 2, 2), e.rect(g[0] - 1, g[1] + 2, 2, 2), e.rect(g[0] + 2, g[1] + 2, 2, 2), E = !1) : s ? e.rect(g[0] - 4, g[1] - 4, 8, 8) : e.arc(g[0], g[1], 4, 0, Math.PI * 2), e.fill(), !s && E && e.stroke(), p) {
+            ) : E === S.ARROW_SHAPE ? (e.moveTo(v[0] + 8, v[1] + 0.5), e.lineTo(v[0] - 4, v[1] + 6 + 0.5), e.lineTo(v[0] - 4, v[1] - 6 + 0.5), e.closePath()) : E === S.GRID_SHAPE ? (e.rect(v[0] - 4, v[1] - 4, 2, 2), e.rect(v[0] - 1, v[1] - 4, 2, 2), e.rect(v[0] + 2, v[1] - 4, 2, 2), e.rect(v[0] - 4, v[1] - 1, 2, 2), e.rect(v[0] - 1, v[1] - 1, 2, 2), e.rect(v[0] + 2, v[1] - 1, 2, 2), e.rect(v[0] - 4, v[1] + 2, 2, 2), e.rect(v[0] - 1, v[1] + 2, 2, 2), e.rect(v[0] + 2, v[1] + 2, 2, 2), b = !1) : s ? e.rect(v[0] - 4, v[1] - 4, 8, 8) : e.arc(v[0], v[1], 4, 0, Math.PI * 2), e.fill(), !s && b && e.stroke(), p) {
               var C = w.label != null ? w.label : w.name;
-              C && (e.fillStyle = u.NODE_TEXT_COLOR, l || w.dir == A.DOWN ? e.fillText(C, g[0], g[1] - 8) : e.fillText(C, g[0] - 10, g[1] + 5));
+              C && (e.fillStyle = u.NODE_TEXT_COLOR, o || w.dir == k.DOWN ? e.fillText(C, v[0], v[1] - 8) : e.fillText(C, v[0] - 10, v[1] + 5));
             }
           }
         if (e.textAlign = "left", e.globalAlpha = 1, t.widgets) {
-          var O = m;
-          (l || t.widgets_up) && (O = 2), t.widgets_start_y != null && (O = t.widgets_start_y), this.drawNodeWidgets(
+          var O = _;
+          (o || t.widgets_up) && (O = 2), t.widgets_start_y != null && (O = t.widgets_start_y), this.drawNodeWidgets(
             t,
             O,
             e,
@@ -2492,20 +2511,20 @@ const $ = class {
       var n = e.data, s = null;
       if (n.constructor === Number ? s = n.toFixed(2) : n.constructor === String ? s = '"' + n + '"' : n.constructor === Boolean ? s = String(n) : n.toToolTip ? s = n.toToolTip() : s = "[" + n.constructor.name + "]", s != null) {
         s = s.substr(0, 30), t.font = "14px Courier New";
-        var r = t.measureText(s), a = r.width + 20, o = 24;
-        t.shadowColor = "black", t.shadowOffsetX = 2, t.shadowOffsetY = 2, t.shadowBlur = 3, t.fillStyle = "#454", t.beginPath(), t.roundRect(i[0] - a * 0.5, i[1] - 15 - o, a, o, [3]), t.moveTo(i[0] - 10, i[1] - 15), t.lineTo(i[0] + 10, i[1] - 15), t.lineTo(i[0], i[1] - 5), t.fill(), t.shadowColor = "transparent", t.textAlign = "center", t.fillStyle = "#CEC", t.fillText(s, i[0], i[1] - 15 - o * 0.3);
+        var r = t.measureText(s), a = r.width + 20, l = 24;
+        t.shadowColor = "black", t.shadowOffsetX = 2, t.shadowOffsetY = 2, t.shadowBlur = 3, t.fillStyle = "#454", t.beginPath(), t.roundRect(i[0] - a * 0.5, i[1] - 15 - l, a, l, [3]), t.moveTo(i[0] - 10, i[1] - 15), t.lineTo(i[0] + 10, i[1] - 15), t.lineTo(i[0], i[1] - 5), t.fill(), t.shadowColor = "transparent", t.textAlign = "center", t.fillStyle = "#CEC", t.fillText(s, i[0], i[1] - 15 - l * 0.3);
       }
     }
   }
   /** draws the shape of the given node in the canvas */
   drawNodeShape(t, e, i, n, s, r, a) {
     e.strokeStyle = n, e.fillStyle = s;
-    var o = u.NODE_TITLE_HEIGHT, l = this.ds.scale < 0.5, h = t.shape || t.constructor.shape || S.ROUND_SHAPE, p = t.constructor.title_mode, d = !0;
+    var l = u.NODE_TITLE_HEIGHT, o = this.ds.scale < 0.5, h = t.shape || t.constructor.shape || S.ROUND_SHAPE, p = t.titleMode, d = !0;
     p == ee.TRANSPARENT_TITLE || p == ee.NO_TITLE ? d = !1 : p == ee.AUTOHIDE_TITLE && a && (d = !0);
     var c = $.tmp_area;
-    c[0] = 0, c[1] = d ? -o : 0, c[2] = i[0] + 1, c[3] = d ? i[1] + o : i[1];
-    var m = e.globalAlpha;
-    if (e.beginPath(), h == S.BOX_SHAPE || l ? e.fillRect(c[0], c[1], c[2], c[3]) : h == S.ROUND_SHAPE || h == S.CARD_SHAPE ? e.roundRect(
+    c[0] = 0, c[1] = d ? -l : 0, c[2] = i[0] + 1, c[3] = d ? i[1] + l : i[1];
+    var _ = e.globalAlpha;
+    if (e.beginPath(), h == S.BOX_SHAPE || o ? e.fillRect(c[0], c[1], c[2], c[3]) : h == S.ROUND_SHAPE || h == S.CARD_SHAPE ? e.roundRect(
       c[0],
       c[1],
       c[2],
@@ -2519,77 +2538,77 @@ const $ = class {
       Math.PI * 2
     ), e.fill(), !t.flags.collapsed && d && (e.shadowColor = "transparent", e.fillStyle = "rgba(0,0,0,0.2)", e.fillRect(0, -1, c[2], 2)), e.shadowColor = "transparent", t.onDrawBackground && t.onDrawBackground(e, this, this.canvas, this.graph_mouse), d || p == ee.TRANSPARENT_TITLE) {
       if (t.onDrawTitleBar)
-        t.onDrawTitleBar(e, this, o, i, this.ds.scale, n);
+        t.onDrawTitleBar(e, this, l, i, this.ds.scale, n);
       else if (p != ee.TRANSPARENT_TITLE && (t.constructor.title_color || this.render_title_colored)) {
         var f = t.constructor.title_color || n;
         if (t.flags.collapsed && (e.shadowColor = u.DEFAULT_SHADOW_COLOR), this.use_gradients) {
-          var _ = b.gradients[f];
-          _ || (_ = b.gradients[f] = e.createLinearGradient(0, 0, 400, 0), _.addColorStop(0, f), _.addColorStop(1, "#000")), e.fillStyle = _;
+          var g = T.gradients[f];
+          g || (g = T.gradients[f] = e.createLinearGradient(0, 0, 400, 0), g.addColorStop(0, f), g.addColorStop(1, "#000")), e.fillStyle = g;
         } else
           e.fillStyle = f;
-        e.beginPath(), h == S.BOX_SHAPE || l ? e.rect(0, -o, i[0] + 1, o) : (h == S.ROUND_SHAPE || h == S.CARD_SHAPE) && e.roundRect(
+        e.beginPath(), h == S.BOX_SHAPE || o ? e.rect(0, -l, i[0] + 1, l) : (h == S.ROUND_SHAPE || h == S.CARD_SHAPE) && e.roundRect(
           0,
-          -o,
+          -l,
           i[0] + 1,
-          o,
+          l,
           t.flags.collapsed ? [this.round_radius] : [this.round_radius, this.round_radius, 0, 0]
         ), e.fill(), e.shadowColor = "transparent";
       }
-      var v = null;
-      u.node_box_coloured_by_mode && Te[t.mode] && (v = Te[t.mode]), u.node_box_coloured_when_on && (v = t.action_triggered ? "#FFF" : t.execute_triggered ? "#AAA" : v);
+      var m = null;
+      u.node_box_coloured_by_mode && ye[t.mode] && (m = ye[t.mode]), u.node_box_coloured_when_on && (m = t.action_triggered ? "#FFF" : t.execute_triggered ? "#AAA" : m);
       var y = 10;
-      if (t.onDrawTitleBox ? t.onDrawTitleBox(e, this, o, i, this.ds.scale) : h == S.ROUND_SHAPE || h == S.CIRCLE_SHAPE || h == S.CARD_SHAPE ? (l && (e.fillStyle = "black", e.beginPath(), e.arc(
-        o * 0.5,
-        o * -0.5,
+      if (t.onDrawTitleBox ? t.onDrawTitleBox(e, this, l, i, this.ds.scale) : h == S.ROUND_SHAPE || h == S.CIRCLE_SHAPE || h == S.CARD_SHAPE ? (o && (e.fillStyle = "black", e.beginPath(), e.arc(
+        l * 0.5,
+        l * -0.5,
         y * 0.5 + 1,
         0,
         Math.PI * 2
-      ), e.fill()), e.fillStyle = t.boxcolor || v || u.NODE_DEFAULT_BOXCOLOR, l ? e.fillRect(o * 0.5 - y * 0.5, o * -0.5 - y * 0.5, y, y) : (e.beginPath(), e.arc(
-        o * 0.5,
-        o * -0.5,
+      ), e.fill()), e.fillStyle = t.boxcolor || m || u.NODE_DEFAULT_BOXCOLOR, o ? e.fillRect(l * 0.5 - y * 0.5, l * -0.5 - y * 0.5, y, y) : (e.beginPath(), e.arc(
+        l * 0.5,
+        l * -0.5,
         y * 0.5,
         0,
         Math.PI * 2
-      ), e.fill())) : (l && (e.fillStyle = "black", e.fillRect(
-        (o - y) * 0.5 - 1,
-        (o + y) * -0.5 - 1,
+      ), e.fill())) : (o && (e.fillStyle = "black", e.fillRect(
+        (l - y) * 0.5 - 1,
+        (l + y) * -0.5 - 1,
         y + 2,
         y + 2
-      )), e.fillStyle = t.boxcolor || v || u.NODE_DEFAULT_BOXCOLOR, e.fillRect(
-        (o - y) * 0.5,
-        (o + y) * -0.5,
+      )), e.fillStyle = t.boxcolor || m || u.NODE_DEFAULT_BOXCOLOR, e.fillRect(
+        (l - y) * 0.5,
+        (l + y) * -0.5,
         y,
         y
-      )), e.globalAlpha = m, t.onDrawTitleText && t.onDrawTitleText(
+      )), e.globalAlpha = _, t.onDrawTitleText && t.onDrawTitleText(
         e,
         this,
-        o,
+        l,
         i,
         this.ds.scale,
         this.title_text_font,
         r
-      ), !l) {
+      ), !o) {
         e.font = this.title_text_font;
-        var T = String(t.getTitle());
-        T && (r ? e.fillStyle = u.NODE_SELECTED_TITLE_COLOR : e.fillStyle = t.constructor.title_text_color || this.node_title_color, t.flags.collapsed ? (e.textAlign = "left", e.fillText(
-          T.substr(0, 20),
+        var E = String(t.getTitle());
+        E && (r ? e.fillStyle = u.NODE_SELECTED_TITLE_COLOR : e.fillStyle = t.constructor.title_text_color || this.node_title_color, t.flags.collapsed ? (e.textAlign = "left", e.fillText(
+          E.substr(0, 20),
           //avoid urls too long
-          o,
+          l,
           // + measure.width * 0.5,
-          u.NODE_TITLE_TEXT_Y - o
+          u.NODE_TITLE_TEXT_Y - l
         ), e.textAlign = "left") : (e.textAlign = "left", e.fillText(
-          T,
-          o,
-          u.NODE_TITLE_TEXT_Y - o
+          E,
+          l,
+          u.NODE_TITLE_TEXT_Y - l
         )));
       }
       if (!t.flags.collapsed && t.subgraph && !t.skip_subgraph_button) {
-        var g = u.NODE_TITLE_HEIGHT, E = t.size[0] - g, C = u.isInsideRectangle(this.graph_mouse[0] - t.pos[0], this.graph_mouse[1] - t.pos[1], E + 2, -g + 2, g - 4, g - 4);
-        e.fillStyle = C ? "#888" : "#555", h == S.BOX_SHAPE || l ? e.fillRect(E + 2, -g + 2, g - 4, g - 4) : (e.beginPath(), e.roundRect(E + 2, -g + 2, g - 4, g - 4, [4]), e.fill()), e.fillStyle = "#333", e.beginPath(), e.moveTo(E + g * 0.2, -g * 0.6), e.lineTo(E + g * 0.8, -g * 0.6), e.lineTo(E + g * 0.5, -g * 0.3), e.fill();
+        var v = u.NODE_TITLE_HEIGHT, b = t.size[0] - v, C = u.isInsideRectangle(this.graph_mouse[0] - t.pos[0], this.graph_mouse[1] - t.pos[1], b + 2, -v + 2, v - 4, v - 4);
+        e.fillStyle = C ? "#888" : "#555", h == S.BOX_SHAPE || o ? e.fillRect(b + 2, -v + 2, v - 4, v - 4) : (e.beginPath(), e.roundRect(b + 2, -v + 2, v - 4, v - 4, [4]), e.fill()), e.fillStyle = "#333", e.beginPath(), e.moveTo(b + v * 0.2, -v * 0.6), e.lineTo(b + v * 0.8, -v * 0.6), e.lineTo(b + v * 0.5, -v * 0.3), e.fill();
       }
       t.onDrawTitle && t.onDrawTitle(e, this);
     }
-    r && (t.onBounding && t.onBounding(c), p == ee.TRANSPARENT_TITLE && (c[1] -= o, c[3] += o), e.lineWidth = 1, e.globalAlpha = 0.8, e.beginPath(), h == S.BOX_SHAPE ? e.rect(
+    r && (t.onBounding && t.onBounding(c), p == ee.TRANSPARENT_TITLE && (c[1] -= l, c[3] += l), e.lineWidth = 1, e.globalAlpha = 0.8, e.beginPath(), h == S.BOX_SHAPE ? e.rect(
       -6 + c[0],
       -6 + c[1],
       12 + c[2],
@@ -2620,10 +2639,10 @@ const $ = class {
     let n = $.margin_area;
     n[0] = i[0] - 20, n[1] = i[1] - 20, n[2] = i[2] + 40, n[3] = i[3] + 40, t.lineWidth = this.connections_width, t.fillStyle = "#AAA", t.strokeStyle = "#AAA", t.globalAlpha = this.editor_alpha;
     for (var s = this.graph._nodes, r = 0, a = s.length; r < a; ++r) {
-      var o = s[r];
-      if (!(!o.inputs || !o.inputs.length))
-        for (var l = 0; l < o.inputs.length; ++l) {
-          var h = o.inputs[l];
+      var l = s[r];
+      if (!(!l.inputs || !l.inputs.length))
+        for (var o = 0; o < l.inputs.length; ++o) {
+          var h = l.inputs[o];
           if (!h || h.link == null)
             continue;
           var p = h.link, d = this.graph.links[p];
@@ -2632,43 +2651,43 @@ const $ = class {
           var c = this.graph.getNodeById(d.origin_id);
           if (c == null)
             continue;
-          var m = d.origin_slot, f = null;
-          m == -1 ? f = [
+          var _ = d.origin_slot, f = null;
+          _ == -1 ? f = [
             c.pos[0] + 10,
             c.pos[1] + 10
           ] : f = c.getConnectionPos(
             !1,
-            m,
+            _,
             $.tempA
           );
-          var _ = o.getConnectionPos(!0, l, $.tempB);
+          var g = l.getConnectionPos(!0, o, $.tempB);
           let O = $.link_bounding;
-          if (O[0] = f[0], O[1] = f[1], O[2] = _[0] - f[0], O[3] = _[1] - f[1], O[2] < 0 && (O[0] += O[2], O[2] = Math.abs(O[2])), O[3] < 0 && (O[1] += O[3], O[3] = Math.abs(O[3])), !!u.overlapBounding(O, n)) {
-            var v = c.outputs[m], y = o.inputs[l];
-            if (!(!v || !y)) {
-              var T = v.dir || (c.horizontal ? A.DOWN : A.RIGHT), g = y.dir || (o.horizontal ? A.UP : A.LEFT);
+          if (O[0] = f[0], O[1] = f[1], O[2] = g[0] - f[0], O[3] = g[1] - f[1], O[2] < 0 && (O[0] += O[2], O[2] = Math.abs(O[2])), O[3] < 0 && (O[1] += O[3], O[3] = Math.abs(O[3])), !!u.overlapBounding(O, n)) {
+            var m = c.outputs[_], y = l.inputs[o];
+            if (!(!m || !y)) {
+              var E = m.dir || (c.horizontal ? k.DOWN : k.RIGHT), v = y.dir || (l.horizontal ? k.UP : k.LEFT);
               if (this.renderLink(
                 t,
                 f,
-                _,
+                g,
                 d,
                 !1,
                 !1,
                 null,
-                T,
-                g
+                E,
+                v
               ), d && d._last_time && e - d._last_time < 1e3) {
-                var E = 2 - (e - d._last_time) * 2e-3, C = t.globalAlpha;
-                t.globalAlpha = C * E, this.renderLink(
+                var b = 2 - (e - d._last_time) * 2e-3, C = t.globalAlpha;
+                t.globalAlpha = C * b, this.renderLink(
                   t,
                   f,
-                  _,
+                  g,
                   d,
                   !0,
                   !0,
                   "white",
-                  T,
-                  g
+                  E,
+                  v
                 ), t.globalAlpha = C;
               }
             }
@@ -2689,127 +2708,127 @@ const $ = class {
    * @param endDir the direction enum
    * @param numSublines number of sublines (useful to represent vec3 or rgb)
    **/
-  renderLink(t, e, i, n, s, r, a, o, l, h) {
-    n && this.visible_links.push(n), !a && n && (a = n.color || b.link_type_colors[n.type]), a || (a = this.default_link_color), n != null && this.highlighted_links[n.id] && (a = "#FFF"), o = o || A.RIGHT, l = l || A.LEFT;
+  renderLink(t, e, i, n, s, r, a, l, o, h) {
+    n && this.visible_links.push(n), !a && n && (a = n.color || T.link_type_colors[n.type]), a || (a = this.default_link_color), n != null && this.highlighted_links[n.id] && (a = "#FFF"), l = l || k.RIGHT, o = o || k.LEFT;
     var p = u.distance(e, i);
     this.render_connections_border && this.ds.scale > 0.6 && (t.lineWidth = this.connections_width + 4), t.lineJoin = "round", h = h || 1, h > 1 && (t.lineWidth = 0.5), t.beginPath();
     for (var d = 0; d < h; d += 1) {
       var c = (d - (h - 1) * 0.5) * 5;
-      if (this.links_render_mode == oe.SPLINE_LINK) {
+      if (this.links_render_mode == le.SPLINE_LINK) {
         t.moveTo(e[0], e[1] + c);
-        var m = 0, f = 0, _ = 0, v = 0;
-        switch (o) {
-          case A.LEFT:
-            m = p * -0.25;
+        var _ = 0, f = 0, g = 0, m = 0;
+        switch (l) {
+          case k.LEFT:
+            _ = p * -0.25;
             break;
-          case A.RIGHT:
-            m = p * 0.25;
+          case k.RIGHT:
+            _ = p * 0.25;
             break;
-          case A.UP:
+          case k.UP:
             f = p * -0.25;
             break;
-          case A.DOWN:
+          case k.DOWN:
             f = p * 0.25;
             break;
         }
-        switch (l) {
-          case A.LEFT:
-            _ = p * -0.25;
+        switch (o) {
+          case k.LEFT:
+            g = p * -0.25;
             break;
-          case A.RIGHT:
-            _ = p * 0.25;
+          case k.RIGHT:
+            g = p * 0.25;
             break;
-          case A.UP:
-            v = p * -0.25;
+          case k.UP:
+            m = p * -0.25;
             break;
-          case A.DOWN:
-            v = p * 0.25;
+          case k.DOWN:
+            m = p * 0.25;
             break;
         }
         t.bezierCurveTo(
-          e[0] + m,
+          e[0] + _,
           e[1] + f + c,
-          i[0] + _,
-          i[1] + v + c,
+          i[0] + g,
+          i[1] + m + c,
           i[0],
           i[1] + c
         );
-      } else if (this.links_render_mode == oe.LINEAR_LINK) {
+      } else if (this.links_render_mode == le.LINEAR_LINK) {
         t.moveTo(e[0], e[1] + c);
-        var m = 0, f = 0, _ = 0, v = 0;
-        switch (o) {
-          case A.LEFT:
-            m = -1;
+        var _ = 0, f = 0, g = 0, m = 0;
+        switch (l) {
+          case k.LEFT:
+            _ = -1;
             break;
-          case A.RIGHT:
-            m = 1;
+          case k.RIGHT:
+            _ = 1;
             break;
-          case A.UP:
+          case k.UP:
             f = -1;
             break;
-          case A.DOWN:
+          case k.DOWN:
             f = 1;
             break;
         }
-        switch (l) {
-          case A.LEFT:
-            _ = -1;
+        switch (o) {
+          case k.LEFT:
+            g = -1;
             break;
-          case A.RIGHT:
-            _ = 1;
+          case k.RIGHT:
+            g = 1;
             break;
-          case A.UP:
-            v = -1;
+          case k.UP:
+            m = -1;
             break;
-          case A.DOWN:
-            v = 1;
+          case k.DOWN:
+            m = 1;
             break;
         }
         var y = 15;
         t.lineTo(
-          e[0] + m * y,
+          e[0] + _ * y,
           e[1] + f * y + c
         ), t.lineTo(
-          i[0] + _ * y,
-          i[1] + v * y + c
+          i[0] + g * y,
+          i[1] + m * y + c
         ), t.lineTo(i[0], i[1] + c);
-      } else if (this.links_render_mode == oe.STRAIGHT_LINK) {
+      } else if (this.links_render_mode == le.STRAIGHT_LINK) {
         t.moveTo(e[0], e[1]);
-        var T = e[0], g = e[1], E = i[0], C = i[1];
-        o == A.RIGHT ? T += 10 : g += 10, l == A.LEFT ? E -= 10 : C -= 10, t.lineTo(T, g), t.lineTo((T + E) * 0.5, g), t.lineTo((T + E) * 0.5, C), t.lineTo(E, C), t.lineTo(i[0], i[1]);
+        var E = e[0], v = e[1], b = i[0], C = i[1];
+        l == k.RIGHT ? E += 10 : v += 10, o == k.LEFT ? b -= 10 : C -= 10, t.lineTo(E, v), t.lineTo((E + b) * 0.5, v), t.lineTo((E + b) * 0.5, C), t.lineTo(b, C), t.lineTo(i[0], i[1]);
       } else
         return;
     }
     this.render_connections_border && this.ds.scale > 0.6 && !s && (t.strokeStyle = "rgba(0,0,0,0.5)", t.stroke()), t.lineWidth = this.connections_width, t.fillStyle = t.strokeStyle = a, t.stroke();
-    var O = this.computeConnectionPoint(e, i, 0.5, o, l);
-    if (n && n._pos && (n._pos[0] = O[0], n._pos[1] = O[1]), this.ds.scale >= 0.6 && this.highquality_render && l != A.CENTER) {
+    var O = this.computeConnectionPoint(e, i, 0.5, l, o);
+    if (n && n._pos && (n._pos[0] = O[0], n._pos[1] = O[1]), this.ds.scale >= 0.6 && this.highquality_render && o != k.CENTER) {
       if (this.render_connection_arrows) {
-        var G = this.computeConnectionPoint(
+        var M = this.computeConnectionPoint(
           e,
           i,
           0.25,
-          o,
-          l
-        ), B = this.computeConnectionPoint(
+          l,
+          o
+        ), G = this.computeConnectionPoint(
           e,
           i,
           0.26,
-          o,
-          l
+          l,
+          o
         ), F = this.computeConnectionPoint(
           e,
           i,
           0.75,
-          o,
-          l
-        ), H = this.computeConnectionPoint(
+          l,
+          o
+        ), B = this.computeConnectionPoint(
           e,
           i,
           0.76,
-          o,
-          l
+          l,
+          o
         ), D = 0, w = 0;
-        this.render_curved_connections ? (D = -Math.atan2(B[0] - G[0], B[1] - G[1]), w = -Math.atan2(H[0] - F[0], H[1] - F[1])) : w = D = i[1] > e[1] ? 0 : Math.PI, t.save(), t.translate(G[0], G[1]), t.rotate(D), t.beginPath(), t.moveTo(-5, -3), t.lineTo(0, 7), t.lineTo(5, -3), t.fill(), t.restore(), t.save(), t.translate(F[0], F[1]), t.rotate(w), t.beginPath(), t.moveTo(-5, -3), t.lineTo(0, 7), t.lineTo(5, -3), t.fill(), t.restore();
+        this.render_curved_connections ? (D = -Math.atan2(G[0] - M[0], G[1] - M[1]), w = -Math.atan2(B[0] - F[0], B[1] - F[1])) : w = D = i[1] > e[1] ? 0 : Math.PI, t.save(), t.translate(M[0], M[1]), t.rotate(D), t.beginPath(), t.moveTo(-5, -3), t.lineTo(0, 7), t.lineTo(5, -3), t.fill(), t.restore(), t.save(), t.translate(F[0], F[1]), t.rotate(w), t.beginPath(), t.moveTo(-5, -3), t.lineTo(0, 7), t.lineTo(5, -3), t.fill(), t.restore();
       }
       t.beginPath(), t.arc(O[0], O[1], 5, 0, Math.PI * 2), t.fill();
     }
@@ -2820,45 +2839,45 @@ const $ = class {
           e,
           i,
           L,
-          o,
-          l
+          l,
+          o
         );
         t.beginPath(), t.arc(O[0], O[1], 5, 0, 2 * Math.PI), t.fill();
       }
     }
   }
-  computeConnectionPoint(t, e, i, n = A.RIGHT, s = A.LEFT) {
-    var r = u.distance(t, e), a = t, o = [t[0], t[1]], l = [e[0], e[1]], h = e;
+  computeConnectionPoint(t, e, i, n = k.RIGHT, s = k.LEFT) {
+    var r = u.distance(t, e), a = t, l = [t[0], t[1]], o = [e[0], e[1]], h = e;
     switch (n) {
-      case A.LEFT:
-        o[0] += r * -0.25;
-        break;
-      case A.RIGHT:
-        o[0] += r * 0.25;
-        break;
-      case A.UP:
-        o[1] += r * -0.25;
-        break;
-      case A.DOWN:
-        o[1] += r * 0.25;
-        break;
-    }
-    switch (s) {
-      case A.LEFT:
+      case k.LEFT:
         l[0] += r * -0.25;
         break;
-      case A.RIGHT:
+      case k.RIGHT:
         l[0] += r * 0.25;
         break;
-      case A.UP:
+      case k.UP:
         l[1] += r * -0.25;
         break;
-      case A.DOWN:
+      case k.DOWN:
         l[1] += r * 0.25;
         break;
     }
-    var p = (1 - i) * (1 - i) * (1 - i), d = 3 * ((1 - i) * (1 - i)) * i, c = 3 * (1 - i) * (i * i), m = i * i * i, f = p * a[0] + d * o[0] + c * l[0] + m * h[0], _ = p * a[1] + d * o[1] + c * l[1] + m * h[1];
-    return [f, _];
+    switch (s) {
+      case k.LEFT:
+        o[0] += r * -0.25;
+        break;
+      case k.RIGHT:
+        o[0] += r * 0.25;
+        break;
+      case k.UP:
+        o[1] += r * -0.25;
+        break;
+      case k.DOWN:
+        o[1] += r * 0.25;
+        break;
+    }
+    var p = (1 - i) * (1 - i) * (1 - i), d = 3 * ((1 - i) * (1 - i)) * i, c = 3 * (1 - i) * (i * i), _ = i * i * i, f = p * a[0] + d * l[0] + c * o[0] + _ * h[0], g = p * a[1] + d * l[1] + c * o[1] + _ * h[1];
+    return [f, g];
   }
   drawExecutionOrder(t) {
     t.shadowColor = "transparent", t.globalAlpha = 0.25, t.textAlign = "center", t.strokeStyle = "white", t.globalAlpha = 0.75;
@@ -2887,85 +2906,88 @@ const $ = class {
     if (!(!t.widgets || !t.widgets.length)) {
       var s = t.size[0], r = t.widgets;
       e += 2;
-      var a = u.NODE_WIDGET_HEIGHT, o = this.ds.scale > 0.5;
+      var a = u.NODE_WIDGET_HEIGHT, l = this.ds.scale > 0.5;
       i.save(), i.globalAlpha = this.editor_alpha;
-      for (var l = u.WIDGET_OUTLINE_COLOR, h = u.WIDGET_BGCOLOR, p = u.WIDGET_TEXT_COLOR, d = u.WIDGET_SECONDARY_TEXT_COLOR, c = 15, m = 0; m < r.length; ++m) {
-        var f = r[m], _ = e;
-        f.y && (_ = f.y), f.last_y = _, i.strokeStyle = l, i.fillStyle = "#222", i.textAlign = "left", f.disabled && (i.globalAlpha *= 0.5);
-        var v = f.width || s;
+      for (var o = u.WIDGET_OUTLINE_COLOR, h = u.WIDGET_BGCOLOR, p = u.WIDGET_TEXT_COLOR, d = u.WIDGET_SECONDARY_TEXT_COLOR, c = 15, _ = 0; _ < r.length; ++_) {
+        var f = r[_], g = e;
+        f.y && (g = f.y), f.last_y = g, i.strokeStyle = o, i.fillStyle = "#222", i.textAlign = "left", f.disabled && (i.globalAlpha *= 0.5);
+        var m = f.width || s;
         switch (f.type) {
           case "button":
-            f.clicked && (i.fillStyle = "#AAA", f.clicked = !1, this.dirty_canvas = !0), i.fillRect(c, _, v - c * 2, a), o && !f.disabled && i.strokeRect(c, _, v - c * 2, a), o && (i.textAlign = "center", i.fillStyle = p, i.fillText(f.name, v * 0.5, _ + a * 0.7));
+            f.clicked && (i.fillStyle = "#AAA", f.clicked = !1, this.dirty_canvas = !0), i.fillRect(c, g, m - c * 2, a), l && !f.disabled && !u.ignore_all_widget_events && i.strokeRect(c, g, m - c * 2, a), l && (i.textAlign = "center", i.fillStyle = p, i.fillText(f.name, m * 0.5, g + a * 0.7));
             break;
           case "toggle":
-            i.textAlign = "left", i.strokeStyle = l, i.fillStyle = h, i.beginPath(), o ? i.roundRect(c, _, v - c * 2, a, [a * 0.5]) : i.rect(c, _, v - c * 2, a), i.fill(), o && !f.disabled && i.stroke(), i.fillStyle = f.value ? "#89A" : "#333", i.beginPath(), i.arc(v - c * 2, _ + a * 0.5, a * 0.36, 0, Math.PI * 2), i.fill(), o && (i.fillStyle = d, f.name != null && i.fillText(f.name, c * 2, _ + a * 0.7), i.fillStyle = f.value ? p : d, i.textAlign = "right", i.fillText(
+            i.textAlign = "left", i.strokeStyle = o, i.fillStyle = h, i.beginPath(), l ? i.roundRect(c, g, m - c * 2, a, [a * 0.5]) : i.rect(c, g, m - c * 2, a), i.fill(), l && !f.disabled && !u.ignore_all_widget_events && i.stroke(), i.fillStyle = f.value ? "#89A" : "#333", i.beginPath(), i.arc(m - c * 2, g + a * 0.5, a * 0.36, 0, Math.PI * 2), i.fill(), l && (i.fillStyle = d, f.name != null && i.fillText(f.name, c * 2, g + a * 0.7), i.fillStyle = f.value ? p : d, i.textAlign = "right", i.fillText(
               f.value ? f.options.on || "true" : f.options.off || "false",
-              v - 40,
-              _ + a * 0.7
+              m - 40,
+              g + a * 0.7
             ));
             break;
           case "slider":
-            i.fillStyle = h, i.fillRect(c, _, v - c * 2, a);
-            var y = f.options.max - f.options.min, T = (f.value - f.options.min) / y;
-            if (i.fillStyle = n == f ? "#89A" : "#678", i.fillRect(c, _, T * (v - c * 2), a), o && !f.disabled && i.strokeRect(c, _, v - c * 2, a), f.marker) {
-              var g = (+f.marker - f.options.min) / y;
-              i.fillStyle = "#AA9", i.fillRect(c + g * (v - c * 2), _, 2, a);
+            i.fillStyle = h, i.fillRect(c, g, m - c * 2, a);
+            var y = f.options.max - f.options.min, E = (f.value - f.options.min) / y;
+            if (i.fillStyle = n == f ? "#89A" : "#678", i.fillRect(c, g, E * (m - c * 2), a), l && !f.disabled && i.strokeRect(c, g, m - c * 2, a), f.marker) {
+              var v = (+f.marker - f.options.min) / y;
+              i.fillStyle = "#AA9", i.fillRect(c + v * (m - c * 2), g, 2, a);
             }
-            o && (i.textAlign = "center", i.fillStyle = p, i.fillText(
+            l && (i.textAlign = "center", i.fillStyle = p, i.fillText(
               f.name + "  " + Number(f.value).toFixed(3),
-              v * 0.5,
-              _ + a * 0.7
+              m * 0.5,
+              g + a * 0.7
             ));
             break;
           case "number":
           case "combo":
-            if (i.textAlign = "left", i.strokeStyle = l, i.fillStyle = h, i.beginPath(), o ? i.roundRect(c, _, v - c * 2, a, [a * 0.5]) : i.rect(c, _, v - c * 2, a), i.fill(), o)
-              if (f.disabled || i.stroke(), i.fillStyle = p, f.disabled || (i.beginPath(), i.moveTo(c + 16, _ + 5), i.lineTo(c + 6, _ + a * 0.5), i.lineTo(c + 16, _ + a - 5), i.fill(), i.beginPath(), i.moveTo(v - c - 16, _ + 5), i.lineTo(v - c - 6, _ + a * 0.5), i.lineTo(v - c - 16, _ + a - 5), i.fill()), i.fillStyle = d, i.fillText(f.name, c * 2 + 5, _ + a * 0.7), i.fillStyle = p, i.textAlign = "right", f.type == "number")
+            if (i.textAlign = "left", i.strokeStyle = o, i.fillStyle = h, i.beginPath(), l ? i.roundRect(c, g, m - c * 2, a, [a * 0.5]) : i.rect(c, g, m - c * 2, a), i.fill(), l)
+              if (!f.disabled && !u.ignore_all_widget_events && i.stroke(), i.fillStyle = p, !f.disabled && !u.ignore_all_widget_events && (i.beginPath(), i.moveTo(c + 16, g + 5), i.lineTo(c + 6, g + a * 0.5), i.lineTo(c + 16, g + a - 5), i.fill(), i.beginPath(), i.moveTo(m - c - 16, g + 5), i.lineTo(m - c - 6, g + a * 0.5), i.lineTo(m - c - 16, g + a - 5), i.fill()), i.fillStyle = d, i.fillText(f.name, c * 2 + 5, g + a * 0.7), i.fillStyle = p, i.textAlign = "right", f.type == "number")
                 i.fillText(
                   Number(f.value).toFixed(
                     f.options.precision !== void 0 ? f.options.precision : 3
                   ),
-                  v - c * 2 - 20,
-                  _ + a * 0.7
+                  m - c * 2 - 20,
+                  g + a * 0.7
                 );
               else {
-                var E = f.value;
+                var b = f.value;
                 if (f.options.values) {
                   var C = f.options.values;
-                  C.constructor === Function && (C = C()), C && C.constructor !== Array && (E = C[f.value]);
+                  C.constructor === Function && (C = C()), C && C.constructor !== Array && (b = C[f.value]);
                 }
                 i.fillText(
-                  E,
-                  v - c * 2 - 20,
-                  _ + a * 0.7
+                  b,
+                  m - c * 2 - 20,
+                  g + a * 0.7
                 );
               }
             break;
           case "string":
           case "text":
-            i.textAlign = "left", i.strokeStyle = l, i.fillStyle = h, i.beginPath(), o ? i.roundRect(c, _, v - c * 2, a, [a * 0.5]) : i.rect(c, _, v - c * 2, a), i.fill(), o && (f.disabled || i.stroke(), i.save(), i.beginPath(), i.rect(c, _, v - c * 2, a), i.clip(), i.fillStyle = d, f.name != null && i.fillText(f.name, c * 2, _ + a * 0.7), i.fillStyle = p, i.textAlign = "right", i.fillText(String(f.value).substr(0, 30), v - c * 2, _ + a * 0.7), i.restore());
+            i.textAlign = "left", i.strokeStyle = o, i.fillStyle = h, i.beginPath(), l ? i.roundRect(c, g, m - c * 2, a, [a * 0.5]) : i.rect(c, g, m - c * 2, a), i.fill(), l && (f.disabled || i.stroke(), i.save(), i.beginPath(), i.rect(c, g, m - c * 2, a), i.clip(), i.fillStyle = d, f.name != null && i.fillText(f.name, c * 2, g + a * 0.7), i.fillStyle = p, i.textAlign = "right", i.fillText(String(f.value).substr(0, 30), m - c * 2, g + a * 0.7), i.restore());
             break;
           default:
-            f.draw && f.draw(i, t, v, _, a);
+            f.draw && f.draw(i, t, m, g, a);
             break;
         }
-        e += (f.computeSize ? f.computeSize(v)[1] : a) + 4, i.globalAlpha = this.editor_alpha;
+        e += (f.computeSize ? f.computeSize(m)[1] : a) + 4, i.globalAlpha = this.editor_alpha;
       }
       i.restore(), i.textAlign = "left";
     }
   }
 };
-let R = $;
-R.temp = new Float32Array(4);
-R.temp_vec2 = new Float32Array(2);
-R.tmp_area = new Float32Array(4);
-R.margin_area = new Float32Array(4);
-R.link_bounding = new Float32Array(4);
-R.tempA = [0, 0];
-R.tempB = [0, 0];
+let H = $;
+H.temp = new Float32Array(4);
+H.temp_vec2 = new Float32Array(2);
+H.tmp_area = new Float32Array(4);
+H.margin_area = new Float32Array(4);
+H.link_bounding = new Float32Array(4);
+H.tempA = [0, 0];
+H.tempB = [0, 0];
 class pe {
   constructor(e = "Group") {
-    this.fontSize = u.DEFAULT_GROUP_FONT_SIZE, this._nodes = [], this.graph = null, this._bounding = new Float32Array([10, 10, 140, 80]), this.title = e, this.color = b.node_colors.pale_blue ? b.node_colors.pale_blue.groupcolor : "#AAA";
+    this.fontSize = u.DEFAULT_GROUP_FONT_SIZE, this._nodes = [], this.graph = null, this._bounding = new Float32Array([10, 10, 140, 80]), this.title = e, this.color = T.node_colors.pale_blue ? T.node_colors.pale_blue.groupcolor : "#AAA", this._pos = this._bounding.subarray(0, 2), this._size = this._bounding.subarray(2, 4);
+  }
+  get bounding() {
+    return this._bounding;
   }
   get pos() {
     return [this._pos[0], this._pos[1]];
@@ -3010,6 +3032,15 @@ class pe {
       s.getBounding(i), u.overlapBounding(this._bounding, i) && this._nodes.push(s);
     }
   }
+  /** checks if a point is inside the shape of a node */
+  isPointInside(e, i, n = 0, s = !1) {
+    var r = this.graph && this.graph.isLive() ? 0 : u.NODE_TITLE_HEIGHT;
+    return s && (r = 0), this.pos[0] - 4 - n < e && this.pos[0] + this.size[0] + 4 + n > e && this.pos[1] - r - n < i && this.pos[1] + this.size[1] + n > i;
+  }
+  /** Forces to redraw or the main canvas (LGraphNode) or the bg canvas (links) */
+  setDirtyCanvas(e, i = !1) {
+    this.graph && this.graph.sendActionToCanvas("setDirty", [e, i]);
+  }
 }
 class N {
   static onMenuCollapseAll() {
@@ -3018,57 +3049,57 @@ class N {
   }
   // refactor: there are different dialogs, some uses createDialog some dont
   prompt(e = "", i, n, s, r = !1) {
-    var a = this, o = document.createElement("div");
-    o.is_modified = !1, o.className = "graphdialog rounded", r ? o.innerHTML = `
+    var a = this, l = document.createElement("div");
+    l.is_modified = !1, l.className = "graphdialog rounded", r ? l.innerHTML = `
 <span class='name'></span>
 <textarea autofocus class='value'></textarea>
 <button class='rounded'>OK</button>
-` : o.innerHTML = `
+` : l.innerHTML = `
 <span class='name'></span>
 <input autofocus type='text' class='value'/>
-<button class='rounded'>OK</button>`, o.close = function() {
-      a.prompt_box = null, o.parentNode && o.parentNode.removeChild(o);
+<button class='rounded'>OK</button>`, l.close = function() {
+      a.prompt_box = null, l.parentNode && l.parentNode.removeChild(l);
     };
-    var l = b.active_canvas, h = l.canvas;
-    h.parentNode.appendChild(o), this.ds.scale > 1 && (o.style.transform = "scale(" + this.ds.scale + ")");
+    var o = T.active_canvas, h = o.canvas;
+    h.parentNode.appendChild(l), this.ds.scale > 1 && (l.style.transform = "scale(" + this.ds.scale + ")");
     var p = null, d = 0;
-    u.pointerListenerAdd(o, "leave", function(E) {
-      d || u.dialog_close_on_mouse_leave && !o.is_modified && u.dialog_close_on_mouse_leave && (p = setTimeout(o.close, u.dialog_close_on_mouse_leave_delay));
-    }), u.pointerListenerAdd(o, "enter", function(E) {
+    u.pointerListenerAdd(l, "leave", function(b) {
+      d || u.dialog_close_on_mouse_leave && !l.is_modified && u.dialog_close_on_mouse_leave && (p = setTimeout(l.close, u.dialog_close_on_mouse_leave_delay));
+    }), u.pointerListenerAdd(l, "enter", function(b) {
       u.dialog_close_on_mouse_leave && p && clearTimeout(p);
     });
-    var c = o.querySelectorAll("select");
-    c && c.forEach(function(E) {
-      E.addEventListener("click", function(C) {
+    var c = l.querySelectorAll("select");
+    c && c.forEach(function(b) {
+      b.addEventListener("click", function(C) {
         d++;
-      }), E.addEventListener("blur", function(C) {
+      }), b.addEventListener("blur", function(C) {
         d = 0;
-      }), E.addEventListener("change", function(C) {
+      }), b.addEventListener("change", function(C) {
         d = -1;
       });
-    }), a.prompt_box && a.prompt_box.close(), a.prompt_box = o;
-    var m = o.querySelector(".name");
-    m.innerText = e;
-    let f = o.querySelector(".value");
+    }), a.prompt_box && a.prompt_box.close(), a.prompt_box = l;
+    var _ = l.querySelector(".name");
+    _.innerText = e;
+    let f = l.querySelector(".value");
     f.value = i;
-    var _ = f;
-    _.addEventListener("keydown", function(E) {
-      if (o.is_modified = !0, E.keyCode == 27)
-        o.close();
-      else if (E.keyCode == 13 && E.target instanceof Element && E.target.localName != "textarea")
-        n && n(this.value), o.close();
+    var g = f;
+    g.addEventListener("keydown", function(b) {
+      if (l.is_modified = !0, b.keyCode == 27)
+        l.close();
+      else if (b.keyCode == 13 && b.target instanceof Element && b.target.localName != "textarea")
+        n && n(this.value), l.close();
       else
         return;
-      E.preventDefault(), E.stopPropagation();
+      b.preventDefault(), b.stopPropagation();
     });
-    var v = o.querySelector("button");
-    v.addEventListener("click", function(E) {
-      n && n(_.value), a.setDirty(!0), o.close();
+    var m = l.querySelector("button");
+    m.addEventListener("click", function(b) {
+      n && n(g.value), a.setDirty(!0), l.close();
     });
-    var y = h.getBoundingClientRect(), T = -20, g = -20;
-    return y && (T -= y.left, g -= y.top), s ? (o.style.left = s.clientX + T + "px", o.style.top = s.clientY + g + "px") : (o.style.left = h.width * 0.5 + T + "px", o.style.top = h.height * 0.5 + g + "px"), setTimeout(function() {
-      _.focus();
-    }, 10), o;
+    var y = h.getBoundingClientRect(), E = -20, v = -20;
+    return y && (E -= y.left, v -= y.top), s ? (l.style.left = s.clientX + E + "px", l.style.top = s.clientY + v + "px") : (l.style.left = h.width * 0.5 + E + "px", l.style.top = h.height * 0.5 + v + "px"), setTimeout(function() {
+      g.focus();
+    }, 10), l;
   }
   showSearchBox(e, i = {}) {
     var n = {
@@ -3085,21 +3116,21 @@ class N {
       show_all_on_open: u.search_show_all_on_open
     };
     i = Object.assign(n, i);
-    var s = this, r = b.active_canvas, a = r.canvas, o = a.ownerDocument || document;
-    let l = e;
+    var s = this, r = T.active_canvas, a = r.canvas, l = a.ownerDocument || document;
+    let o = e;
     var h = document.createElement("div");
-    if (h.className = "litegraph litesearchbox graphdialog rounded", h.innerHTML = "<span class='name'>Search</span> <input autofocus type='text' class='value rounded'/>", i.do_type_filter && (h.innerHTML += "<select class='slot_in_type_filter'><option value=''></option></select>", h.innerHTML += "<select class='slot_out_type_filter'><option value=''></option></select>"), h.innerHTML += "<div class='helper'></div>", o.fullscreenElement ? o.fullscreenElement.appendChild(h) : (o.body.appendChild(h), o.body.style.overflow = "hidden"), i.do_type_filter)
+    if (h.className = "litegraph litesearchbox graphdialog rounded", h.innerHTML = "<span class='name'>Search</span> <input autofocus type='text' class='value rounded'/>", i.do_type_filter && (h.innerHTML += "<select class='slot_in_type_filter'><option value=''></option></select>", h.innerHTML += "<select class='slot_out_type_filter'><option value=''></option></select>"), h.innerHTML += "<div class='helper'></div>", l.fullscreenElement ? l.fullscreenElement.appendChild(h) : (l.body.appendChild(h), l.body.style.overflow = "hidden"), i.do_type_filter)
       var p = h.querySelector(".slot_in_type_filter"), d = h.querySelector(".slot_out_type_filter");
     if (h.close = function() {
-      s.search_box = null, this.blur(), a.focus(), o.body.style.overflow = "", setTimeout(function() {
+      s.search_box = null, this.blur(), a.focus(), l.body.style.overflow = "", setTimeout(function() {
         s.canvas.focus();
       }, 20), h.parentNode && h.parentNode.removeChild(h);
     }, this.ds.scale > 1 && (h.style.transform = "scale(" + this.ds.scale + ")"), i.hide_on_mouse_leave) {
-      var c = 0, m = null;
+      var c = 0, _ = null;
       u.pointerListenerAdd(h, "enter", function(L) {
-        m && (clearTimeout(m), m = null);
+        _ && (clearTimeout(_), _ = null);
       }), u.pointerListenerAdd(h, "leave", function(L) {
-        c || (m = setTimeout(function() {
+        c || (_ = setTimeout(function() {
           h.close();
         }, 500));
       }), i.do_type_filter && (p.addEventListener("click", function(L) {
@@ -3117,10 +3148,10 @@ class N {
       }));
     }
     s.search_box && s.search_box.close(), s.search_box = h;
-    var f = h.querySelector(".helper"), _ = null, v = null, y = null, T = h.querySelector("input");
-    if (T && (T.addEventListener("blur", function(L) {
+    var f = h.querySelector(".helper"), g = null, m = null, y = null, E = h.querySelector("input");
+    if (E && (E.addEventListener("blur", function(L) {
       this.focus();
-    }), T.addEventListener("keydown", function(L) {
+    }), E.addEventListener("keydown", function(L) {
       if (L.keyCode == 38)
         D(!1);
       else if (L.keyCode == 40)
@@ -3128,100 +3159,100 @@ class N {
       else if (L.keyCode == 27)
         h.close();
       else if (L.keyCode == 13)
-        y ? H(y.innerHTML) : _ ? H(_) : h.close();
+        y ? B(y.innerHTML) : g ? B(g) : h.close();
       else {
-        v && clearInterval(v), v = setTimeout(w, 250);
+        m && clearInterval(m), m = setTimeout(w, 250);
         return;
       }
       return L.preventDefault(), L.stopPropagation(), L.stopImmediatePropagation(), !0;
     })), i.do_type_filter) {
       if (p) {
-        var g = u.slot_types_in, E = g.length;
-        (i.type_filter_in == I.EVENT || i.type_filter_in == I.ACTION) && (i.type_filter_in = "_event_");
-        for (var C = 0; C < E; C++) {
+        var v = u.slot_types_in, b = v.length;
+        (i.type_filter_in == A.EVENT || i.type_filter_in == A.ACTION) && (i.type_filter_in = "_event_");
+        for (var C = 0; C < b; C++) {
           var O = document.createElement("option");
-          O.value = g[C], O.innerHTML = g[C], p.appendChild(O), i.type_filter_in !== null && (i.type_filter_in + "").toLowerCase() == (g[C] + "").toLowerCase() && (O.selected = !0);
+          O.value = v[C], O.innerHTML = v[C], p.appendChild(O), i.type_filter_in !== null && (i.type_filter_in + "").toLowerCase() == (v[C] + "").toLowerCase() && (O.selected = !0);
         }
         p.addEventListener("change", function() {
           w();
         });
       }
       if (d) {
-        var g = u.slot_types_out, E = g.length;
-        (i.type_filter_out == I.EVENT || i.type_filter_out == I.ACTION) && (i.type_filter_out = "_event_");
-        for (var C = 0; C < E; C++) {
+        var v = u.slot_types_out, b = v.length;
+        (i.type_filter_out == A.EVENT || i.type_filter_out == A.ACTION) && (i.type_filter_out = "_event_");
+        for (var C = 0; C < b; C++) {
           var O = document.createElement("option");
-          O.value = g[C], O.innerHTML = g[C], d.appendChild(O), i.type_filter_out !== null && (i.type_filter_out + "").toLowerCase() == (g[C] + "").toLowerCase() && (O.selected = !0);
+          O.value = v[C], O.innerHTML = v[C], d.appendChild(O), i.type_filter_out !== null && (i.type_filter_out + "").toLowerCase() == (v[C] + "").toLowerCase() && (O.selected = !0);
         }
         d.addEventListener("change", function() {
           w();
         });
       }
     }
-    var G = a.getBoundingClientRect(), B = (l ? l.clientX : G.left + G.width * 0.5) - 80, F = (l ? l.clientY : G.top + G.height * 0.5) - 20;
-    h.style.left = B + "px", h.style.top = F + "px", l.layerY > G.height - 200 && (f.style.maxHeight = G.height - l.layerY - 20 + "px"), T.focus(), i.show_all_on_open && w();
-    function H(L) {
+    var M = a.getBoundingClientRect(), G = (o ? o.clientX : M.left + M.width * 0.5) - 80, F = (o ? o.clientY : M.top + M.height * 0.5) - 20;
+    h.style.left = G + "px", h.style.top = F + "px", o.layerY > M.height - 200 && (f.style.maxHeight = M.height - o.layerY - 20 + "px"), E.focus(), i.show_all_on_open && w();
+    function B(L) {
       if (L)
         if (s.onSearchBoxSelection)
-          s.onSearchBoxSelection(L, l, r);
+          s.onSearchBoxSelection(L, o, r);
         else {
           var P = u.searchbox_extras[L.toLowerCase()];
           P && (L = P.type), r.graph.beforeChange();
           var z = u.createNode(L);
           if (z && (z.pos = r.convertEventToCanvasOffset(
-            l
+            o
           ), r.graph.add(z)), P && P.data) {
             if (P.data.properties)
-              for (var W in P.data.properties)
-                z.addProperty("" + W, P.data.properties[W]);
+              for (var K in P.data.properties)
+                z.addProperty("" + K, P.data.properties[K]);
             if (P.data.inputs) {
               z.inputs = [];
-              for (var W in P.data.inputs)
+              for (var K in P.data.inputs)
                 z.addInput(
-                  P.data.inputs[W][0],
-                  P.data.inputs[W][1]
+                  P.data.inputs[K][0],
+                  P.data.inputs[K][1]
                 );
             }
             if (P.data.outputs) {
               z.outputs = [];
-              for (var W in P.data.outputs)
+              for (var K in P.data.outputs)
                 z.addOutput(
-                  P.data.outputs[W][0],
-                  P.data.outputs[W][1]
+                  P.data.outputs[K][0],
+                  P.data.outputs[K][1]
                 );
             }
             P.data.title && (z.title = P.data.title), P.data.json && z.configure(P.data.json);
           }
           if (i.node_from) {
-            var M = null;
+            var R = null;
             switch (typeof i.slotFrom) {
               case "string":
-                M = i.node_from.findOutputSlotIndexByName(i.slotFrom);
+                R = i.node_from.findOutputSlotIndexByName(i.slotFrom);
                 break;
               case "object":
-                i.slotFrom.name ? M = i.node_from.findOutputSlotIndexByName(i.slotFrom.name) : M = -1, M == -1 && typeof i.slotFrom.slot_index < "u" && (M = i.slotFrom.slot_index);
+                i.slotFrom.name ? R = i.node_from.findOutputSlotIndexByName(i.slotFrom.name) : R = -1, R == -1 && typeof i.slotFrom.slot_index < "u" && (R = i.slotFrom.slot_index);
                 break;
               case "number":
-                M = i.slotFrom;
+                R = i.slotFrom;
                 break;
               default:
-                M = 0;
+                R = 0;
             }
-            M = M, typeof i.node_from.outputs[M] !== void 0 && M !== null && M > -1 && i.node_from.connectByTypeInput(M, z, i.node_from.outputs[M].type);
+            R = R, typeof i.node_from.outputs[R] !== void 0 && R !== null && R > -1 && i.node_from.connectByTypeInput(R, z, i.node_from.outputs[R].type);
           }
           if (i.node_to) {
-            var M = null;
+            var R = null;
             switch (typeof i.slotFrom) {
               case "string":
-                M = i.node_to.findInputSlotIndexByName(i.slotFrom);
+                R = i.node_to.findInputSlotIndexByName(i.slotFrom);
                 break;
               case "number":
-                M = i.slotFrom;
+                R = i.slotFrom;
                 break;
               default:
-                M = 0;
+                R = 0;
             }
-            typeof i.node_to.inputs[M] !== void 0 && M !== null && M > -1 && i.node_to.connectByTypeOutput(M, z, i.node_to.inputs[M].type);
+            typeof i.node_to.inputs[R] !== void 0 && R !== null && R > -1 && i.node_to.connectByTypeOutput(R, z, i.node_to.inputs[R].type);
           }
           r.graph.afterChange();
         }
@@ -3232,83 +3263,83 @@ class N {
       y && y.classList.remove("selected"), y ? (y = L ? y.nextSibling : y.previousSibling, y || (y = P)) : y = L ? f.childNodes[0] : f.childNodes[f.childNodes.length], y && (y.classList.add("selected"), y.scrollIntoView({ block: "end", behavior: "smooth" }));
     }
     function w() {
-      v = null;
-      var L = T.value;
-      if (_ = null, f.innerHTML = "", !L && !i.show_all_if_empty)
+      m = null;
+      var L = E.value;
+      if (g = null, f.innerHTML = "", !L && !i.show_all_if_empty)
         return;
       if (s.onSearchBox) {
         var P = s.onSearchBox(f, L, r);
         if (P)
           for (var z = 0; z < P.length; ++z)
-            re(P[z]);
+            ae(P[z]);
       } else {
-        let Q = function(Y, V = {}) {
-          var Ae = {
+        let Q = function(V, q = {}) {
+          var Ie = {
             skipFilter: !1,
             inTypeOverride: null,
             outTypeOverride: null
-          }, ae = Object.assign(Ae, V), Se = u.registered_node_types[Y];
-          if (M && Se.filter != M || (!i.show_all_if_empty || L) && Y.toLowerCase().indexOf(L) === -1)
+          }, oe = Object.assign(Ie, q), ke = u.registered_node_types[V];
+          if (R && ke.filter != R || (!i.show_all_if_empty || L) && V.toLowerCase().indexOf(L) === -1)
             return !1;
-          if (i.do_type_filter && !ae.skipFilter) {
-            var be = Y, Z = j.value;
-            if (ae.inTypeOverride !== !1 && (Z = ae.inTypeOverride), j && Z && u.registered_slot_in_types[Z] && u.registered_slot_in_types[Z].nodes) {
-              var ce = u.registered_slot_in_types[Z].nodes.includes(be);
-              if (ce === !1)
+          if (i.do_type_filter && !oe.skipFilter) {
+            var me = V, Z = Y == null ? void 0 : Y.value;
+            if (oe.inTypeOverride !== !1 && (Z = oe.inTypeOverride), Y && Z && u.registered_slot_in_types[Z] && u.registered_slot_in_types[Z].nodes) {
+              var fe = u.registered_slot_in_types[Z].nodes.includes(me);
+              if (fe === !1)
                 return !1;
             }
-            var Z = q.value;
-            if (ae.outTypeOverride !== !1 && (Z = ae.outTypeOverride), q && Z && u.registered_slot_out_types[Z] && u.registered_slot_out_types[Z].nodes) {
-              var ce = u.registered_slot_out_types[Z].nodes.includes(be);
-              if (ce === !1)
+            var Z = U == null ? void 0 : U.value;
+            if (oe.outTypeOverride !== !1 && (Z = oe.outTypeOverride), U && Z && u.registered_slot_out_types[Z] && u.registered_slot_out_types[Z].nodes) {
+              var fe = u.registered_slot_out_types[Z].nodes.includes(me);
+              if (fe === !1)
                 return !1;
             }
           }
           return !0;
         };
-        var W = 0;
+        var K = 0;
         L = L.toLowerCase();
-        var M = r.filter || r.graph.filter;
-        let j, q;
-        i.do_type_filter && s.search_box ? (j = s.search_box.querySelector(".slot_in_type_filter"), q = s.search_box.querySelector(".slot_out_type_filter")) : (j = null, q = null);
-        for (const Y in u.searchbox_extras) {
-          var le = u.searchbox_extras[Y];
-          if (!((!i.show_all_if_empty || L) && le.desc.toLowerCase().indexOf(L) === -1)) {
-            var ye = u.registered_node_types[le.type];
-            if (!(ye && ye.filter != M) && Q(le.type) && (re(le.desc, "searchbox_extra"), b.search_limit !== -1 && W++ > b.search_limit))
+        var R = r.filter || r.graph.filter;
+        let Y, U;
+        i.do_type_filter && s.search_box ? (Y = s.search_box.querySelector(".slot_in_type_filter"), U = s.search_box.querySelector(".slot_out_type_filter")) : (Y = null, U = null);
+        for (const V in u.searchbox_extras) {
+          var J = u.searchbox_extras[V];
+          if (!((!i.show_all_if_empty || L) && J.desc.toLowerCase().indexOf(L) === -1)) {
+            var ve = u.registered_node_types[J.type];
+            if (!(ve && ve.filter != R) && Q(J.type) && (ae(J.desc, "searchbox_extra"), T.search_limit !== -1 && K++ > T.search_limit))
               break;
           }
         }
-        var ne = null;
+        var re = null;
         if (Array.prototype.filter)
-          var ke = Object.keys(u.registered_node_types), ne = ke.filter((V) => Q(V));
+          var Ne = Object.keys(u.registered_node_types), re = Ne.filter((q) => Q(q));
         else {
-          ne = [];
-          for (const Y in u.registered_node_types)
-            Q(Y) && ne.push(Y);
-        }
-        for (var z = 0; z < ne.length && (re(ne[z]), !(b.search_limit !== -1 && W++ > b.search_limit)); z++)
-          ;
-        if (i.show_general_after_typefiltered && (j.value || q.value)) {
-          let Y = [];
+          re = [];
           for (const V in u.registered_node_types)
-            Q(V, { inTypeOverride: j && j.value ? "*" : null, outTypeOverride: q && q.value ? "*" : null }) && Y.push(V);
-          for (let V = 0; V < Y.length && (re(Y[V], "generic_type"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
+            Q(V) && re.push(V);
+        }
+        for (var z = 0; z < re.length && (ae(re[z]), !(T.search_limit !== -1 && K++ > T.search_limit)); z++)
+          ;
+        if (i.show_general_after_typefiltered && (Y != null && Y.value || U != null && U.value)) {
+          let V = [];
+          for (const q in u.registered_node_types)
+            Q(q, { inTypeOverride: Y && Y.value ? "*" : null, outTypeOverride: U && U.value ? "*" : null }) && V.push(q);
+          for (let q = 0; q < V.length && (ae(V[q], "generic_type"), !(T.search_limit !== -1 && K++ > T.search_limit)); q++)
             ;
         }
-        if ((j.value || q.value) && f.childNodes.length == 0 && i.show_general_if_none_on_typefilter) {
-          let Y = [];
-          for (const V in u.registered_node_types)
-            Q(V, { skipFilter: !0 }) && Y.push(V);
-          for (let V = 0; V < Y.length && (re(Y[V], "not_in_filter"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
+        if ((Y != null && Y.value || U != null && U.value) && (f == null ? void 0 : f.childNodes.length) == 0 && i.show_general_if_none_on_typefilter) {
+          let V = [];
+          for (const q in u.registered_node_types)
+            Q(q, { skipFilter: !0 }) && V.push(q);
+          for (let q = 0; q < V.length && (ae(V[q], "not_in_filter"), !(T.search_limit !== -1 && K++ > T.search_limit)); q++)
             ;
         }
       }
-      function re(Q, j) {
-        var q = document.createElement("div");
-        _ || (_ = Q), q.innerText = Q, q.dataset.type = escape(Q), q.className = "litegraph lite-search-item", j && (q.className += " " + j), q.addEventListener("click", function(Y) {
-          H(unescape(this.dataset.type));
-        }), f.appendChild(q);
+      function ae(Q, Y) {
+        var U = document.createElement("div");
+        g || (g = Q), U.innerText = Q, U.dataset.type = escape(Q), U.className = "litegraph lite-search-item", Y && (U.className += " " + Y), U.addEventListener("click", function(V) {
+          B(unescape(this.dataset.type));
+        }), f.appendChild(U);
       }
     }
     return h;
@@ -3326,18 +3357,18 @@ class N {
     });
     n.node_panel = s, s.id = "node-panel", s.node = e, s.classList.add("settings");
     function r() {
-      s.content.innerHTML = "", s.addHTML("<span class='node_type'>" + e.typeName + "</span><span class='node_desc'>" + (e.constructor.desc || "") + "</span><span class='separator'></span>"), s.addHTML("<h3>Properties</h3>");
+      s.content.innerHTML = "", s.addHTML("<span class='node_type'>" + e.type + "</span><span class='node_desc'>" + (e.constructor.desc || "") + "</span><span class='separator'></span>"), s.addHTML("<h3>Properties</h3>");
       var a = function(d, c) {
         switch (n.graph.beforeChange(e), d) {
           case "Title":
             e.title = c;
             break;
           case "Mode":
-            var m = Object.values(te).indexOf(c);
-            m >= x.ALWAYS && te[m] ? e.changeMode(m) : console.warn("unexpected mode: " + c);
+            var _ = Object.values(ie).indexOf(c);
+            _ >= j.ALWAYS && ie[_] ? e.changeMode(_) : console.warn("unexpected mode: " + c);
             break;
           case "Color":
-            b.node_colors[c] ? (e.color = b.node_colors[c].color, e.bgColor = b.node_colors[c].bgColor) : console.warn("unexpected color: " + c);
+            T.node_colors[c] ? (e.color = T.node_colors[c].color, e.bgColor = T.node_colors[c].bgColor) : console.warn("unexpected color: " + c);
             break;
           default:
             e.setProperty(d, c);
@@ -3345,14 +3376,14 @@ class N {
         }
         n.graph.afterChange(), n.dirty_canvas = !0;
       };
-      s.addWidget("string", "Title", e.title, {}, a), s.addWidget("combo", "Mode", te[e.mode], { values: te }, a);
-      var o = "";
-      e.color !== void 0 && (o = Object.keys(b.node_colors).filter(function(d) {
-        return b.node_colors[d].color == e.color;
-      })[0]), s.addWidget("combo", "Color", o, { values: Object.keys(b.node_colors) }, a);
-      for (var l in e.properties) {
-        var h = e.properties[l], p = e.getPropertyInfo(l);
-        p.type, !(e.onAddPropertyToPanel && e.onAddPropertyToPanel(l, s)) && s.addWidget(p.widget || p.type, l, h, p, a);
+      s.addWidget("string", "Title", e.title, {}, a), s.addWidget("combo", "Mode", ie[e.mode], { values: ie }, a);
+      var l = "";
+      e.color !== void 0 && (l = Object.keys(T.node_colors).filter(function(d) {
+        return T.node_colors[d].color == e.color;
+      })[0]), s.addWidget("combo", "Color", l, { values: Object.keys(T.node_colors) }, a);
+      for (var o in e.properties) {
+        var h = e.properties[o], p = e.getPropertyInfo(o);
+        p.type, !(e.onAddPropertyToPanel && e.onAddPropertyToPanel(o, s)) && s.addWidget(p.widget || p.type, o, h, p, a);
       }
       s.addSeparator(), e.onShowCustomPanelInfo && e.onShowCustomPanelInfo(s), s.footer.innerHTML = "", s.addButton("Delete", function() {
         e.block_delete || (e.graph.remove(e), s.close());
@@ -3360,17 +3391,17 @@ class N {
     }
     s.inner_showCodePad = function(a) {
       s.classList.remove("settings"), s.classList.add("centered"), s.alt_content.innerHTML = "<textarea class='code'></textarea>";
-      var o = s.alt_content.querySelector("textarea"), l = function() {
-        s.toggleAltContent(!1), s.toggleFooterVisibility(!0), o.parentNode.removeChild(o), s.classList.add("settings"), s.classList.remove("centered"), r();
+      var l = s.alt_content.querySelector("textarea"), o = function() {
+        s.toggleAltContent(!1), s.toggleFooterVisibility(!0), l.parentNode.removeChild(l), s.classList.add("settings"), s.classList.remove("centered"), r();
       };
-      o.value = e.properties[a], o.addEventListener("keydown", function(d) {
-        d.code == "Enter" && d.ctrlKey && (e.setProperty(a, o.value), l());
-      }), s.toggleAltContent(!0), s.toggleFooterVisibility(!1), o.style.height = "calc(100% - 40px)";
+      l.value = e.properties[a], l.addEventListener("keydown", function(d) {
+        d.code == "Enter" && d.ctrlKey && (e.setProperty(a, l.value), o());
+      }), s.toggleAltContent(!0), s.toggleFooterVisibility(!1), l.style.height = "calc(100% - 40px)";
       var h = s.addButton("Assign", function() {
-        e.setProperty(a, o.value), l();
+        e.setProperty(a, l.value), o();
       });
       s.alt_content.appendChild(h);
-      var p = s.addButton("Close", l);
+      var p = s.addButton("Close", o);
       p.style.float = "right", s.alt_content.appendChild(p);
     }, r(), this.canvas.parentNode.appendChild(s);
   }
@@ -3382,15 +3413,15 @@ class N {
     n.node = e, n.classList.add("subgraph_dialog");
     function s() {
       if (n.clear(), e.inputs)
-        for (var o = 0; o < e.inputs.length; ++o) {
-          var l = e.inputs[o];
-          if (!l.not_subgraph_input) {
+        for (var l = 0; l < e.inputs.length; ++l) {
+          var o = e.inputs[l];
+          if (!o.not_subgraph_input) {
             var h = `
 <button>&#10005;</button>
 <span class='bullet_icon'></span>
 <span class='name'></span>
 <span class='type'></span>`, p = n.addHTML(h, "subgraph_property");
-            p.dataset.name = l.name, p.dataset.slot = "" + o, p.querySelector(".name").innerText = l.name, p.querySelector(".type").innerText = "" + l.type, p.querySelector("button").addEventListener("click", function(d) {
+            p.dataset.name = o.name, p.dataset.slot = "" + l, p.querySelector(".name").innerText = o.name, p.querySelector(".type").innerText = "" + o.type, p.querySelector("button").addEventListener("click", function(d) {
               e.removeInput(Number(this.parentNode.dataset.slot)), s();
             });
           }
@@ -3403,9 +3434,9 @@ class N {
 <span class='label'>Type</span>
 <input class='type'></input>
 <button>+</button>`, a = n.addHTML(r, "subgraph_property extra", !0);
-    return a.querySelector("button").addEventListener("click", function(o) {
-      var l = this.parentNode, h = l.querySelector(".name").value, p = l.querySelector(".type").value;
-      !h || e.findInputSlotIndexByName(h) != -1 || (e.addInput(h, p), l.querySelector(".name").value = "", l.querySelector(".type").value = "", s());
+    return a.querySelector("button").addEventListener("click", function(l) {
+      var o = this.parentNode, h = o.querySelector(".name").value, p = o.querySelector(".type").value;
+      !h || e.findInputSlotIndexByName(h) != -1 || (e.addInput(h, p), o.querySelector(".name").value = "", o.querySelector(".type").value = "", s());
     }), s(), this.canvas.parentNode.appendChild(n), n;
   }
   showSubgraphPropertiesDialogRight(e) {
@@ -3415,15 +3446,15 @@ class N {
     n.node = e, n.classList.add("subgraph_dialog");
     function s() {
       if (n.clear(), e.outputs)
-        for (var l = 0; l < e.outputs.length; ++l) {
-          var h = e.outputs[l];
+        for (var o = 0; o < e.outputs.length; ++o) {
+          var h = e.outputs[o];
           if (!h.not_subgraph_output) {
             var p = `
 <button>&#10005;</button>
 <span class='bullet_icon'></span>
 <span class='name'></span>
 <span class='type'></span>`, d = n.addHTML(p, "subgraph_property");
-            d.dataset.name = h.name, d.dataset.slot = "" + l, d.querySelector(".name").innerText = h.name, d.querySelector(".type").innerText = "" + h.type, d.querySelector("button").addEventListener("click", function(c) {
+            d.dataset.name = h.name, d.dataset.slot = "" + o, d.querySelector(".name").innerText = h.name, d.querySelector(".type").innerText = "" + h.type, d.querySelector("button").addEventListener("click", function(c) {
               e.removeOutput(Number(this.parentNode.dataset.slot)), s();
             });
           }
@@ -3436,14 +3467,14 @@ class N {
 <span class='label'>Type</span>
 <input class='type'></input>
 <button>+</button>`, a = n.addHTML(r, "subgraph_property extra", !0);
-    a.querySelector(".name").addEventListener("keydown", function(l) {
-      l.keyCode == 13 && o.apply(this);
-    }), a.querySelector("button").addEventListener("click", function(l) {
-      o.apply(this);
+    a.querySelector(".name").addEventListener("keydown", function(o) {
+      o.keyCode == 13 && l.apply(this);
+    }), a.querySelector("button").addEventListener("click", function(o) {
+      l.apply(this);
     });
-    function o() {
-      var l = this.parentNode, h = l.querySelector(".name").value, p = l.querySelector(".type").value;
-      !h || e.findOutputSlotIndexByName(h) != -1 || (e.addOutput(h, p), l.querySelector(".name").value = "", l.querySelector(".type").value = "", s());
+    function l() {
+      var o = this.parentNode, h = o.querySelector(".name").value, p = o.querySelector(".type").value;
+      !h || e.findOutputSlotIndexByName(h) != -1 || (e.addOutput(h, p), o.querySelector(".name").value = "", o.querySelector(".type").value = "", s());
     }
     return s(), this.canvas.parentNode.appendChild(n), n;
   }
@@ -3451,51 +3482,51 @@ class N {
     var i = this, n = e.nodeFrom && e.slotFrom, s = !n && e.nodeTo && e.slotTo;
     if (!n && !s)
       return console.warn("No data passed to showConnectionMenu"), !1;
-    var r = n ? e.nodeFrom : e.nodeTo, a = n ? e.slotFrom : e.slotTo, o = null;
+    var r = n ? e.nodeFrom : e.nodeTo, a = n ? e.slotFrom : e.slotTo, l = null;
     switch (typeof a) {
       case "string":
-        o = n ? r.findOutputSlotIndexByName(a) : r.findInputSlotIndexByName(a), a = n ? r.outputs[a] : r.inputs[a];
+        l = n ? r.findOutputSlotIndexByName(a) : r.findInputSlotIndexByName(a), a = n ? r.outputs[a] : r.inputs[a];
         break;
       case "object":
-        o = n ? r.findOutputSlotIndexByName(a.name) : r.findInputSlotIndexByName(a.name);
+        l = n ? r.findOutputSlotIndexByName(a.name) : r.findInputSlotIndexByName(a.name);
         break;
       case "number":
-        o = a, a = n ? r.outputs[a] : r.inputs[a];
+        l = a, a = n ? r.outputs[a] : r.inputs[a];
         break;
       default:
         return console.warn("Cant get slot information " + a), !1;
     }
     a = a;
-    var l = [{ content: "Add Node" }, K.SEPARATOR];
-    i.allow_searchbox && (l.push({ content: "Search" }), l.push(K.SEPARATOR));
-    var h = a.type == I.EVENT ? "_event_" : a.type, p = n ? u.slot_types_default_out : u.slot_types_default_in;
+    var o = [{ content: "Add Node" }, x.SEPARATOR];
+    i.allow_searchbox && (o.push({ content: "Search" }), o.push(x.SEPARATOR));
+    var h = a.type == A.EVENT ? "_event_" : a.type, p = n ? u.slot_types_default_out : u.slot_types_default_in;
     const d = p[h];
     if (p && p[h])
       if (Array.isArray(d))
         for (var c of d)
-          l.push({ content: d[c] });
+          o.push({ content: d[c] });
       else
-        typeof d == "object" ? l.push({ content: d.node }) : l.push({ content: d });
-    var m = new X(l, {
+        typeof d == "object" ? o.push({ content: d.node }) : o.push({ content: d });
+    var _ = new X(o, {
       event: e.e,
       title: (a && a.name != "" ? a.name + (h ? " | " : "") : "") + (a && h ? h : ""),
       callback: f
     });
-    function f(_, v, y) {
-      switch (_.content) {
+    function f(g, m, y) {
+      switch (g.content) {
         case "Add Node":
-          b.onMenuAdd(_, v, y, m, function(g) {
-            n ? e.nodeFrom.connectByTypeInput(o, g, h) : e.nodeTo.connectByTypeOutput(o, g, h);
+          T.onMenuAdd(g, m, y, _, function(v) {
+            n ? e.nodeFrom.connectByTypeInput(l, v, h) : e.nodeTo.connectByTypeOutput(l, v, h);
           });
           break;
         case "Search":
           n ? i.showSearchBox(y, { node_from: e.nodeFrom, slotFrom: a, type_filter_in: h }) : i.showSearchBox(y, { node_to: e.nodeTo, slotFrom: a, type_filter_out: h });
           break;
         default:
-          const T = Object.assign(e, {
+          const E = Object.assign(e, {
             position: [e.e.canvasX, e.e.canvasY]
           });
-          i.createDefaultNodeForSlot(_.content, T);
+          i.createDefaultNodeForSlot(g.content, E);
           break;
       }
     }
@@ -3504,18 +3535,18 @@ class N {
   showLinkMenu(e, i) {
     var n = this, s = n.graph.getNodeById(e.origin_id), r = n.graph.getNodeById(e.target_id), a = null;
     s && s.outputs && s.outputs[e.origin_slot] && (a = s.outputs[e.origin_slot].type);
-    var o = null;
-    r && r.outputs && r.outputs[e.target_slot] && (o = r.inputs[e.target_slot].type);
-    var l = ["Add Node", K.SEPARATOR, "Delete", K.SEPARATOR], h = new X(l, {
+    var l = null;
+    r && r.outputs && r.outputs[e.target_slot] && (l = r.inputs[e.target_slot].type);
+    var o = ["Add Node", x.SEPARATOR, "Delete", x.SEPARATOR], h = new X(o, {
       event: i,
       title: e.data != null ? e.data.constructor.name : null,
       callback: p
     });
-    function p(d, c, m) {
+    function p(d, c, _) {
       switch (d.content) {
         case "Add Node":
-          b.onMenuAdd(null, null, m, h, function(f) {
-            !f.inputs || !f.inputs.length || !f.outputs || !f.outputs.length || s.connectByTypeInput(e.origin_slot, f, a) && (f.connectByTypeInput(e.target_slot, r, o), f.pos[0] -= f.size[0] * 0.5);
+          T.onMenuAdd(null, null, _, h, function(f) {
+            !f.inputs || !f.inputs.length || !f.outputs || !f.outputs.length || s.connectByTypeInput(e.origin_slot, f, a) && (f.connectByTypeInput(e.target_slot, r, l), f.pos[0] -= f.size[0] * 0.5);
           });
           break;
         case "Delete":
@@ -3525,8 +3556,11 @@ class N {
     }
     return !1;
   }
+  /*
+   * Shows a popup for editing one of the LGraphNode.properties.
+   */
   showEditPropertyValue(e, i, n) {
-    if (!e || e.properties[i] === void 0)
+    if (!e || e.properties[i] === void 0 || u.ignore_all_widget_events)
       return;
     n = n || {};
     var s = e.getPropertyInfo(i), r = s.type, a = "";
@@ -3534,9 +3568,9 @@ class N {
       a = "<input autofocus type='text' class='value'/>";
     else if ((r == "enum" || r == "combo") && s.values) {
       a = "<select autofocus type='text' class='value'>";
-      for (var o in s.values) {
-        var l = o;
-        s.values instanceof Array && (l = s.values[o]), a += "<option value='" + l + "' " + (l == e.properties[i] ? "selected" : "") + ">" + s.values[o] + "</option>";
+      for (var l in s.values) {
+        var o = l;
+        s.values instanceof Array && (o = s.values[l]), a += "<option value='" + o + "' " + (o == e.properties[i] ? "selected" : "") + ">" + s.values[l] + "</option>";
       }
       a += "</select>";
     } else if (r == "boolean" || r == "toggle")
@@ -3551,39 +3585,37 @@ class N {
     ), p = null;
     if ((r == "enum" || r == "combo") && s.values)
       p = h.querySelector("select"), p.addEventListener("change", function(f) {
-        h.modified(), m(f.target.value);
+        h.modified(), c(f.target.value);
       });
     else if (r == "boolean" || r == "toggle")
       p = h.querySelector("input"), p && p.addEventListener("click", function(f) {
-        h.modified(), m(!!p.checked);
+        h.modified(), c(!!p.checked);
       });
     else if (p = h.querySelector("input"), p) {
-      p.addEventListener("blur", function(_) {
+      p.addEventListener("blur", function(g) {
         this.focus();
       });
       let f = e.properties[i] !== void 0 ? e.properties[i] : "";
-      r !== "string" && (f = JSON.stringify(f)), p.value = f, p.addEventListener("keydown", function(_) {
-        if (_.keyCode == 27)
+      r !== "string" && (f = JSON.stringify(f)), p.value = f, p.addEventListener("keydown", function(g) {
+        if (g.keyCode == 27)
           h.close();
-        else if (_.keyCode == 13)
-          c();
-        else if (_.keyCode != 13) {
+        else if (g.keyCode == 13)
+          d();
+        else if (g.keyCode != 13) {
           h.modified();
           return;
         }
-        _.preventDefault(), _.stopPropagation();
+        g.preventDefault(), g.stopPropagation();
       });
     }
     p && p.focus();
-    var d = h.querySelector("button");
-    d.addEventListener("click", c);
-    function c() {
-      m(p.value);
-    }
-    function m(f) {
-      s && s.values && s.values.constructor === Object && s.values[f] != null && (f = s.values[f]), typeof e.properties[i] == "number" && (f = Number(f)), (r == "array" || r == "object") && (f = JSON.parse(f)), e.properties[i] = f, e.graph && e.graph._version++, e.onPropertyChanged && e.onPropertyChanged(i, f), n.onclose && n.onclose(), h.close(), e.setDirtyCanvas(!0, !0);
-    }
-    return h;
+    const d = () => {
+      c(p.value);
+    }, c = (f) => {
+      s && s.values && s.values.constructor === Object && s.values[f] != null && (f = s.values[f]), typeof e.properties[i] == "number" && (f = Number(f)), (r == "array" || r == "object") && (f = JSON.parse(f)), e.setProperty(i, f), n.onclose && n.onclose(), h.close(), e.setDirtyCanvas(!0, !0);
+    };
+    var _ = h.querySelector("button");
+    return _.addEventListener("click", d), h;
   }
   // TODO refactor, theer are different dialog, some uses createDialog, some dont
   createDialog(e, i) {
@@ -3591,17 +3623,17 @@ class N {
     i = Object.assign(n, i || {});
     var s = document.createElement("div");
     s.className = "graphdialog", s.innerHTML = e, s.is_modified = !1;
-    var r = this.canvas.getBoundingClientRect(), a = -20, o = -20;
-    if (r && (a -= r.left, o -= r.top), i.position ? (a += i.position[0], o += i.position[1]) : i.event ? (a += i.event.clientX, o += i.event.clientY) : (a += this.canvas.width * 0.5, o += this.canvas.height * 0.5), s.style.left = a + "px", s.style.top = o + "px", this.canvas.parentNode.appendChild(s), i.checkForInput) {
-      var l = s.querySelectorAll("input"), h = !1;
-      l && l.forEach(function(m) {
-        m.addEventListener("keydown", function(f) {
+    var r = this.canvas.getBoundingClientRect(), a = -20, l = -20;
+    if (r && (a -= r.left, l -= r.top), i.position ? (a += i.position[0], l += i.position[1]) : i.event ? (a += i.event.clientX, l += i.event.clientY) : (a += this.canvas.width * 0.5, l += this.canvas.height * 0.5), s.style.left = a + "px", s.style.top = l + "px", this.canvas.parentNode.appendChild(s), i.checkForInput) {
+      var o = s.querySelectorAll("input"), h = !1;
+      o && o.forEach(function(_) {
+        _.addEventListener("keydown", function(f) {
           if (s.modified(), f.keyCode == 27)
             s.close();
           else if (f.keyCode != 13)
             return;
           f.preventDefault(), f.stopPropagation();
-        }), h || m.focus();
+        }), h || _.focus();
       });
     }
     s.modified = function() {
@@ -3610,18 +3642,18 @@ class N {
       s.parentNode && s.parentNode.removeChild(s);
     };
     var p = null, d = 0;
-    s.addEventListener("mouseleave", function(m) {
+    s.addEventListener("mouseleave", function(_) {
       d || (i.closeOnLeave || u.dialog_close_on_mouse_leave) && !s.is_modified && u.dialog_close_on_mouse_leave && (p = setTimeout(s.close, u.dialog_close_on_mouse_leave_delay));
-    }), s.addEventListener("mouseenter", function(m) {
+    }), s.addEventListener("mouseenter", function(_) {
       (i.closeOnLeave || u.dialog_close_on_mouse_leave) && p && clearTimeout(p);
     });
     var c = s.querySelectorAll("select");
-    return c && c.forEach(function(m) {
-      m.addEventListener("click", function(f) {
+    return c && c.forEach(function(_) {
+      _.addEventListener("click", function(f) {
         d++;
-      }), m.addEventListener("blur", function(f) {
+      }), _.addEventListener("blur", function(f) {
         d = 0;
-      }), m.addEventListener("change", function(f) {
+      }), _.addEventListener("change", function(f) {
         d = -1;
       });
     }), s;
@@ -3632,12 +3664,12 @@ class N {
       {
         content: "Add Node",
         has_submenu: !0,
-        callback: b.onMenuAdd
+        callback: T.onMenuAdd
       },
-      { content: "Add Group", callback: b.onGroupAdd }
+      { content: "Add Group", callback: T.onGroupAdd }
       //{ content: "Arrange", callback: that.graph.arrange },
       //{content:"Collapse All", callback: LGraphCanvas.onMenuCollapseAll }
-    ], this._graph_stack && this._graph_stack.length > 0 && e.push(K.SEPARATOR, {
+    ], this._graph_stack && this._graph_stack.length > 0 && e.push(x.SEPARATOR, {
       content: "Close subgraph",
       callback: this.closeSubgraph.bind(this)
     })), this.getExtraMenuOptions) {
@@ -3648,127 +3680,125 @@ class N {
   }
   getNodeMenuOptions(e) {
     let i = [];
-    if (e.getMenuOptions ? i = e.getMenuOptions(this) : (i = [
+    e.getMenuOptions ? i = e.getMenuOptions(this) : (i = [
       {
         content: "Inputs",
         has_submenu: !0,
         disabled: !0,
-        callback: b.showMenuNodeOptionalInputs
+        callback: T.showMenuNodeOptionalInputs
       },
       {
         content: "Outputs",
         has_submenu: !0,
         disabled: !0,
-        callback: b.showMenuNodeOptionalOutputs
+        callback: T.showMenuNodeOptionalOutputs
       },
-      K.SEPARATOR,
+      x.SEPARATOR,
       {
         content: "Properties",
         has_submenu: !0,
-        callback: b.onShowMenuNodeProperties
+        disabled: u.ignore_all_widget_events,
+        callback: T.onShowMenuNodeProperties
       },
-      K.SEPARATOR,
+      x.SEPARATOR,
       {
         content: "Title",
-        value: { name: "title", type: "String" },
-        callback: b.onShowPropertyEditor
+        value: { name: "title", type: "string" },
+        callback: T.onShowPropertyEditor
       },
       {
         content: "Mode",
         has_submenu: !0,
-        callback: b.onMenuNodeMode
+        callback: T.onMenuNodeMode
       }
     ], e.resizable !== !1 && i.push({
       content: "Resize",
-      callback: b.onMenuResizeNode
+      callback: T.onMenuResizeNode
     }), i.push(
       {
         content: "Collapse",
-        callback: b.onMenuNodeCollapse
+        callback: T.onMenuNodeCollapse
       },
-      { content: "Pin", callback: b.onMenuNodePin },
+      { content: "Pin", callback: T.onMenuNodePin },
       {
         content: "Colors",
         has_submenu: !0,
-        callback: b.onMenuNodeColors
+        callback: T.onMenuNodeColors
       },
       {
         content: "Shapes",
         has_submenu: !0,
-        callback: b.onMenuNodeShapes
+        callback: T.onMenuNodeShapes
       },
-      K.SEPARATOR
-    )), e.onGetInputs) {
-      var n = e.onGetInputs();
-      n && n.length && typeof i[0] == "object" && (i[0].disabled = !1);
-    }
-    if (e.onGetOutputs) {
-      var s = e.onGetOutputs();
-      s && s.length && typeof i[1] == "object" && (i[1].disabled = !1);
-    }
-    if (e.getExtraMenuOptions) {
-      var r = e.getExtraMenuOptions(this, i);
-      r && (r.push(K.SEPARATOR), i = r.concat(i));
+      x.SEPARATOR
+    ));
+    const n = e.getOptionalSlots();
+    if (n && (n.inputs && n.inputs.length > 0 && typeof i[0] == "object" && (i[0].disabled = !1), n.outputs && n.outputs.length && typeof i[1] == "object" && (i[1].disabled = !1)), e.getExtraMenuOptions) {
+      var s = e.getExtraMenuOptions(this, i);
+      s && (s.push(x.SEPARATOR), i = s.concat(i));
     }
     return e.clonable !== !1 && i.push({
       content: "Clone",
-      callback: b.onMenuNodeClone
-    }), i.push(K.SEPARATOR, {
+      callback: T.onMenuNodeClone
+    }), i.push(x.SEPARATOR, {
       content: "Remove",
       disabled: !(e.removable !== !1 && !e.block_delete),
-      callback: b.onMenuNodeRemove
+      callback: T.onMenuNodeRemove
     }), e.graph && e.graph.onGetNodeMenuOptions && (i = e.graph.onGetNodeMenuOptions(i, e)), i;
   }
   getGroupMenuOptions(e) {
     var i = [
-      { content: "Title", callback: b.onShowPropertyEditor },
+      {
+        content: "Title",
+        value: { name: "title", type: "string" },
+        callback: T.onShowPropertyEditor
+      },
       {
         content: "Color",
         has_submenu: !0,
-        callback: b.onMenuNodeColors
+        callback: T.onMenuNodeColors
       },
       {
         content: "Font size",
-        property: "font_size",
-        type: "Number",
-        callback: b.onShowPropertyEditor
+        value: { name: "fontSize", type: "number" },
+        callback: T.onShowPropertyEditor
       },
-      K.SEPARATOR,
-      { content: "Remove", callback: b.onMenuNodeRemove }
+      x.SEPARATOR,
+      { content: "Remove", callback: T.onMenuNodeRemove }
     ];
     return i;
   }
   /** Called when mouse right click */
   processContextMenu(e, i) {
-    var n = this, s = b.active_canvas, r = s.getCanvasWindow();
-    let a = i, o = null;
-    var l = {
+    var n = this, s = T.active_canvas, r = s.getCanvasWindow();
+    let a = i, l = null;
+    var o = {
       event: a,
       callback: c,
       extra: e
     };
-    e && (l.title = e.typeName);
+    e && (o.title = e.type);
     var h = null;
-    if (e && (h = e.getSlotInPosition(a.canvasX, a.canvasY), b.active_node = e), h) {
-      if (o = [], e.getSlotMenuOptions)
-        o = e.getSlotMenuOptions(h);
+    if (e && (h = e.getSlotInPosition(a.canvasX, a.canvasY), T.active_node = e), h) {
+      if (l = [], e.getSlotMenuOptions)
+        l = e.getSlotMenuOptions(h);
       else {
-        h && h.output && h.output.links && h.output.links.length && o.push({ content: "Disconnect Links", slot: h });
+        h && h.output && h.output.links && h.output.links.length && l.push({ content: "Disconnect Links", slot: h });
         var p = h.input || h.output;
-        p.removable && o.push(
+        p.removable && l.push(
           p.locked ? "Cannot remove" : { content: "Remove Slot", slot: h }
-        ), p.nameLocked || o.push({ content: "Rename Slot", slot: h });
+        ), p.nameLocked || l.push({ content: "Rename Slot", slot: h });
       }
-      l.title = (h.input ? h.input.type : h.output.type) || "*", h.input && h.input.type == I.ACTION && (l.title = "Action"), h.output && h.output.type == I.EVENT && (l.title = "Event");
+      o.title = (h.input ? h.input.type : h.output.type) || "*", h.input && h.input.type == A.ACTION && (o.title = "Action"), h.output && h.output.type == A.EVENT && (o.title = "Event");
     } else if (e)
-      o = this.getNodeMenuOptions(e);
+      l = this.getNodeMenuOptions(e);
     else {
-      o = this.getCanvasMenuOptions();
+      l = this.getCanvasMenuOptions();
       var d = this.graph.getGroupOnPos(
         a.canvasX,
         a.canvasY
       );
-      d && o.push(K.SEPARATOR, {
+      d && l.push(x.SEPARATOR, {
         content: "Edit Group",
         has_submenu: !0,
         submenu: {
@@ -3778,37 +3808,37 @@ class N {
         }
       });
     }
-    if (!o)
+    if (!l)
       return;
-    new X(o, l, r);
-    function c(m, f, _) {
-      if (m) {
-        if (m.content == "Remove Slot") {
-          var v = m.slot;
-          e.graph.beforeChange(), v.input ? e.removeInput(v.slot) : v.output && e.removeOutput(v.slot), e.graph.afterChange();
+    new X(l, o, r);
+    function c(_, f, g) {
+      if (_) {
+        if (_.content == "Remove Slot") {
+          var m = _.slot;
+          e.graph.beforeChange(), m.input ? e.removeInput(m.slot) : m.output && e.removeOutput(m.slot), e.graph.afterChange();
           return;
-        } else if (m.content == "Disconnect Links") {
-          var v = m.slot;
-          e.graph.beforeChange(), v.output ? e.disconnectOutput(v.slot) : v.input && e.disconnectInput(v.slot), e.graph.afterChange();
+        } else if (_.content == "Disconnect Links") {
+          var m = _.slot;
+          e.graph.beforeChange(), m.output ? e.disconnectOutput(m.slot) : m.input && e.disconnectInput(m.slot), e.graph.afterChange();
           return;
-        } else if (m.content == "Rename Slot") {
-          var v = m.slot, y = v.input ? e.getInputInfo(v.slot) : e.getOutputInfo(v.slot), T = n.createDialog(
+        } else if (_.content == "Rename Slot") {
+          var m = _.slot, y = m.input ? e.getInputInfo(m.slot) : e.getOutputInfo(m.slot), E = n.createDialog(
             "<span class='name'>Name</span><input autofocus type='text'/><button>OK</button>",
             f
-          ), g = T.querySelector("input");
-          g && y && (g.value = y.label || "");
-          var E = function() {
-            e.graph.beforeChange(), g.value && (y && (y.label = g.value), n.setDirty(!0)), T.close(), e.graph.afterChange();
+          ), v = E.querySelector("input");
+          v && y && (v.value = y.label || "");
+          var b = function() {
+            e.graph.beforeChange(), v.value && (y && (y.label = v.value), n.setDirty(!0)), E.close(), e.graph.afterChange();
           };
-          T.querySelector("button").addEventListener("click", E), g.addEventListener("keydown", function(O) {
-            if (T.is_modified = !0, O.keyCode == 27)
-              T.close();
+          E.querySelector("button").addEventListener("click", b), v.addEventListener("keydown", function(O) {
+            if (E.is_modified = !0, O.keyCode == 27)
+              E.close();
             else if (O.keyCode == 13)
-              E();
+              b();
             else if (O.keyCode != 13 && O.target instanceof Element && O.target.localName != "textarea")
               return;
             O.preventDefault(), O.stopPropagation();
-          }), g.focus();
+          }), v.focus();
         }
       }
     }
@@ -3829,75 +3859,75 @@ class N {
       s.onClose && typeof s.onClose == "function" && s.onClose(), s.parentNode && s.parentNode.removeChild(s), this.parentNode && this.parentNode.removeChild(this);
     }, s.toggleAltContent = function(a = !1) {
       if (typeof a < "u")
-        var o = a ? "block" : "none", l = a ? "none" : "block";
+        var l = a ? "block" : "none", o = a ? "none" : "block";
       else
-        var o = s.alt_content.style.display != "block" ? "block" : "none", l = s.alt_content.style.display != "block" ? "none" : "block";
-      s.alt_content.style.display = o, s.content.style.display = l;
+        var l = s.alt_content.style.display != "block" ? "block" : "none", o = s.alt_content.style.display != "block" ? "none" : "block";
+      s.alt_content.style.display = l, s.content.style.display = o;
     }, s.toggleFooterVisibility = function(a = !1) {
       if (typeof a < "u")
-        var o = a ? "block" : "none";
+        var l = a ? "block" : "none";
       else
-        var o = s.footer.style.display != "block" ? "block" : "none";
-      s.footer.style.display = o;
+        var l = s.footer.style.display != "block" ? "block" : "none";
+      s.footer.style.display = l;
     }, s.clear = function() {
       this.content.innerHTML = "";
-    }, s.addHTML = function(a, o, l) {
+    }, s.addHTML = function(a, l, o) {
       var h = document.createElement("div");
-      return o && (h.className = o), h.innerHTML = a, l ? s.footer.appendChild(h) : s.content.appendChild(h), h;
-    }, s.addButton = function(a, o, l) {
+      return l && (h.className = l), h.innerHTML = a, o ? s.footer.appendChild(h) : s.content.appendChild(h), h;
+    }, s.addButton = function(a, l, o) {
       var h = document.createElement("button");
-      return h.innerText = a, h.options = l, h.classList.add("btn"), h.addEventListener("click", o), s.footer.appendChild(h), h;
+      return h.innerText = a, h.options = o, h.classList.add("btn"), h.addEventListener("click", l), s.footer.appendChild(h), h;
     }, s.addSeparator = function() {
       var a = document.createElement("div");
       return a.className = "separator", s.content.appendChild(a), a;
-    }, s.addWidget = function(a, o, l, h = {}, p) {
-      var d = String(l);
-      a = a.toLowerCase(), a == "number" && (d = l.toFixed(3));
+    }, s.addWidget = function(a, l, o, h = {}, p) {
+      var d = String(o);
+      a = a.toLowerCase(), a == "number" && (d = o.toFixed(3));
       var c = document.createElement("div");
       c.className = "property", c.innerHTML = "<span class='property_name'></span><span class='property_value'></span>";
-      let m = c.querySelector(".property_name");
-      m.innerText = h.label || o;
+      let _ = c.querySelector(".property_name");
+      _.innerText = h.label || l;
       var f = c.querySelector(".property_value");
-      if (f.innerText = d, c.dataset.property = o, c.dataset.type = h.type || a, c.options = h, c.value = l, a == "code")
-        c.addEventListener("click", function(v) {
+      if (f.innerText = d, c.dataset.property = l, c.dataset.type = h.type || a, c.options = h, c.value = o, a == "code")
+        c.addEventListener("click", function(m) {
           s.inner_showCodePad(this.dataset.property);
         });
       else if (a == "boolean")
-        c.classList.add("boolean"), l && c.classList.add("bool-on"), c.addEventListener("click", function() {
-          var v = this.dataset.property;
+        c.classList.add("boolean"), o && c.classList.add("bool-on"), c.addEventListener("click", function() {
+          var m = this.dataset.property;
           this.value = !this.value, this.classList.toggle("bool-on");
           const y = this.querySelector(".property_value");
-          y.innerText = this.value ? "true" : "false", _(v, this.value);
+          y.innerText = this.value ? "true" : "false", g(m, this.value);
         });
       else if (a == "string" || a == "number")
-        f.setAttribute("contenteditable", "true"), f.addEventListener("keydown", function(v) {
-          v.code == "Enter" && (a != "string" || !v.shiftKey) && (v.preventDefault(), this.blur());
+        f.setAttribute("contenteditable", "true"), f.addEventListener("keydown", function(m) {
+          m.code == "Enter" && (a != "string" || !m.shiftKey) && (m.preventDefault(), this.blur());
         }), f.addEventListener("blur", function() {
-          let v = this.innerText;
+          let m = this.innerText;
           const y = this.parentNode;
-          var T = y.dataset.property, g = y.dataset.type;
-          g == "number" && (v = Number(v)), _(T, v);
+          var E = y.dataset.property, v = y.dataset.type;
+          v == "number" && (m = Number(m)), g(E, m);
         });
       else if ((a == "enum" || a == "combo") && "values" in h) {
-        var d = b.getPropertyPrintableValue(l, h.values);
+        var d = T.getPropertyPrintableValue(o, h.values);
         f.innerText = d, f.addEventListener("click", function(y) {
-          let T = h.values || [];
-          typeof T == "function" && (console.error("Values by callback not supported in panel.addWidget!", T), T = []);
-          var E = this.parentNode.dataset.property, C = this;
-          let O = Array.from(T).map((B) => ({ content: B }));
+          let E = h.values || [];
+          typeof E == "function" && (console.error("Values by callback not supported in panel.addWidget!", E), E = []);
+          var b = this.parentNode.dataset.property, C = this;
+          let O = Array.from(E).map((G) => ({ content: G }));
           new X(O, {
             event: y,
             className: "dark",
-            callback: G
+            callback: M
           }, n);
-          function G(B, F, H) {
-            return C.innerText = B.content, _(E, B.content), !1;
+          function M(G, F, B) {
+            return C.innerText = G.content, g(b, G.content), !1;
           }
         });
       }
       s.content.appendChild(c);
-      function _(v, y) {
-        h.callback && h.callback(v, y, h), p && p(v, y, h);
+      function g(m, y) {
+        h.callback && h.callback(m, y, h), p && p(m, y, h);
       }
       return c;
     }, s.onOpen && typeof s.onOpen == "function" && s.onOpen(), s;
@@ -3917,138 +3947,179 @@ class N {
   }
 }
 N.onShowPropertyEditor = function(t, e, i, n, s) {
-  var r = (
-    /* TODO refactor :: item.property || */
-    "title"
-  ), a = s[r], o = document.createElement("div");
+  var r = t.value, a = r.name, l = s[a], o = document.createElement("div");
   o.is_modified = !1, o.className = "graphdialog", o.innerHTML = "<span class='name'></span><input autofocus type='text' class='value'/><button>OK</button>", o.close = function() {
     o.parentNode && o.parentNode.removeChild(o);
   };
-  var l = o.querySelector(".name");
-  l.innerText = r;
-  var h = o.querySelector(".value");
-  h && (h.value = a, h.addEventListener("blur", function(g) {
+  var h = o.querySelector(".name");
+  h.innerText = a;
+  var p = o.querySelector(".value");
+  p && (p.value = l, p.addEventListener("blur", function(b) {
     this.focus();
-  }), h.addEventListener("keydown", function(g) {
-    if (o.is_modified = !0, g.keyCode == 27)
+  }), p.addEventListener("keydown", function(b) {
+    if (o.is_modified = !0, b.keyCode == 27)
       o.close();
-    else if (g.keyCode == 13)
-      y();
-    else if (g.keyCode != 13 && g.target instanceof Element && g.target.localName != "textarea")
+    else if (b.keyCode == 13)
+      m();
+    else if (b.keyCode != 13 && b.target instanceof Element && b.target.localName != "textarea")
       return;
-    g.preventDefault(), g.stopPropagation();
+    b.preventDefault(), b.stopPropagation();
   }));
-  var p = b.active_canvas, d = p.canvas, c = d.getBoundingClientRect(), m = -20, f = -20;
-  c && (m -= c.left, f -= c.top), i ? (o.style.left = i.clientX + m + "px", o.style.top = i.clientY + f + "px") : (o.style.left = d.width * 0.5 + m + "px", o.style.top = d.height * 0.5 + f + "px");
-  var _ = o.querySelector("button");
-  _.addEventListener("click", y), d.parentNode.appendChild(o), h && h.focus();
+  var d = T.active_canvas, c = d.canvas, _ = c.getBoundingClientRect(), f = -20, g = -20;
+  _ && (f -= _.left, g -= _.top), i ? (o.style.left = i.clientX + f + "px", o.style.top = i.clientY + g + "px") : (o.style.left = c.width * 0.5 + f + "px", o.style.top = c.height * 0.5 + g + "px");
+  const m = () => {
+    p && y(p.value);
+  }, y = (b) => {
+    r.type == "number" ? b = Number(b) : r.type == "boolean" && (b = !!b);
+    const C = s[a];
+    s[a] = b, s.onJSPropertyChanged && s.onJSPropertyChanged(a, b, C) === !1 && (s[a] = C), o.parentNode && o.parentNode.removeChild(o), s.setDirtyCanvas(!0, !0);
+  };
+  var E = o.querySelector("button");
+  E.addEventListener("click", m), c.parentNode.appendChild(o), p && p.focus();
   var v = null;
-  o.addEventListener("mouseleave", function(g) {
+  o.addEventListener("mouseleave", function(b) {
     u.dialog_close_on_mouse_leave && !o.is_modified && u.dialog_close_on_mouse_leave && (v = setTimeout(o.close, u.dialog_close_on_mouse_leave_delay));
-  }), o.addEventListener("mouseenter", function(g) {
+  }), o.addEventListener("mouseenter", function(b) {
     u.dialog_close_on_mouse_leave && v && clearTimeout(v);
   });
-  function y() {
-    h && T(h.value);
-  }
-  function T(g) {
-    s[r] = g, o.parentNode && o.parentNode.removeChild(o), s.setDirtyCanvas(!0, !0);
-  }
 };
 N.onGroupAdd = function(t, e, i, n) {
-  var s = b.active_canvas;
+  var s = T.active_canvas;
   s.getCanvasWindow();
   var r = new pe();
   r.pos = s.convertEventToCanvasOffset(i), s.graph.addGroup(r);
 };
 N.onMenuAdd = function(t, e, i, n, s) {
-  var r = b.active_canvas, a = r.getCanvasWindow(), o = r.graph;
-  if (!o)
+  var r = T.active_canvas, a = r.getCanvasWindow(), l = r.graph;
+  if (!l)
     return;
-  function l(h, p) {
-    var d = u.getNodeTypesCategories(r.filter || o.filter).filter(function(f) {
+  function o(h, p) {
+    var d = u.getNodeTypesCategories(r.filter || l.filter).filter(function(f) {
       return f.startsWith(h);
     }), c = [];
     d.map(function(f) {
       if (f) {
-        var _ = new RegExp("^(" + h + ")"), v = f.replace(_, "").split("/")[0], y = h === "" ? v + "/" : h + v + "/", T = v;
-        T.indexOf("::") != -1 && (T = T.split("::")[1]);
-        var g = c.findIndex(function(E) {
-          return E.value === y;
+        var g = new RegExp("^(" + h + ")"), m = f.replace(g, "").split("/")[0], y = h === "" ? m + "/" : h + m + "/", E = m;
+        E.indexOf("::") != -1 && (E = E.split("::")[1]);
+        var v = c.findIndex(function(b) {
+          return b.value === y;
         });
-        g === -1 && c.push(
+        v === -1 && c.push(
           {
             value: y,
-            content: T,
+            content: E,
             has_submenu: !0,
-            callback: function(E, C, O, G) {
-              l(E.value, G);
+            callback: function(b, C, O, M) {
+              o(b.value, M);
             }
           }
         );
       }
     });
-    var m = u.getNodeTypesInCategory(h.slice(0, -1), r.filter || o.filter);
-    m.map(function(f) {
+    var _ = u.getNodeTypesInCategory(h.slice(0, -1), r.filter || l.filter);
+    _.map(function(f) {
       if (!f.skip_list) {
-        var _ = {
-          value: f.type,
+        var g = {
+          value: f.class,
           content: f.title,
           has_submenu: !1,
-          callback: function(v, y, T, g) {
-            var E = g.getFirstEvent();
+          callback: function(m, y, E, v) {
+            var b = v.getFirstEvent();
             r.graph.beforeChange();
-            var C = u.createNode(v.value);
-            C && (C.pos = r.convertEventToCanvasOffset(E), r.graph.add(C)), s && s(C), r.graph.afterChange();
+            var C = u.createNode(m.value);
+            C && (C.pos = r.convertEventToCanvasOffset(b), r.graph.add(C)), s && s(C), r.graph.afterChange();
           }
         };
-        c.push(_);
+        c.push(g);
       }
     }), new X(c, { event: i, parentMenu: p }, a);
   }
-  return l("", n), !1;
+  return o("", n), !1;
 };
 N.showMenuNodeOptionalInputs = function(t, e, i, n, s) {
   if (!s)
     return;
-  var r = this, a = b.active_canvas, o = a.getCanvasWindow(), l = s.optional_outputs;
-  s.onGetOutputs && (l = s.onGetOutputs());
-  var h = [];
-  if (l)
-    for (var p = 0; p < l.length; p++) {
-      var d = l[p];
-      if (!d) {
-        h.push(K.SEPARATOR);
+  var r = this, a = T.active_canvas, l = a.getCanvasWindow();
+  let o = s.getOptionalSlots().inputs, h = [];
+  if (o)
+    for (let _ = 0; _ < o.length; _++) {
+      let f = o[_];
+      if (!f) {
+        h.push(x.SEPARATOR);
         continue;
       }
-      let [_, v, y] = d;
+      let { name: g, type: m, options: y } = f;
+      y || (y = {}), y.label && (g = y.label), y.removable = !0;
+      var p = { content: g, value: f };
+      m == A.ACTION && (p.className = "event"), h.push(p);
+    }
+  if (s.onMenuNodeInputs) {
+    var d = s.onMenuNodeInputs(h);
+    d && (h = d);
+  }
+  if (!h.length) {
+    console.log("no input entries");
+    return;
+  }
+  new X(
+    h,
+    {
+      event: i,
+      callback: c,
+      parentMenu: n,
+      node: s
+    },
+    l
+  );
+  function c(_, f, g, m) {
+    if (s && (_.callback && _.callback.call(r, s, _, g, m), _.value)) {
+      let y = _.value;
+      s.graph.beforeChange(), s.addInput(y.name, y.type, y.options), s.onNodeOptionalInputAdd && s.onNodeOptionalInputAdd(_.value), s.setDirtyCanvas(!0, !0), s.graph.afterChange();
+    }
+  }
+  return !1;
+};
+N.showMenuNodeOptionalOutputs = function(t, e, i, n, s) {
+  if (!s)
+    return;
+  var r = this, a = T.active_canvas, l = a.getCanvasWindow(), o = s.getOptionalSlots().outputs, h = [];
+  if (o)
+    for (var p = 0; p < o.length; p++) {
+      var d = o[p];
+      if (!d) {
+        h.push(x.SEPARATOR);
+        continue;
+      }
+      let { name: g, type: m, options: y } = d;
       if (!(s.flags && s.flags.skip_repeated_outputs && s.findOutputSlotIndexByName(d[0]) != -1)) {
-        y && (y = {}), y.label && (_ = y.label), y.removable = !0;
-        var c = { content: _, value: [_, v, y] };
-        v == I.EVENT && (c.className = "event"), h.push(c);
+        y || (y = {}), y.label && (g = y.label), y.removable = !0;
+        var c = { content: g, value: [g, m, y] };
+        m == A.EVENT && (c.className = "event"), h.push(c);
       }
     }
-  if (this.onMenuNodeOutputs && (h = this.onMenuNodeOutputs(h)), u.do_add_triggers_slots && s.findOutputSlotIndexByName("onExecuted") == -1 && h.push({ content: "On Executed", value: ["onExecuted", I.EVENT, { nameLocked: !0 }], className: "event" }), s.onMenuNodeOutputs) {
-    var m = s.onMenuNodeOutputs(h);
-    m && (h = m);
+  if (this.onMenuNodeOutputs && (h = this.onMenuNodeOutputs(h)), u.do_add_triggers_slots && s.findOutputSlotIndexByName("onExecuted") == -1 && h.push({ content: "On Executed", value: ["onExecuted", A.EVENT, { nameLocked: !0 }], className: "event" }), s.onMenuNodeOutputs) {
+    var _ = s.onMenuNodeOutputs(h);
+    _ && (h = _);
   }
   if (!h.length)
     return;
-  let f = function(_, v, y, T) {
-    if (s && (_.callback && _.callback.call(r, s, _, y, T), !!_.value)) {
-      var g = _.value[1];
-      if (g && (g.constructor === Object || g.constructor === Array)) {
-        var E = [];
-        for (var C in g)
-          E.push({ content: C, value: g[C] });
-        return new X(E, {
+  let f = function(g, m, y, E) {
+    if (s && (g.callback && g.callback.call(r, s, g, y, E), !!g.value)) {
+      var v = g.value[1];
+      if (v && (v.constructor === Object || v.constructor === Array)) {
+        var b = [];
+        for (var C in v)
+          b.push({ content: C, value: v[C] });
+        return new X(b, {
           event: y,
           callback: f,
           parentMenu: n,
           node: s
         }), !1;
-      } else
-        s.graph.beforeChange(), s.addOutput(_.value[0], _.value[1], _.value[2]), s.onNodeOutputAdd && s.onNodeOutputAdd(_.value), s.setDirtyCanvas(!0, !0), s.graph.afterChange();
+      } else {
+        const O = g.value;
+        s.graph.beforeChange(), s.addOutput(O.name, O.type, O.options), s.onNodeOptionalOutputAdd && s.onNodeOptionalOutputAdd(g.value), s.setDirtyCanvas(!0, !0), s.graph.afterChange();
+      }
     }
   };
   return new X(
@@ -4059,93 +4130,39 @@ N.showMenuNodeOptionalInputs = function(t, e, i, n, s) {
       parentMenu: n,
       node: s
     },
-    o
-  ), !1;
-};
-N.showMenuNodeOptionalOutputs = function(t, e, i, n, s) {
-  if (!s)
-    return;
-  var r = this, a = b.active_canvas, o = a.getCanvasWindow(), l = s.optional_outputs;
-  s.onGetOutputs && (l = s.onGetOutputs());
-  var h = [];
-  if (l)
-    for (var p = 0; p < l.length; p++) {
-      var d = l[p];
-      if (!d) {
-        h.push(K.SEPARATOR);
-        continue;
-      }
-      if (!(s.flags && s.flags.skip_repeated_outputs && s.findOutputSlotIndexByName(d[0]) != -1)) {
-        var c = d[0];
-        d[2] || (d[2] = {}), d[2].label && (c = d[2].label), d[2].removable = !0;
-        var m = { content: c, value: d };
-        d[1] == I.EVENT && (m.className = "event"), h.push(m);
-      }
-    }
-  if (this.onMenuNodeOutputs && (h = this.onMenuNodeOutputs(h)), u.do_add_triggers_slots && s.findOutputSlotIndexByName("onExecuted") == -1 && h.push({ content: "On Executed", value: ["onExecuted", I.EVENT, { nameLocked: !0 }], className: "event" }), s.onMenuNodeOutputs) {
-    var f = s.onMenuNodeOutputs(h);
-    f && (h = f);
-  }
-  if (!h.length)
-    return;
-  let _ = function(v, y, T, g) {
-    if (s && (v.callback && v.callback.call(r, s, v, T, g), !!v.value)) {
-      var E = v.value[1];
-      if (E && (E.constructor === Object || E.constructor === Array)) {
-        var C = [];
-        for (var O in E)
-          C.push({ content: O, value: E[O] });
-        return new X(C, {
-          event: T,
-          callback: _,
-          parentMenu: n,
-          node: s
-        }), !1;
-      } else
-        s.graph.beforeChange(), s.addOutput(v.value[0], v.value[1], v.value[2]), s.onNodeOutputAdd && s.onNodeOutputAdd(v.value), s.setDirtyCanvas(!0, !0), s.graph.afterChange();
-    }
-  };
-  return new X(
-    h,
-    {
-      event: i,
-      callback: _,
-      parentMenu: n,
-      node: s
-    },
-    o
+    l
   ), !1;
 };
 N.onMenuResizeNode = function(t, e, i, n, s) {
   if (s) {
-    var r = function(l) {
-      l.size = l.computeSize(), l.onResize && l.onResize(l.size);
-    }, a = b.active_canvas;
+    var r = function(o) {
+      o.size = o.computeSize(), o.onResize && o.onResize(o.size);
+    }, a = T.active_canvas;
     if (!a.selected_nodes || Object.keys(a.selected_nodes).length <= 1)
       r(s);
     else
-      for (var o in a.selected_nodes)
-        r(a.selected_nodes[o]);
+      for (var l in a.selected_nodes)
+        r(a.selected_nodes[l]);
     s.setDirtyCanvas(!0, !0);
   }
 };
 N.onShowMenuNodeProperties = function(t, e, i, n, s) {
   if (!s || !s.properties)
     return;
-  var r = b.active_canvas, a = r.getCanvasWindow(), o = [];
-  for (var l in s.properties) {
-    var h = s.properties[l] !== void 0 ? s.properties[l] : " ";
+  var r = T.active_canvas, a = r.getCanvasWindow(), l = [];
+  for (var o in s.properties) {
+    var h = s.properties[o] !== void 0 ? s.properties[o] : " ";
     typeof h == "object" && (h = JSON.stringify(h));
-    var p = s.getPropertyInfo(l);
-    (p.type == "enum" || p.type == "combo") && (h = b.getPropertyPrintableValue(h, p.values)), h = b.decodeHTML(h), o.push({
-      content: "<span class='property_name'>" + (p.label ? p.label : l) + "</span><span class='property_value'>" + h + "</span>",
-      value: l
+    var p = s.getPropertyInfo(o);
+    (p.type == "enum" || p.type == "combo") && (h = T.getPropertyPrintableValue(h, p.values)), h = T.decodeHTML(h), l.push({
+      content: "<span class='property_name'>" + (p.label ? p.label : o) + "</span><span class='property_value'>" + h + "</span>",
+      value: o
     });
   }
-  if (!o.length)
+  if (!l.length)
     return;
   new X(
-    o,
+    l,
     {
       event: i,
       callback: d,
@@ -4155,11 +4172,11 @@ N.onShowMenuNodeProperties = function(t, e, i, n, s) {
     },
     a
   );
-  function d(c, m, f, _) {
+  function d(c, _, f, g) {
     if (s) {
-      var v = this.getBoundingClientRect();
+      var m = this.getBoundingClientRect();
       r.showEditPropertyValue(s, c.value, {
-        position: [v.left, v.top]
+        position: [m.left, m.top]
       });
     }
   }
@@ -4172,14 +4189,14 @@ N.onMenuNodeCollapse = function(t, e, i, n, s) {
   s.graph.beforeChange(
     /*?*/
   );
-  var r = function(l) {
-    l.collapse();
-  }, a = b.active_canvas;
+  var r = function(o) {
+    o.collapse();
+  }, a = T.active_canvas;
   if (!a.selected_nodes || Object.keys(a.selected_nodes).length <= 1)
     r(s);
   else
-    for (var o in a.selected_nodes)
-      r(a.selected_nodes[o]);
+    for (var l in a.selected_nodes)
+      r(a.selected_nodes[l]);
   s.graph.afterChange(
     /*?*/
   );
@@ -4188,16 +4205,16 @@ N.onMenuNodePin = function(t, e, i, n, s) {
   s.pin();
 };
 N.onMenuNodeMode = function(t, e, i, n, s) {
-  let r = Array.from(te).map((o) => ({ content: o }));
+  let r = Array.from(ie).map((l) => ({ content: l }));
   new X(
     r,
     { event: i, callback: a, parentMenu: n, node: s }
   );
-  function a(o) {
+  function a(l) {
     if (s) {
-      var l = Object.values(te).indexOf(o.content), h = function(c) {
-        l >= x.ALWAYS && te[l] ? c.changeMode(l) : (console.warn("unexpected mode: " + o), c.changeMode(x.ALWAYS));
-      }, p = b.active_canvas;
+      var o = Object.values(ie).indexOf(l.content), h = function(c) {
+        o >= j.ALWAYS && ie[o] ? c.changeMode(o) : (console.warn("unexpected mode: " + l), c.changeMode(j.ALWAYS));
+      }, p = T.active_canvas;
       if (!p.selected_nodes || Object.keys(p.selected_nodes).length <= 1)
         h(s);
       else
@@ -4215,26 +4232,26 @@ N.onMenuNodeColors = function(t, e, i, n, s) {
     value: null,
     content: "<span style='display: block; padding-left: 4px;'>No color</span>"
   });
-  for (let l in b.node_colors) {
-    var a = b.node_colors[l];
+  for (let o in T.node_colors) {
+    var a = T.node_colors[o];
     let h = {
-      value: l,
-      content: "<span style='display: block; color: #999; padding-left: 4px; border-left: 8px solid " + a.color + "; background-color:" + a.bgColor + "'>" + l + "</span>"
+      value: o,
+      content: "<span style='display: block; color: #999; padding-left: 4px; border-left: 8px solid " + a.color + "; background-color:" + a.bgColor + "'>" + o + "</span>"
     };
     r.push(h);
   }
   new X(r, {
     event: i,
-    callback: o,
+    callback: l,
     parentMenu: n,
     node: s,
     allow_html: !0
   });
-  function o(l) {
+  function l(o) {
     if (s) {
-      var h = l.value ? b.node_colors[l.value] : null, p = function(m) {
-        h ? m instanceof pe ? m.color = h.groupcolor : (m.color = h.color, m.bgColor = h.bgColor) : (delete m.color, m instanceof J && delete m.bgColor);
-      }, d = b.active_canvas;
+      var h = o.value ? T.node_colors[o.value] : null, p = function(_) {
+        h ? _ instanceof pe ? _.color = h.groupcolor : (_.color = h.color, _.bgColor = h.bgColor) : (delete _.color, _ instanceof te && delete _.bgColor);
+      }, d = T.active_canvas;
       if (!d.selected_nodes || Object.keys(d.selected_nodes).length <= 1)
         p(s);
       else
@@ -4248,26 +4265,26 @@ N.onMenuNodeColors = function(t, e, i, n, s) {
 N.onMenuNodeShapes = function(t, e, i, n, s) {
   if (!s)
     throw "no node passed";
-  const r = Array.from(Ee).map((o) => ({ content: o }));
+  const r = Array.from(be).map((l) => ({ content: l }));
   new X(r, {
     event: i,
     callback: a,
     parentMenu: n,
     node: s
   });
-  function a(o) {
+  function a(l) {
     if (s) {
       s.graph.beforeChange(
         /*?*/
       );
-      var l = function(d) {
-        d.shape = Ee.indexOf(o.content);
-      }, h = b.active_canvas;
+      var o = function(d) {
+        d.shape = be.indexOf(l.content);
+      }, h = T.active_canvas;
       if (!h.selected_nodes || Object.keys(h.selected_nodes).length <= 1)
-        l(s);
+        o(s);
       else
         for (var p in h.selected_nodes)
-          l(h.selected_nodes[p]);
+          o(h.selected_nodes[p]);
       s.graph.afterChange(
         /*?*/
       ), s.setDirtyCanvas(!0);
@@ -4282,21 +4299,21 @@ N.onMenuNodeRemove = function(t, e, i, n, s) {
   r.beforeChange();
   var a = function(h) {
     h.removable !== !1 && r.remove(h);
-  }, o = b.active_canvas;
-  if (!o.selected_nodes || Object.keys(o.selected_nodes).length <= 1)
+  }, l = T.active_canvas;
+  if (!l.selected_nodes || Object.keys(l.selected_nodes).length <= 1)
     a(s);
   else
-    for (var l in o.selected_nodes)
-      a(o.selected_nodes[l]);
+    for (var o in l.selected_nodes)
+      a(l.selected_nodes[o]);
   r.afterChange(), s.setDirtyCanvas(!0, !0);
 };
 N.onMenuNodeToSubgraph = function(t, e, i, n, s) {
-  var r = s.graph, a = b.active_canvas;
+  var r = s.graph, a = T.active_canvas;
   if (a) {
-    var o = Object.values(a.selected_nodes || {});
-    o.length || (o = [s]);
-    var l = u.createNode("graph/subgraph");
-    l.pos = s.pos.concat(), r.add(l), l.buildFromNodes(o), a.deselectAllNodes(), s.setDirtyCanvas(!0, !0);
+    var l = Object.values(a.selected_nodes || {});
+    l.length || (l = [s]);
+    var o = u.createNode("graph/subgraph");
+    o.pos = s.pos.concat(), r.add(o), o.buildFromNodes(l), a.deselectAllNodes(), s.setDirtyCanvas(!0, !0);
   }
 };
 N.onMenuNodeClone = function(t, e, i, n, s) {
@@ -4306,19 +4323,19 @@ N.onMenuNodeClone = function(t, e, i, n, s) {
       var p = h.clone();
       p && (p.pos = [h.pos[0] + 5, h.pos[1] + 5], h.graph.add(p), r[p.id] = p);
     }
-  }, o = b.active_canvas;
-  if (!o.selected_nodes || Object.keys(o.selected_nodes).length <= 1)
+  }, l = T.active_canvas;
+  if (!l.selected_nodes || Object.keys(l.selected_nodes).length <= 1)
     a(s);
   else
-    for (var l in o.selected_nodes)
-      a(o.selected_nodes[l]);
-  Object.keys(r).length && o.selectNodes(Object.values(r)), s.graph.afterChange(), s.setDirtyCanvas(!0, !0);
+    for (var o in l.selected_nodes)
+      a(l.selected_nodes[o]);
+  Object.keys(r).length && l.selectNodes(Object.values(r)), s.graph.afterChange(), s.setDirtyCanvas(!0, !0);
 };
-const we = function(t, e, i) {
+const Se = function(t, e, i) {
   return e > t ? e : i < t ? i : t;
 }, ue = class {
   constructor(t, e, i = {}) {
-    this.node_panel = null, this.options_panel = null, this.render_time = 0, this.allow_dragcanvas = !0, this.allow_dragnodes = !0, this.allow_interaction = !0, this.allow_reconnect_links = !0, this.allow_searchbox = !0, this.always_render_background = !1, this.background_image = ue.DEFAULT_BACKGROUND_IMAGE, this.block_click = !1, this.connecting_pos = null, this.connecting_slot = null, this.connecting_input = null, this.connecting_output = null, this.connections_width = 3, this.current_node = null, this.drag_mode = !1, this.dragging_rectangle = null, this.ds = new Le(), this.editor_alpha = 1, this.filter = null, this.highquality_render = !0, this.skip_events = !1, this.last_mouse_position = [0, 0], this.last_click_position = [0, 0], this.last_mouse_dragging = !1, this.links_render_mode = oe.SPLINE_LINK, this.live_mode = !1, this.mouse = [0, 0], this.graph_mouse = [0, 0], this.node_widget = null, this.maxZoom = null, this.minZoom = null, this.multi_select = !1, this.over_link_center = null, this.pause_rendering = !1, this.read_only = !1, this.render_canvas_border = !0, this.render_collapsed_slots = !0, this.render_connection_arrows = !1, this.render_connections_border = !0, this.render_connections_shadows = !1, this.render_curved_connections = !1, this.render_execution_order = !1, this.render_link_tooltip = !0, this.render_only_selected = !0, this.render_shadows = !0, this.render_title_colored = !0, this.round_radius = 8, this.set_canvas_dirty_on_mouse_event = !0, this.show_info = !0, this.use_gradients = !1, this.visible_links = [], this.zoom_modify_alpha = !0, this.pointer_is_down = !1, this.pointer_is_double = !1, this._highlight_input = null, this._highlight_input_slot = null, this._highlight_output = null, this._graph_stack = null, this._bg_img = null, this._pattern = null, this._pattern_img = null, this.search_box = null, this.prompt_box = null, this._events_binded = !1, this.resizing_node = null, this.getCanvasMenuOptions = N.prototype.getCanvasMenuOptions, this.getNodeMenuOptions = N.prototype.getNodeMenuOptions, this.getGroupMenuOptions = N.prototype.getGroupMenuOptions, this.checkPanels = N.prototype.checkPanels, this.closePanels = N.prototype.closePanels, this.createDialog = N.prototype.createDialog, this.createPanel = N.prototype.createPanel, this.showSearchBox = N.prototype.showSearchBox, this.prompt = N.prototype.prompt, this.showConnectionMenu = N.prototype.showConnectionMenu, this.showLinkMenu = N.prototype.showLinkMenu, this.showEditPropertyValue = N.prototype.showEditPropertyValue, this.showShowNodePanel = N.prototype.showShowNodePanel, this.showSubgraphPropertiesDialog = N.prototype.showSubgraphPropertiesDialog, this.showSubgraphPropertiesDialogRight = N.prototype.showSubgraphPropertiesDialogRight, this.processContextMenu = N.prototype.processContextMenu, this.processMouseMove = he.prototype.processMouseMove, this.processMouseDown = he.prototype.processMouseDown, this.processMouseUp = he.prototype.processMouseUp, this.processMouseWheel = he.prototype.processMouseWheel, this.setZoom = R.prototype.setZoom, this.bringToFront = R.prototype.bringToFront, this.sendToBack = R.prototype.sendToBack, this.computeVisibleNodes = R.prototype.computeVisibleNodes, this.draw = R.prototype.draw, this.drawFrontCanvas = R.prototype.drawFrontCanvas, this.drawSubgraphPanel = R.prototype.drawSubgraphPanel, this.drawSubgraphPanelLeft = R.prototype.drawSubgraphPanelLeft, this.drawSubgraphPanelRight = R.prototype.drawSubgraphPanelRight, this.drawButton = R.prototype.drawButton, this.drawBackCanvas = R.prototype.drawBackCanvas, this.renderInfo = R.prototype.renderInfo, this.drawNode = R.prototype.drawNode, this.drawLinkTooltip = R.prototype.drawLinkTooltip, this.drawNodeShape = R.prototype.drawNodeShape, this.drawConnections = R.prototype.drawConnections, this.renderLink = R.prototype.renderLink, this.computeConnectionPoint = R.prototype.computeConnectionPoint, this.drawExecutionOrder = R.prototype.drawExecutionOrder, this.drawNodeWidgets = R.prototype.drawNodeWidgets, this.drawGroups = R.prototype.drawGroups, typeof t == "string" && (t = document.querySelector(t)), this.skip_events = i.skip_events || !1, this.title_text_font = "" + u.NODE_TEXT_SIZE + "px Arial", this.inner_text_font = "normal " + u.NODE_SUBTEXT_SIZE + "px Arial", this.node_title_color = u.NODE_TITLE_COLOR, this.default_link_color = u.LINK_COLOR, this.default_connection_color = {
+    this.node_panel = null, this.options_panel = null, this.render_time = 0, this.allow_dragcanvas = !0, this.allow_dragnodes = !0, this.allow_interaction = !0, this.allow_reconnect_links = !0, this.allow_searchbox = !0, this.always_render_background = !1, this.background_image = ue.DEFAULT_BACKGROUND_IMAGE, this.block_click = !1, this.clear_background = !0, this.connecting_pos = null, this.connecting_slot = null, this.connecting_input = null, this.connecting_output = null, this.connections_width = 3, this.current_node = null, this.drag_mode = !1, this.dragging_rectangle = null, this.ds = new Ae(), this.editor_alpha = 1, this.filter = null, this.highquality_render = !0, this.skip_events = !1, this.last_mouse_position = [0, 0], this.last_click_position = [0, 0], this.last_mouse_dragging = !1, this.links_render_mode = le.SPLINE_LINK, this.live_mode = !1, this.mouse = [0, 0], this.graph_mouse = [0, 0], this.node_widget = null, this.maxZoom = null, this.minZoom = null, this.multi_select = !1, this.over_link_center = null, this.pause_rendering = !1, this.read_only = !1, this.render_canvas_border = !0, this.render_collapsed_slots = !0, this.render_connection_arrows = !1, this.render_connections_border = !0, this.render_connections_shadows = !1, this.render_curved_connections = !1, this.render_execution_order = !1, this.render_link_tooltip = !0, this.render_only_selected = !0, this.render_shadows = !0, this.render_title_colored = !0, this.round_radius = 8, this.set_canvas_dirty_on_mouse_event = !0, this.show_info = !0, this.use_gradients = !1, this.visible_links = [], this.zoom_modify_alpha = !0, this.pointer_is_down = !1, this.pointer_is_double = !1, this._highlight_input = null, this._highlight_input_slot = null, this._highlight_output = null, this._graph_stack = null, this._bg_img = null, this._pattern = null, this._pattern_img = null, this.search_box = null, this.prompt_box = null, this._events_binded = !1, this.resizing_node = null, typeof t == "string" && (t = document.querySelector(t)), this.skip_events = i.skip_events || !1, this.title_text_font = "" + u.NODE_TEXT_SIZE + "px Arial", this.inner_text_font = "normal " + u.NODE_SUBTEXT_SIZE + "px Arial", this.node_title_color = u.NODE_TITLE_COLOR, this.default_link_color = u.LINK_COLOR, this.default_connection_color = {
       input_off: "#778",
       input_on: "#7F7",
       //"#BBD"
@@ -4490,68 +4507,68 @@ const we = function(t, e, i) {
       return console.warn("No data passed to createDefaultNodeForSlot " + e.nodeFrom + " " + e.slotFrom + " " + e.nodeTo + " " + e.slotTo), !1;
     if (!t)
       return console.warn("No type to createDefaultNodeForSlot"), !1;
-    var r = n ? e.nodeFrom : e.nodeTo, a = n ? e.slotFrom : e.slotTo, o = null;
+    var r = n ? e.nodeFrom : e.nodeTo, a = n ? e.slotFrom : e.slotTo, l = null;
     switch (typeof a) {
       case "string":
-        o = n ? r.findOutputSlotIndexByName(a) : r.findInputSlotIndexByName(a), a = n ? r.outputs[a] : r.inputs[a];
+        l = n ? r.findOutputSlotIndexByName(a) : r.findInputSlotIndexByName(a), a = n ? r.outputs[a] : r.inputs[a];
         break;
       case "object":
-        o = n ? r.findOutputSlotIndexByName(a.name) : r.findInputSlotIndexByName(a.name);
+        l = n ? r.findOutputSlotIndexByName(a.name) : r.findInputSlotIndexByName(a.name);
         break;
       case "number":
-        o = a, a = n ? r.outputs[a] : r.inputs[a];
+        l = a, a = n ? r.outputs[a] : r.inputs[a];
         break;
       case "undefined":
       default:
         return console.warn("Cant get slot information " + a), !1;
     }
-    a = a, (!a || !o) && console.warn("createDefaultNodeForSlot bad slotX " + a + " " + o);
-    var l = a.type == I.EVENT ? "_event_" : a.type, h = n ? u.slot_types_default_out : u.slot_types_default_in;
-    const p = h[l];
+    a = a, (!a || !l) && console.warn("createDefaultNodeForSlot bad slotX " + a + " " + l);
+    var o = a.type == A.EVENT ? "_event_" : a.type, h = n ? u.slot_types_default_out : u.slot_types_default_in;
+    const p = h[o];
     if (h && p) {
       a.link !== null || a.links && a.links.length > 0;
-      let _ = null;
+      let g = null;
       if (typeof p == "object" && Array.isArray(p)) {
         for (var d of p)
-          if (t == h[l][d] || t == "AUTO") {
-            _ = h[l][d], u.debug && console.log("opts.nodeType == slotTypesDefault[fromSlotType][typeX] :: " + t);
+          if (t == h[o][d] || t == "AUTO") {
+            g = h[o][d], u.debug && console.log("opts.nodeType == slotTypesDefault[fromSlotType][typeX] :: " + t);
             break;
           }
       } else
-        (t == p || t == "AUTO") && (_ = p);
-      if (_) {
+        (t == p || t == "AUTO") && (g = p);
+      if (g) {
         var c = null;
-        typeof _ == "object" && _.node && (c = _, _ = _.node);
-        var m = u.createNode(_);
-        if (m) {
+        typeof g == "object" && g.node && (c = g, g = g.node);
+        var _ = u.createNode(g);
+        if (_) {
           if (c) {
             if (c.properties)
               for (var f in c.properties)
-                m.addProperty(f, c.properties[f]);
+                _.addProperty(f, c.properties[f]);
             if (c.inputs) {
-              m.inputs = [];
+              _.inputs = [];
               for (var f in c.inputs)
-                m.addOutput(
+                _.addOutput(
                   c.inputs[f][0],
                   c.inputs[f][1]
                 );
             }
             if (c.outputs) {
-              m.outputs = [];
+              _.outputs = [];
               for (var f in c.outputs)
-                m.addOutput(
+                _.addOutput(
                   c.outputs[f][0],
                   c.outputs[f][1]
                 );
             }
-            c.title && (m.title = c.title), c.json && m.configure(c.json);
+            c.title && (_.title = c.title), c.json && _.configure(c.json);
           }
-          return i.graph.add(m), m.pos = [
-            e.position[0] + e.posAdd[0] + (e.posSizeFix[0] ? e.posSizeFix[0] * m.size[0] : 0),
-            e.position[1] + e.posAdd[1] + (e.posSizeFix[1] ? e.posSizeFix[1] * m.size[1] : 0)
-          ], n ? e.nodeFrom.connectByTypeInput(o, m, l) : e.nodeTo.connectByTypeOutput(o, m, l), n && s && console.debug("connecting in between"), !0;
+          return i.graph.add(_), _.pos = [
+            e.position[0] + e.posAdd[0] + (e.posSizeFix[0] ? e.posSizeFix[0] * _.size[0] : 0),
+            e.position[1] + e.posAdd[1] + (e.posSizeFix[1] ? e.posSizeFix[1] * _.size[1] : 0)
+          ], n ? e.nodeFrom.connectByTypeInput(l, _, o) : e.nodeTo.connectByTypeOutput(l, _, o), n && s && console.debug("connecting in between"), !0;
         } else
-          console.log("failed creating " + _);
+          console.log("failed creating " + g);
       }
     }
     return !1;
@@ -4572,22 +4589,22 @@ const we = function(t, e, i) {
   isOverNodeInput(t, e, i, n) {
     if (t.inputs)
       for (var s = 0, r = t.inputs.length; s < r; ++s) {
-        var a = t.getConnectionPos(!0, s), o = !1;
-        if (t.horizontal ? o = u.isInsideRectangle(
+        var a = t.getConnectionPos(!0, s), l = !1;
+        if (t.horizontal ? l = u.isInsideRectangle(
           e,
           i,
           a[0] - 5,
           a[1] - 10,
           10,
           20
-        ) : o = u.isInsideRectangle(
+        ) : l = u.isInsideRectangle(
           e,
           i,
           a[0] - 10,
           a[1] - 5,
           40,
           10
-        ), o)
+        ), l)
           return n && (n[0] = a[0], n[1] = a[1]), s;
       }
     return -1;
@@ -4600,22 +4617,22 @@ const we = function(t, e, i) {
     if (t.outputs)
       for (var s = 0, r = t.outputs.length; s < r; ++s) {
         t.outputs[s];
-        var a = t.getConnectionPos(!1, s), o = !1;
-        if (t.horizontal ? o = u.isInsideRectangle(
+        var a = t.getConnectionPos(!1, s), l = !1;
+        if (t.horizontal ? l = u.isInsideRectangle(
           e,
           i,
           a[0] - 5,
           a[1] - 10,
           10,
           20
-        ) : o = u.isInsideRectangle(
+        ) : l = u.isInsideRectangle(
           e,
           i,
           a[0] - 10,
           a[1] - 5,
           40,
           10
-        ), o)
+        ), l)
           return n && (n[0] = a[0], n[1] = a[1]), s;
       }
     return -1;
@@ -4656,17 +4673,17 @@ const we = function(t, e, i) {
         for (var r = 0; r < p.inputs.length; ++r) {
           var a = p.inputs[r];
           if (!(!a || a.link == null)) {
-            var o = this.graph.links[a.link];
-            if (o) {
-              var l = this.graph.getNodeById(
-                o.origin_id
+            var l = this.graph.links[a.link];
+            if (l) {
+              var o = this.graph.getNodeById(
+                l.origin_id
               );
-              !l || !this.selected_nodes[l.id] || t.links.push([
-                l._relative_id,
-                o.origin_slot,
+              !o || !this.selected_nodes[o.id] || t.links.push([
+                o._relative_id,
+                l.origin_slot,
                 //j,
                 p._relative_id,
-                o.target_slot
+                l.target_slot
               ]);
             }
           }
@@ -4684,12 +4701,12 @@ const we = function(t, e, i) {
       for (var e = JSON.parse(t), i = null, n = null, s = 0; s < e.nodes.length; ++s)
         i ? (i[0] > e.nodes[s].pos[0] && (i[0] = e.nodes[s].pos[0], n[0] = s), i[1] > e.nodes[s].pos[1] && (i[1] = e.nodes[s].pos[1], n[1] = s)) : (i = [e.nodes[s].pos[0], e.nodes[s].pos[1]], n = [s, s]);
       for (var r = [], s = 0; s < e.nodes.length; ++s) {
-        var a = e.nodes[s], o = u.createNode(a.type);
-        o && (o.configure(a), o.pos[0] += this.graph_mouse[0] - i[0], o.pos[1] += this.graph_mouse[1] - i[1], this.graph.add(o, { doProcessChange: !1 }), r.push(o));
+        var a = e.nodes[s], l = u.createNode(a.type);
+        l && (l.configure(a), l.pos[0] += this.graph_mouse[0] - i[0], l.pos[1] += this.graph_mouse[1] - i[1], this.graph.add(l, { doProcessChange: !1 }), r.push(l));
       }
       for (var s = 0; s < e.links.length; ++s) {
-        var l = e.links[s], h = r[l[0]], p = r[l[2]];
-        h && p ? h.connect(l[1], p, l[3]) : console.warn("Warning, nodes missing on pasting");
+        var o = e.links[s], h = r[o[0]], p = r[o[2]];
+        h && p ? h.connect(o[1], p, o[3]) : console.warn("Warning, nodes missing on pasting");
       }
       this.selectNodes(r), this.graph.afterChange();
     }
@@ -4701,23 +4718,23 @@ const we = function(t, e, i) {
     if (s) {
       var r = [e.canvasX, e.canvasY], a = this.graph ? this.graph.getNodeOnPos(r[0], r[1]) : null;
       if (!a) {
-        var o = null;
-        this.onDropItem && (o = this.onDropItem(e)), o || this.checkDropItem(e);
+        var l = null;
+        this.onDropItem && (l = this.onDropItem(e)), l || this.checkDropItem(e);
         return;
       }
       if (a.onDropFile || a.onDropData) {
-        var l = e.dataTransfer.files;
-        if (l && l.length)
-          for (var h = 0; h < l.length; h++) {
+        var o = e.dataTransfer.files;
+        if (o && o.length)
+          for (var h = 0; h < o.length; h++) {
             var p = e.dataTransfer.files[0], d = p.name;
             if (ue.getFileExtension(d), a.onDropFile && a.onDropFile(p), a.onDropData) {
               var c = new FileReader();
               c.onload = function(f) {
-                var _ = f.target.result;
-                a.onDropData(_, d, p);
+                var g = f.target.result;
+                a.onDropData(g, d, p);
               };
-              var m = p.type.split("/")[0];
-              m == "text" || m == "" ? c.readAsText(p) : m == "image" ? c.readAsDataURL(p) : c.readAsArrayBuffer(p);
+              var _ = p.type.split("/")[0];
+              _ == "text" || _ == "" ? c.readAsText(p) : _ == "image" ? c.readAsDataURL(p) : c.readAsArrayBuffer(p);
             }
           }
       }
@@ -4730,7 +4747,7 @@ const we = function(t, e, i) {
       var i = e.dataTransfer.files[0], n = ue.getFileExtension(i.name).toLowerCase(), s = u.node_types_by_file_extension[n];
       if (s) {
         this.graph.beforeChange();
-        var r = u.createNode(s.typeName);
+        var r = u.createNode(s.type);
         r.pos = [e.canvasX, e.canvasY], this.graph.add(r), r.onDropFile && r.onDropFile(i), this.graph.afterChange();
       }
     }
@@ -4827,62 +4844,62 @@ const we = function(t, e, i) {
   }
   /** process an event on widgets */
   processNodeWidgets(t, e, i, n) {
-    if (!t.widgets || !t.widgets.length)
+    if (!t.widgets || !t.widgets.length || u.ignore_all_widget_events)
       return null;
-    for (var s = e[0] - t.pos[0], r = e[1] - t.pos[1], a = t.size[0], o = this, l = this.getCanvasWindow(), h = 0; h < t.widgets.length; ++h) {
+    for (var s = e[0] - t.pos[0], r = e[1] - t.pos[1], a = t.size[0], l = this, o = this.getCanvasWindow(), h = 0; h < t.widgets.length; ++h) {
       var p = t.widgets[h];
       if (!(!p || p.disabled)) {
         var d = p.computeSize ? p.computeSize(a)[1] : u.NODE_WIDGET_HEIGHT, c = p.width || a;
         if (!(p != n && (s < 6 || s > c - 12 || r < p.last_y || r > p.last_y + d || p.last_y === void 0))) {
-          var m = p.value;
+          var _ = p.value;
           switch (p.type) {
             case "button":
               i.type === u.pointerevents_method + "down" && (p.callback && setTimeout(function() {
-                p.callback(p, o, t, e, i);
+                p.callback(p, l, t, e, i);
               }, 20), p.clicked = !0, this.dirty_canvas = !0);
               break;
             case "slider":
               p.options.max - p.options.min;
-              var f = we((s - 15) / (c - 30), 0, 1);
+              var f = Se((s - 15) / (c - 30), 0, 1);
               p.value = p.options.min + (p.options.max - p.options.min) * f, p.callback && setTimeout(function() {
-                E(p, p.value);
+                b(p, p.value);
               }, 20), this.dirty_canvas = !0;
               break;
             case "number":
             case "combo":
-              var m = p.value;
+              var _ = p.value;
               if (i.type == u.pointerevents_method + "move" && p.type == "number")
                 i.deltaX && (p.value += i.deltaX * 0.1 * (p.options.step || 1)), p.options.min != null && p.value < p.options.min && (p.value = p.options.min), p.options.max != null && p.value > p.options.max && (p.value = p.options.max);
               else if (i.type == u.pointerevents_method + "down") {
-                var _ = p.options.values;
-                if (_ && typeof _ == "function") {
+                var g = p.options.values;
+                if (g && typeof g == "function") {
                   let O = p.options.values;
-                  _ = O(p, t);
+                  g = O(p, t);
                 }
-                var v = null;
-                p.type != "number" && (v = Array.isArray(_) ? _ : Object.keys(_));
+                var m = null;
+                p.type != "number" && (m = Array.isArray(g) ? g : Object.keys(g));
                 var y = s < 40 ? -1 : s > c - 40 ? 1 : 0;
                 if (p.type == "number")
-                  p.value += y * 0.1 * (p.options.step || 1), p.options.min != null && p.value < p.options.min && (p.value = p.options.min), p.options.max != null && p.value > p.options.max && (p.value = p.options.max);
+                  p.value += y * (p.options.step || 0.1), p.options.min != null && p.value < p.options.min && (p.value = p.options.min), p.options.max != null && p.value > p.options.max && (p.value = p.options.max);
                 else if (y) {
-                  var T = -1;
-                  this.last_mouseclick = 0, _.constructor === Object ? T = v.indexOf(String(p.value)) + y : T = v.indexOf(p.value) + y, T >= v.length && (T = v.length - 1), T < 0 && (T = 0), Array.isArray(_) ? p.value = _[T] : p.value = T;
+                  var E = -1;
+                  this.last_mouseclick = 0, g.constructor === Object ? E = m.indexOf(String(p.value)) + y : E = m.indexOf(p.value) + y, E >= m.length && (E = m.length - 1), E < 0 && (E = 0), Array.isArray(g) ? p.value = g[E] : p.value = E;
                 } else {
-                  let O = function(B, F, H) {
-                    let D = B.content;
-                    return _ != v && (D = g.indexOf(D)), this.value = B, E(this, B), o.dirty_canvas = !0, !1;
+                  let O = function(G, F, B) {
+                    let D = G.content;
+                    return g != m && (D = v.indexOf(D)), this.value = G, b(this, G), l.dirty_canvas = !0, !1;
                   };
-                  var g = _ != v ? Object.values(_) : _;
-                  let G = Array.from(g).map((B) => ({ content: B }));
+                  var v = g != m ? Object.values(g) : g;
+                  let M = Array.from(v).map((G) => ({ content: G }));
                   new X(
-                    G,
+                    M,
                     {
                       scale: Math.max(1, this.ds.scale),
                       event: i,
                       className: "dark",
                       callback: O.bind(p)
                     },
-                    l
+                    o
                   );
                 }
               } else if (i.type == u.pointerevents_method + "up" && p.type == "number") {
@@ -4890,22 +4907,22 @@ const we = function(t, e, i) {
                 i.click_time < 200 && y == 0 && this.prompt(
                   "Value",
                   p.value,
-                  function(G) {
-                    this.value = Number(G), E(this, this.value);
+                  function(M) {
+                    this.value = Number(M), b(this, this.value);
                   }.bind(p),
                   i
                 );
               }
-              m != p.value && setTimeout(
+              _ != p.value && setTimeout(
                 function() {
-                  E(this, this.value);
+                  b(this, this.value);
                 }.bind(p),
                 20
               ), this.dirty_canvas = !0;
               break;
             case "toggle":
               i.type == u.pointerevents_method + "down" && (p.value = !p.value, setTimeout(function() {
-                E(p, p.value);
+                b(p, p.value);
               }, 20));
               break;
             case "string":
@@ -4914,7 +4931,7 @@ const we = function(t, e, i) {
                 "Value",
                 p.value,
                 function(O) {
-                  this.value = O, E(this, O);
+                  this.value = O, b(this, O);
                 }.bind(p),
                 i,
                 p.options ? p.options.multiline : !1
@@ -4924,12 +4941,12 @@ const we = function(t, e, i) {
               p.mouse && (this.dirty_canvas = p.mouse(i, [s, r], t));
               break;
           }
-          return m != p.value && (t.onWidgetChanged && t.onWidgetChanged(p, m), t.graph._version++), p;
+          return _ != p.value && (t.onWidgetChanged && t.onWidgetChanged(p, _), t.graph._version++), p;
         }
       }
     }
-    function E(C, O) {
-      C.value = O, C.options && C.options.property && t.properties[C.options.property] !== void 0 && t.setProperty(C.options.property, O), C.callback && C.callback(C.value, o, t, e, i);
+    function b(C, O) {
+      C.value = O, C.options && C.options.property && t.properties[C.options.property] !== void 0 && t.setProperty(C.options.property, O), C.callback && C.callback(C.value, l, t, e, i);
     }
     return null;
   }
@@ -4949,8 +4966,8 @@ const we = function(t, e, i) {
   isAreaClicked(t, e, i, n, s) {
     var r = this.mouse;
     u.isInsideRectangle(r[0], r[1], t, e, i, n), r = this.last_click_position;
-    var a = r && u.isInsideRectangle(r[0], r[1], t, e, i, n), o = a && !this.block_click;
-    return a && s && this.blockClick(), o;
+    var a = r && u.isInsideRectangle(r[0], r[1], t, e, i, n), l = a && !this.block_click;
+    return a && s && this.blockClick(), l;
   }
   /**
    * switches to live mode (node shapes are not rendered, only the content)
@@ -4985,36 +5002,176 @@ const we = function(t, e, i) {
       t.clientY - e.top
     ]);
   }
+  getCanvasMenuOptions() {
+    return N.prototype.getCanvasMenuOptions.apply(this, arguments);
+  }
+  getNodeMenuOptions(t) {
+    return N.prototype.getNodeMenuOptions.apply(this, arguments);
+  }
+  getGroupMenuOptions(t) {
+    return N.prototype.getGroupMenuOptions.apply(this, arguments);
+  }
+  checkPanels() {
+    N.prototype.checkPanels.apply(this, arguments);
+  }
+  closePanels() {
+    N.prototype.closePanels.apply(this, arguments);
+  }
+  createDialog(t, e) {
+    return N.prototype.createDialog.apply(this, arguments);
+  }
+  createPanel(t, e = {}) {
+    return N.prototype.createPanel.apply(this, arguments);
+  }
+  showSearchBox(t, e = {}) {
+    return N.prototype.showSearchBox.apply(this, arguments);
+  }
+  prompt(t = "", e, i, n, s = !1) {
+    return N.prototype.prompt.apply(this, arguments);
+  }
+  showConnectionMenu(t = {}) {
+    return N.prototype.showConnectionMenu.apply(this, arguments);
+  }
+  showLinkMenu(t, e) {
+    return N.prototype.showLinkMenu.apply(this, arguments);
+  }
+  showEditPropertyValue(t, e, i) {
+    return N.prototype.showEditPropertyValue.apply(this, arguments);
+  }
+  showShowNodePanel(t) {
+    N.prototype.showShowNodePanel.apply(this, arguments);
+  }
+  showSubgraphPropertiesDialog() {
+    return N.prototype.showSubgraphPropertiesDialog.apply(this, arguments);
+  }
+  showSubgraphPropertiesDialogRight(t) {
+    return N.prototype.showSubgraphPropertiesDialogRight.apply(this, arguments);
+  }
+  processContextMenu(t, e) {
+    N.prototype.processContextMenu.apply(this, arguments);
+  }
+  /*
+   * Events
+   */
+  processMouseMove(t) {
+    return he.prototype.processMouseMove.apply(this, arguments);
+  }
+  processMouseDown(t) {
+    return he.prototype.processMouseDown.apply(this, arguments);
+  }
+  processMouseUp(t) {
+    return he.prototype.processMouseUp.apply(this, arguments);
+  }
+  processMouseWheel(t) {
+    return he.prototype.processMouseWheel.apply(this, arguments);
+  }
+  /*
+   * Rendering
+   */
+  setZoom(t, e) {
+    H.prototype.setZoom.apply(this, arguments);
+  }
+  bringToFront(t) {
+    H.prototype.bringToFront.apply(this, arguments);
+  }
+  sendToBack(t) {
+    H.prototype.sendToBack.apply(this, arguments);
+  }
+  computeVisibleNodes(t, e = []) {
+    return H.prototype.computeVisibleNodes.apply(this, arguments);
+  }
+  draw(t = !1, e = !1) {
+    H.prototype.draw.apply(this, arguments);
+  }
+  drawFrontCanvas() {
+    H.prototype.drawFrontCanvas.apply(this, arguments);
+  }
+  drawSubgraphPanel(t) {
+    H.prototype.drawSubgraphPanel.apply(this, arguments);
+  }
+  drawSubgraphPanelLeft(t, e, i) {
+    H.prototype.drawSubgraphPanelLeft.apply(this, arguments);
+  }
+  drawSubgraphPanelRight(t, e, i) {
+    H.prototype.drawSubgraphPanelRight.apply(this, arguments);
+  }
+  drawButton(t, e, i, n, s, r = u.NODE_DEFAULT_COLOR, a = "#555", l = u.NODE_TEXT_COLOR) {
+    return H.prototype.drawButton.apply(this, arguments);
+  }
+  drawBackCanvas() {
+    H.prototype.drawBackCanvas.apply(this, arguments);
+  }
+  renderInfo(t, e = 10, i) {
+    H.prototype.renderInfo.apply(this, arguments);
+  }
+  drawNode(t, e) {
+    H.prototype.drawNode.apply(this, arguments);
+  }
+  drawLinkTooltip(t, e) {
+    H.prototype.drawLinkTooltip.apply(this, arguments);
+  }
+  drawNodeShape(t, e, i, n, s, r, a) {
+    H.prototype.drawNodeShape.apply(this, arguments);
+  }
+  drawConnections(t) {
+    H.prototype.drawConnections.apply(this, arguments);
+  }
+  renderLink(t, e, i, n, s, r, a, l, o, h) {
+    H.prototype.renderLink.apply(this, arguments);
+  }
+  computeConnectionPoint(t, e, i, n = k.RIGHT, s = k.LEFT) {
+    return H.prototype.computeConnectionPoint.apply(this, arguments);
+  }
+  drawExecutionOrder(t) {
+    H.prototype.drawExecutionOrder.apply(this, arguments);
+  }
+  drawNodeWidgets(t, e, i, n) {
+    H.prototype.drawNodeWidgets.apply(this, arguments);
+  }
+  drawGroups(t, e) {
+    H.prototype.drawGroups.apply(this, arguments);
+  }
 };
-let b = ue;
-b.DEFAULT_BACKGROUND_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
-b.link_type_colors = {
-  [I.ACTION]: u.ACTION_LINK_COLOR,
-  [I.EVENT]: u.EVENT_LINK_COLOR,
+let T = ue;
+T.DEFAULT_BACKGROUND_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
+T.node_colors = {
+  red: { color: "#322", bgColor: "#533", groupcolor: "#A88" },
+  brown: { color: "#332922", bgColor: "#593930", groupcolor: "#b06634" },
+  green: { color: "#232", bgColor: "#353", groupcolor: "#8A8" },
+  blue: { color: "#223", bgColor: "#335", groupcolor: "#88A" },
+  pale_blue: { color: "#2a363b", bgColor: "#3f5159", groupcolor: "#3f789e" },
+  cyan: { color: "#233", bgColor: "#355", groupcolor: "#8AA" },
+  purple: { color: "#323", bgColor: "#535", groupcolor: "#a1309b" },
+  yellow: { color: "#432", bgColor: "#653", groupcolor: "#b58b2a" },
+  black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
+};
+T.link_type_colors = {
+  [A.ACTION]: u.ACTION_LINK_COLOR,
+  [A.EVENT]: u.EVENT_LINK_COLOR,
   number: "#AAA",
   node: "#DCA"
 };
-b.active_canvas = null;
-b.active_node = null;
-b.onMenuCollapseAll = N.onMenuCollapseAll;
-b.onMenuNodeEdit = N.onMenuNodeEdit;
-b.onShowPropertyEditor = N.onShowPropertyEditor;
-b.onGroupAdd = N.onGroupAdd;
-b.onMenuAdd = N.onMenuAdd;
-b.showMenuNodeOptionalInputs = N.showMenuNodeOptionalInputs;
-b.showMenuNodeOptionalOutputs = N.showMenuNodeOptionalOutputs;
-b.onShowMenuNodeProperties = N.onShowMenuNodeProperties;
-b.onResizeNode = N.onResizeNode;
-b.onMenuResizeNode = N.onMenuResizeNode;
-b.onMenuNodeCollapse = N.onMenuNodeCollapse;
-b.onMenuNodePin = N.onMenuNodePin;
-b.onMenuNodeMode = N.onMenuNodeMode;
-b.onMenuNodeColors = N.onMenuNodeColors;
-b.onMenuNodeShapes = N.onMenuNodeShapes;
-b.onMenuNodeRemove = N.onMenuNodeRemove;
-b.onMenuNodeClone = N.onMenuNodeClone;
-b.onMenuNodeToSubgraph = N.onMenuNodeToSubgraph;
-class _e extends J {
+T.active_canvas = null;
+T.active_node = null;
+T.onMenuCollapseAll = N.onMenuCollapseAll;
+T.onMenuNodeEdit = N.onMenuNodeEdit;
+T.onShowPropertyEditor = N.onShowPropertyEditor;
+T.onGroupAdd = N.onGroupAdd;
+T.onMenuAdd = N.onMenuAdd;
+T.showMenuNodeOptionalInputs = N.showMenuNodeOptionalInputs;
+T.showMenuNodeOptionalOutputs = N.showMenuNodeOptionalOutputs;
+T.onShowMenuNodeProperties = N.onShowMenuNodeProperties;
+T.onResizeNode = N.onResizeNode;
+T.onMenuResizeNode = N.onMenuResizeNode;
+T.onMenuNodeCollapse = N.onMenuNodeCollapse;
+T.onMenuNodePin = N.onMenuNodePin;
+T.onMenuNodeMode = N.onMenuNodeMode;
+T.onMenuNodeColors = N.onMenuNodeColors;
+T.onMenuNodeShapes = N.onMenuNodeShapes;
+T.onMenuNodeRemove = N.onMenuNodeRemove;
+T.onMenuNodeClone = N.onMenuNodeClone;
+T.onMenuNodeToSubgraph = N.onMenuNodeToSubgraph;
+class _e extends te {
   constructor(e) {
     super(e), this.properties = {
       name: "",
@@ -5066,7 +5223,7 @@ class _e extends J {
     return this.flags.collapsed ? this.properties.name : this.title;
   }
   onAction(e, i) {
-    this.properties.type == I.EVENT && this.triggerSlot(0, i);
+    this.properties.type == A.EVENT && this.triggerSlot(0, i);
   }
   onExecute() {
     var e = this.properties.name, i = this.graph.inputs[e];
@@ -5087,18 +5244,18 @@ _e.slotLayout = {
   outputs: []
 };
 u.registerNodeType({
-  type: _e,
+  class: _e,
   title: "Input",
   desc: "Input of the graph",
-  typeName: "graph/input"
+  type: "graph/input"
 });
-var De = /* @__PURE__ */ ((t) => (t[t.STATUS_STOPPED = 1] = "STATUS_STOPPED", t[t.STATUS_RUNNING = 2] = "STATUS_RUNNING", t))(De || {});
-const Oe = class {
+var Le = /* @__PURE__ */ ((t) => (t[t.STATUS_STOPPED = 1] = "STATUS_STOPPED", t[t.STATUS_RUNNING = 2] = "STATUS_RUNNING", t))(Le || {});
+const Ee = class {
   constructor(t) {
     this.supported_types = null, this.vars = {}, this.extra = {}, this.inputs = {}, this.outputs = {}, this._nodes = [], this._groups = [], this._nodes_by_id = {}, this._nodes_executable = null, this._nodes_in_order = [], this._version = -1, this._last_trigger_time = 0, this._is_subgraph = !1, this._subgraph_node = null, this.nodes_executing = [], this.nodes_actioning = [], this.nodes_executedAction = [], this.execution_timer_id = -1, this.execution_time = 0, this.errors_in_execution = !1, this._input_nodes = [], u.debug && console.log("Graph created"), this.list_of_graphcanvas = null, this.clear(), t && this.configure(t);
   }
   getSupportedTypes() {
-    return this.supported_types || Oe.DEFAULT_SUPPORTED_TYPES;
+    return this.supported_types || Ee.DEFAULT_SUPPORTED_TYPES;
   }
   /** Removes all nodes from this graph */
   clear() {
@@ -5111,7 +5268,7 @@ const Oe = class {
   }
   /** Attach Canvas to this graph */
   attachCanvas(t) {
-    if (!(t instanceof b))
+    if (!(t instanceof T))
       throw "attachCanvas expects a LGraphCanvas instance";
     t.graph && t.graph != this && t.graph.detachCanvas(t), t.graph = this, this.list_of_graphcanvas || (this.list_of_graphcanvas = []), this.list_of_graphcanvas.push(t);
   }
@@ -5158,8 +5315,8 @@ const Oe = class {
       if (i = i || s.length, e) {
         for (var r = 0; r < t; r++) {
           for (var a = 0; a < i; ++a) {
-            var o = s[a];
-            o.mode == x.ALWAYS && o.onExecute && o.doExecute();
+            var l = s[a];
+            l.mode == j.ALWAYS && l.onExecute && l.doExecute();
           }
           this.fixedtime += this.fixedtime_lapse, this.onExecuteStep && this.onExecuteStep();
         }
@@ -5168,8 +5325,8 @@ const Oe = class {
         try {
           for (var r = 0; r < t; r++) {
             for (var a = 0; a < i; ++a) {
-              var o = s[a];
-              o.mode == x.ALWAYS && o.onExecute && o.onExecute(null, {});
+              var l = s[a];
+              l.mode == j.ALWAYS && l.onExecute && l.onExecute(null, {});
             }
             this.fixedtime += this.fixedtime_lapse, this.onExecuteStep && this.onExecuteStep();
           }
@@ -5179,8 +5336,8 @@ const Oe = class {
             throw p;
           u.debug && console.log("Error during execution: " + p), this.stop();
         }
-      var l = u.getTime(), h = l - n;
-      h == 0 && (h = 1), this.execution_time = 1e-3 * h, this.globaltime += 1e-3 * h, this.iteration += 1, this.elapsed_time = (l - this.last_update_time) * 1e-3, this.last_update_time = l, this.nodes_executing = [], this.nodes_actioning = [], this.nodes_executedAction = [];
+      var o = u.getTime(), h = o - n;
+      h == 0 && (h = 1), this.execution_time = 1e-3 * h, this.globaltime += 1e-3 * h, this.iteration += 1, this.elapsed_time = (o - this.last_update_time) * 1e-3, this.last_update_time = o, this.nodes_executing = [], this.nodes_actioning = [], this.nodes_executedAction = [];
     }
   }
   /**
@@ -5197,32 +5354,32 @@ const Oe = class {
   }
   /** This is more internal, it computes the executable nodes in order and returns it */
   computeExecutionOrder(t = !1, e) {
-    for (var i = [], n = [], s = {}, r = {}, a = {}, o = 0, v = this._nodes.length; o < v; ++o) {
-      var l = this._nodes[o];
-      if (!(t && !l.onExecute)) {
-        s[l.id] = l;
+    for (var i = [], n = [], s = {}, r = {}, a = {}, l = 0, m = this._nodes.length; l < m; ++l) {
+      var o = this._nodes[l];
+      if (!(t && !o.onExecute)) {
+        s[o.id] = o;
         var h = 0;
-        if (l.inputs)
-          for (var p = 0, d = l.inputs.length; p < d; p++)
-            l.inputs[p] && l.inputs[p].link != null && (h += 1);
-        h == 0 ? (n.push(l), e && (l._level = 1)) : (e && (l._level = 0), a[l.id] = h);
+        if (o.inputs)
+          for (var p = 0, d = o.inputs.length; p < d; p++)
+            o.inputs[p] && o.inputs[p].link != null && (h += 1);
+        h == 0 ? (n.push(o), e && (o._level = 1)) : (e && (o._level = 0), a[o.id] = h);
       }
     }
     for (; n.length != 0; ) {
       let y = n.shift();
       if (i.push(y), delete s[y.id], !!y.outputs)
-        for (var o = 0; o < y.outputs.length; o++) {
-          var c = y.outputs[o];
+        for (var l = 0; l < y.outputs.length; l++) {
+          var c = y.outputs[l];
           if (!(c == null || c.links == null || c.links.length == 0))
             for (var p = 0; p < c.links.length; p++) {
-              var m = c.links[p], f = this.links[m];
+              var _ = c.links[p], f = this.links[_];
               if (f && !r[f.id]) {
-                var _ = this.getNodeById(f.target_id);
-                if (_ == null) {
+                var g = this.getNodeById(f.target_id);
+                if (g == null) {
                   r[f.id] = !0;
                   continue;
                 }
-                e && (!_._level || _._level <= y._level) && (_._level = y._level + 1), r[f.id] = !0, a[_.id] -= 1, a[_.id] == 0 && n.push(_);
+                e && (!g._level || g._level <= y._level) && (g._level = y._level + 1), r[f.id] = !0, a[g.id] -= 1, a[g.id] == 0 && n.push(g);
               }
             }
         }
@@ -5230,14 +5387,14 @@ const Oe = class {
     for (let y in s)
       i.push(s[y]);
     i.length != this._nodes.length && u.debug && console.warn("something went wrong, nodes missing");
-    for (var v = i.length, o = 0; o < v; ++o)
-      i[o].order = o;
-    i = i.sort(function(y, T) {
-      var g = y.constructor.priority || y.priority || 0, E = T.constructor.priority || T.priority || 0;
-      return g == E ? y.order - T.order : g - E;
+    for (var m = i.length, l = 0; l < m; ++l)
+      i[l].order = l;
+    i = i.sort(function(y, E) {
+      var v = y.constructor.priority || y.priority || 0, b = E.constructor.priority || E.priority || 0;
+      return v == b ? y.order - E.order : v - b;
     });
-    for (var o = 0; o < v; ++o)
-      i[o].order = o;
+    for (var l = 0; l < m; ++l)
+      i[l].order = l;
     return i;
   }
   /**
@@ -5256,34 +5413,34 @@ const Oe = class {
         }
       }
     }
-    return e.sort(function(o, l) {
-      return o.order - l.order;
+    return e.sort(function(l, o) {
+      return l.order - o.order;
     }), e;
   }
   /**
    * Positions every node in a more readable manner
    */
-  arrange(t = 100, e = ie.HORIZONTAL_LAYOUT) {
+  arrange(t = 100, e = se.HORIZONTAL_LAYOUT) {
     const i = this.computeExecutionOrder(!1, !0), n = [];
     for (let r = 0; r < i.length; ++r) {
-      const a = i[r], o = a._level || 1;
-      n[o] || (n[o] = []), n[o].push(a);
+      const a = i[r], l = a._level || 1;
+      n[l] || (n[l] = []), n[l].push(a);
     }
     let s = t;
     for (let r = 0; r < n.length; ++r) {
       const a = n[r];
       if (!a)
         continue;
-      let o = 100, l = t + u.NODE_TITLE_HEIGHT;
+      let l = 100, o = t + u.NODE_TITLE_HEIGHT;
       for (let h = 0; h < a.length; ++h) {
         const p = a[h];
-        p.pos[0] = e == ie.VERTICAL_LAYOUT ? l : s, p.pos[1] = e == ie.VERTICAL_LAYOUT ? s : l;
-        const d = e == ie.VERTICAL_LAYOUT ? 1 : 0;
-        p.size[d] > o && (o = p.size[d]);
-        const c = e == ie.VERTICAL_LAYOUT ? 0 : 1;
-        l += p.size[c] + t + u.NODE_TITLE_HEIGHT;
+        p.pos[0] = e == se.VERTICAL_LAYOUT ? o : s, p.pos[1] = e == se.VERTICAL_LAYOUT ? s : o;
+        const d = e == se.VERTICAL_LAYOUT ? 1 : 0;
+        p.size[d] > l && (l = p.size[d]);
+        const c = e == se.VERTICAL_LAYOUT ? 0 : 1;
+        o += p.size[c] + t + u.NODE_TITLE_HEIGHT;
       }
-      s += o + t;
+      s += l + t;
     }
     this.setDirtyCanvas(!0, !0);
   }
@@ -5314,7 +5471,7 @@ const Oe = class {
    * @param eventName the name of the event (function to be called)
    * @param params parameters in array format
    */
-  sendEventToAllNodes(t, e = [], i = x.ALWAYS) {
+  sendEventToAllNodes(t, e = [], i = j.ALWAYS) {
     var n = this._nodes_in_order ? this._nodes_in_order : this._nodes;
     if (n)
       for (var s = 0, r = n.length; s < r; ++s) {
@@ -5358,8 +5515,8 @@ const Oe = class {
         }
       if (t.outputs)
         for (var i = 0; i < t.outputs.length; i++) {
-          let o = t.outputs[i];
-          o.links != null && o.links.length && t.disconnectOutput(i);
+          let l = t.outputs[i];
+          l.links != null && l.links.length && t.disconnectOutput(i);
         }
       if (t.onRemoved && t.onRemoved(), t.graph = null, this._version++, this.list_of_graphcanvas)
         for (var i = 0; i < this.list_of_graphcanvas.length; ++i) {
@@ -5394,7 +5551,7 @@ const Oe = class {
     var i = i.toLowerCase();
     e.length = 0;
     for (var n = 0, s = this._nodes.length; n < s; ++n)
-      this._nodes[n].typeName.toLowerCase() == i && e.push(this._nodes[n]);
+      this._nodes[n].type.toLowerCase() == i && e.push(this._nodes[n]);
     return e;
   }
   /**
@@ -5455,10 +5612,10 @@ const Oe = class {
    */
   checkNodeTypes() {
     for (var t = !1, e = 0; e < this._nodes.length; e++) {
-      var i = this._nodes[e], n = u.registered_node_types[i.typeName];
-      if (i.constructor != n.type) {
-        console.log("node being replaced by newer version: " + i.typeName);
-        var s = u.createNode(i.typeName);
+      var i = this._nodes[e], n = u.registered_node_types[i.type];
+      if (i.constructor != n.class) {
+        console.log("node being replaced by newer version: " + i.type);
+        var s = u.createNode(i.type);
         t = !0, this._nodes[e] = s, s.configure(i.serialize()), s.graph = this, this._nodes_by_id[s.id] = s, i.inputs && (s.inputs = i.inputs.concat()), i.outputs && (s.outputs = i.outputs.concat());
       }
     }
@@ -5612,26 +5769,26 @@ const Oe = class {
           "weird LLink bug, link info is not a LLink but a regular object",
           s
         );
-        var r = se.configure(s);
+        var r = ne.configure(s);
         for (var a in s)
           r[a] = s[a];
         this.links[h] = r, s = r;
       }
       n.push(s.serialize());
     }
-    for (var o = [], e = 0; e < this._groups.length; ++e)
-      o.push(this._groups[e].serialize());
-    var l = {
+    for (var l = [], e = 0; e < this._groups.length; ++e)
+      l.push(this._groups[e].serialize());
+    var o = {
       last_node_id: this.last_node_id,
       last_link_id: this.last_link_id,
       nodes: t,
       links: n,
-      groups: o,
+      groups: l,
       config: this.config,
       extra: this.extra,
       version: u.VERSION
     };
-    return this.onSerialize && this.onSerialize(l), l;
+    return this.onSerialize && this.onSerialize(o), o;
   }
   /**
    * Configure a graph from a JSON string
@@ -5649,22 +5806,22 @@ const Oe = class {
             console.warn("serialized graph link data contains errors, skipping.");
             continue;
           }
-          var a = se.configure(r);
+          var a = ne.configure(r);
           n[a.id] = a;
         }
         t.links = n;
       }
       for (const c in t)
         c == "nodes" || c == "groups" || (this[c] = t[c]);
-      var o = !1;
+      var l = !1;
       if (this._nodes = [], i) {
-        for (var s = 0, l = i.length; s < l; ++s) {
+        for (var s = 0, o = i.length; s < o; ++s) {
           var h = i[s], p = u.createNode(h.type, h.title);
           p || (u.debug && console.log(
             "Node not found or has errors: " + h.type
-          ), p = new J(), p.last_serialization = h, p.has_errors = !0, o = !0), p.id = h.id, this.add(p, { skipComputeOrder: !0 });
+          ), p = new te(), p.last_serialization = h, p.has_errors = !0, l = !0), p.id = h.id, this.add(p, { skipComputeOrder: !0 });
         }
-        for (var s = 0, l = i.length; s < l; ++s) {
+        for (var s = 0, o = i.length; s < o; ++s) {
           var h = i[s], p = this.getNodeById(h.id);
           p && p.configure(h);
         }
@@ -5674,7 +5831,7 @@ const Oe = class {
           var d = new pe();
           d.configure(t.groups[s]), this.addGroup(d);
         }
-      return this.updateExecutionOrder(), this.extra = t.extra || {}, this.onConfigure && this.onConfigure(t), this._version++, this.setDirtyCanvas(!0, !0), o;
+      return this.updateExecutionOrder(), this.extra = t.extra || {}, this.onConfigure && this.onConfigure(t), this._version++, this.setDirtyCanvas(!0, !0), l;
     }
   }
   load(t, e) {
@@ -5700,43 +5857,9 @@ const Oe = class {
     };
   }
 };
-let Ne = Oe;
-Ne.DEFAULT_SUPPORTED_TYPES = ["number", "string", "boolean"];
-class ge extends J {
-  constructor(e) {
-    super(e), this.properties = {
-      value: 1
-    }, this.nameInGraph = "", this.size = [180, 30], this.widget = this.addWidget("number", "value", 1, "value"), this.widgets_up = !0;
-  }
-  onExecute() {
-    this.setOutputData(0, this.properties.value);
-  }
-  getTitle() {
-    return this.flags.collapsed ? "" + this.properties.value : this.title;
-  }
-  setValue(e) {
-    typeof e != "number" && (e = parseFloat(e)), this.setProperty("value", e);
-  }
-  onDrawBackground(e) {
-    this.outputs[0].label = this.properties.value.toFixed(3);
-  }
-}
-ge.slotLayout = {
-  inputs: [],
-  outputs: [
-    { name: "value", type: "number" }
-  ]
-};
-ge.propertyLayout = [
-  { name: "value", defaultValue: 1 }
-];
-u.registerNodeType({
-  type: ge,
-  title: "Const Number",
-  desc: "Constant number",
-  typeName: "basic/number"
-});
-class Ie extends J {
+let Ce = Ee;
+Ce.DEFAULT_SUPPORTED_TYPES = ["number", "string", "boolean"];
+class Oe extends te {
   constructor(e) {
     super(e), this.properties = {
       name: "",
@@ -5748,7 +5871,7 @@ class Ie extends J {
   }
   updateType() {
     var e = this.properties.type;
-    this.typeWidget && (this.typeWidget.value = "" + e), this.inputs[0].type != e && ((e == "action" || e == "event") && (e = I.EVENT), u.isValidConnection(this.inputs[0].type, e) || this.disconnectInput(0), this.inputs[0].type = e), this.graph && this.nameInGraph && typeof e == "string" ? this.graph.changeOutputType(this.nameInGraph, e) : console.error("Can't change GraphOutput to type", e, this.graph, this.nameInGraph);
+    this.typeWidget && (this.typeWidget.value = "" + e), this.inputs[0].type != e && ((e == "action" || e == "event") && (e = A.EVENT), u.isValidConnection(this.inputs[0].type, e) || this.disconnectInput(0), this.inputs[0].type = e), this.graph && this.nameInGraph && typeof e == "string" ? this.graph.changeOutputType(this.nameInGraph, e) : console.error("Can't change GraphOutput to type", e, this.graph, this.nameInGraph);
   }
   /** this is executed AFTER the property has changed */
   onPropertyChanged(e, i) {
@@ -5763,7 +5886,7 @@ class Ie extends J {
     return this.flags.collapsed ? this.properties.name : this.title;
   }
   onAction(e, i) {
-    this.properties.type == I.ACTION && this.graph.trigger(this.properties.name, i);
+    this.properties.type == A.ACTION && this.graph.trigger(this.properties.name, i);
   }
   onExecute() {
     const e = this.getInputData(0);
@@ -5773,23 +5896,23 @@ class Ie extends J {
     this.nameInGraph && this.graph.removeOutput(this.nameInGraph);
   }
 }
-Ie.slotLayout = {
+Oe.slotLayout = {
   inputs: [
     { name: "", type: "" }
   ],
   outputs: []
 };
 u.registerNodeType({
-  type: Ie,
+  class: Oe,
   title: "Output",
   desc: "Output of the graph",
-  typeName: "graph/output"
+  type: "graph/output"
 });
-class ve extends J {
+class ce extends te {
   constructor(e) {
     super(e), this.properties = {
       enabled: !0
-    }, this.size = [140, 80], this.enabled = !0, this.subgraph = new Ne(), this.subgraph._subgraph_node = this, this.subgraph._is_subgraph = !0, this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this), this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this), this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this), this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this), this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this), this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this), this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this), this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this), this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this);
+    }, this.size = [140, 80], this.enabled = !0, this.subgraph = new Ce(), this.subgraph._subgraph_node = this, this.subgraph._is_subgraph = !0, this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this), this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this), this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this), this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this), this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this), this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this), this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this), this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this), this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this);
   }
   onDblClick(e, i, n) {
     var s = this;
@@ -5821,8 +5944,8 @@ class ve extends J {
     if (this.flags.collapsed)
       return;
     var r = this.size[1] - u.NODE_TITLE_HEIGHT + 0.5, a = u.isInsideRectangle(s[0], s[1], this.pos[0], this.pos[1] + r, this.size[0], u.NODE_TITLE_HEIGHT);
-    let o = u.isInsideRectangle(s[0], s[1], this.pos[0], this.pos[1] + r, this.size[0] / 2, u.NODE_TITLE_HEIGHT);
-    e.fillStyle = a ? "#555" : "#222", e.beginPath(), this.shape == S.BOX_SHAPE ? o ? e.rect(0, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT) : e.rect(this.size[0] / 2, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT) : o ? e.roundRect(0, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT, [0, 0, 8, 8]) : e.roundRect(this.size[0] / 2, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT, [0, 0, 8, 8]), a ? e.fill() : e.fillRect(0, r, this.size[0] + 1, u.NODE_TITLE_HEIGHT), e.textAlign = "center", e.font = "24px Arial", e.fillStyle = a ? "#DDD" : "#999", e.fillText("+", this.size[0] * 0.25, r + 24), e.fillText("+", this.size[0] * 0.75, r + 24);
+    let l = u.isInsideRectangle(s[0], s[1], this.pos[0], this.pos[1] + r, this.size[0] / 2, u.NODE_TITLE_HEIGHT);
+    e.fillStyle = a ? "#555" : "#222", e.beginPath(), this.shape == S.BOX_SHAPE ? l ? e.rect(0, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT) : e.rect(this.size[0] / 2, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT) : l ? e.roundRect(0, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT, [0, 0, 8, 8]) : e.roundRect(this.size[0] / 2, r, this.size[0] / 2 + 1, u.NODE_TITLE_HEIGHT, [0, 0, 8, 8]), a ? e.fill() : e.fillRect(0, r, this.size[0] + 1, u.NODE_TITLE_HEIGHT), e.textAlign = "center", e.font = "24px Arial", e.fillStyle = a ? "#DDD" : "#999", e.fillText("+", this.size[0] * 0.25, r + 24), e.fillText("+", this.size[0] * 0.75, r + 24);
   }
   // override onMouseDown(e, localpos, graphcanvas)
   // {
@@ -5906,12 +6029,12 @@ class ve extends J {
     console.error("TEST subgraph resize"), e[1] += 20;
   }
   serialize() {
-    var e = J.prototype.serialize.call(this);
+    var e = te.prototype.serialize.call(this);
     return e.subgraph = this.subgraph.serialize(), e;
   }
   //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
   clone() {
-    var e = u.createNode(this.typeName), i = this.serialize();
+    var e = u.createNode(this.type), i = this.serialize();
     return delete i.id, delete i.inputs, delete i.outputs, e.configure(i), e;
   }
   buildFromNodes(e) {
@@ -5923,10 +6046,10 @@ class ve extends J {
       var r = e[s];
       if (r.inputs)
         for (var a = 0; a < r.inputs.length; ++a) {
-          var o = r.inputs[a];
-          if (!(!o || !o.link)) {
-            var l = r.graph.links[o.link];
-            l && (i[l.origin_id] || this.subgraph.addInput(o.name, l.type));
+          var l = r.inputs[a];
+          if (!(!l || !l.link)) {
+            var o = r.graph.links[l.link];
+            o && (i[o.origin_id] || this.subgraph.addInput(l.name, o.type));
           }
         }
       if (r.outputs)
@@ -5934,8 +6057,8 @@ class ve extends J {
           var h = r.outputs[a];
           if (!(!h || !h.links || !h.links.length))
             for (var p = !1, d = 0; d < h.links.length; ++d) {
-              var l = r.graph.links[h.links[d]];
-              if (l && !i[l.target_id]) {
+              var o = r.graph.links[h.links[d]];
+              if (o && !i[o.target_id]) {
                 p = !0;
                 break;
               }
@@ -5944,97 +6067,55 @@ class ve extends J {
     }
   }
 }
-ve.slotLayout = {
-  inputs: [
-    { name: "enabled", type: "boolean" }
-  ],
+ce.slotLayout = {
+  inputs: [],
   outputs: []
 };
-ve.propertyLayout = [
+ce.propertyLayout = [
   { name: "enabled", defaultValue: !0 }
 ];
+ce.optionalSlots = {
+  outputs: [
+    { name: "enabled", type: "boolean" }
+  ]
+};
 u.registerNodeType({
-  type: ve,
+  class: ce,
   title: "Subgraph",
   desc: "Graph inside a node",
   title_color: "#334",
-  typeName: "basic/subgraph"
-});
-const de = class extends J {
-  constructor(t) {
-    super(t), this.properties = {
-      value: 0
-    }, this.nameInGraph = "", this.size = [60, 30], this.value = 0;
-  }
-  onExecute() {
-    this.inputs[0] && (this.value = this.getInputData(0));
-  }
-  getTitle() {
-    return this.flags.collapsed ? this.inputs[0].label || "" : this.title;
-  }
-  static toString(t) {
-    if (t == null)
-      return "null";
-    if (t.constructor === Number)
-      return t.toFixed(3);
-    if (t.constructor === Array) {
-      for (var e = "[", i = 0; i < t.length; ++i)
-        e += de.toString(t[i]) + (i + 1 != t.length ? "," : "");
-      return e += "]", e;
-    } else
-      return String(t);
-  }
-  onDrawBackground(t) {
-    this.inputs[0].label = de.toString(this.value);
-  }
-};
-let me = de;
-me.slotLayout = {
-  inputs: [
-    { name: "value", type: I.DEFAULT, options: { label: "" } }
-  ],
-  outputs: []
-};
-me.propertyLayout = [
-  { name: "value", defaultValue: 1 }
-];
-u.registerNodeType({
-  type: me,
-  title: "Watch",
-  desc: "Show value of input",
-  typeName: "basic/watch"
+  type: "basic/subgraph"
 });
 export {
   S as BuiltInSlotShape,
-  I as BuiltInSlotType,
-  ge as ConstantNumber,
+  A as BuiltInSlotType,
   X as ContextMenu,
-  K as ContextMenuSpecialItem,
-  A as Dir,
-  Le as DragAndScale,
+  x as ContextMenuSpecialItem,
+  k as Dir,
+  Ae as DragAndScale,
   _e as GraphInput,
-  Ie as GraphOutput,
-  U as LConnectionKind,
-  Ne as LGraph,
-  b as LGraphCanvas,
+  Oe as GraphOutput,
+  W as LConnectionKind,
+  Ce as LGraph,
+  T as LGraphCanvas,
   he as LGraphCanvas_Events,
-  R as LGraphCanvas_Rendering,
+  H as LGraphCanvas_Rendering,
   N as LGraphCanvas_UI,
   pe as LGraphGroup,
-  J as LGraphNode,
-  De as LGraphStatus,
-  se as LLink,
-  ie as LayoutDirection,
-  oe as LinkRenderMode,
-  Pe as LinkRenderModeNames,
+  te as LGraphNode,
+  Le as LGraphStatus,
+  ne as LLink,
+  se as LayoutDirection,
+  le as LinkRenderMode,
+  we as LinkRenderModeNames,
   u as LiteGraph,
-  Te as NODE_MODE_COLORS,
-  te as NODE_MODE_NAMES,
-  x as NodeMode,
-  Ee as SLOT_SHAPE_NAMES,
-  ve as Subgraph,
-  ee as TitleType,
-  me as Watch,
-  we as clamp,
-  Ce as getStaticProperty
+  ye as NODE_MODE_COLORS,
+  ie as NODE_MODE_NAMES,
+  j as NodeMode,
+  be as SLOT_SHAPE_NAMES,
+  ce as Subgraph,
+  ee as TitleMode,
+  Se as clamp,
+  Te as getStaticProperty,
+  de as getStaticPropertyOnInstance
 };

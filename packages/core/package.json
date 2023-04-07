@@ -38,6 +38,6 @@
   },
   "dependencies": {
     "vite-plugin-dts": "^2.2.0",
-    "tsconfig": "workspace:*"
+    "@litegraph-ts/tsconfig": "workspace:*"
   }
 }

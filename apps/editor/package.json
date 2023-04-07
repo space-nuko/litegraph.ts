@@ -13,6 +13,6 @@
   },
   "devDependencies": {
     "vite-plugin-checker": "^0.5.6",
-    "tsconfig": "workspace:*"
+    "@litegraph-ts/tsconfig": "workspace:*"
   }
 }
