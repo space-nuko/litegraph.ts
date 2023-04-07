@@ -1,4 +1,4 @@
-import { LiteGraph, LGraph, LGraphStatus, LGraphCanvas } from "@litegraph-ts/core"
+import { LiteGraph, LGraph, LGraphCanvas } from "@litegraph-ts/core"
 import { ConstantNumber, Watch } from "@litegraph-ts/nodes-basic"
 
 // Include litegraph's css, required for the UI to function properly
