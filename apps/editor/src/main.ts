@@ -4,8 +4,6 @@ import configure from "./configure"
 
 import { demo } from "./demos"
 
-LiteGraph.debug = true
-
 import "litegraph-ts/css/litegraph.css"
 import "../css/litegraph-editor.css"
 
@@ -16,12 +14,15 @@ interface OptionElemExt extends HTMLOptionElement {
 const isMobile = false;
 configure(isMobile);
 
+LiteGraph.debug = false
 LiteGraph.node_images_path = "litegraph-ts/nodes_data"
 
 const editor = new Editor("main", { miniwindow: false });
+editor.graphCanvas.pause_rendering = false;
+(window as any).editor = editor;
 
 window.addEventListener("resize", () => {
-    editor.graphcanvas.resize();
+    editor.graphCanvas.resize();
 });
 
 //window.addEventListener("keydown", editor.graphcanvas.processKey.bind(editor.graphcanvas) );
@@ -51,7 +52,7 @@ editor.tools.appendChild(elem);
 
 const select = elem.querySelector<HTMLSelectElement>("select")!;
 
-select.addEventListener("change", function(e) {
+select.addEventListener("change", function(_e) {
     var option = this.options[this.selectedIndex] as OptionElemExt;
     var url = option.dataset["url"];
 

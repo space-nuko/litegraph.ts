@@ -128,16 +128,6 @@ export default class LiteGraph {
             console.log("Node registered: " + config.typeName);
         }
 
-        const slotLayout = getStaticProperty<SlotLayout>(config, "slotLayout");
-        if (slotLayout) {
-            console.log("Found slot layout!", slotLayout);
-            if (slotLayout.inputs) {
-                for (const input in slotLayout.inputs) {
-
-                }
-            }
-        }
-
         const classname = config.name;
         const type = config.typeName;
 
@@ -163,7 +153,7 @@ export default class LiteGraph {
             }
         }
 
-        (config.type as any).__litegraph_type__ = type;
+        (config.type as any).__LITEGRAPH_TYPE__ = type;
 
         LiteGraph.registered_node_types[type] = config;
         if (config.type.name) {
@@ -224,7 +214,12 @@ export default class LiteGraph {
             regConfig = type;
         }
 
-        var sCN = (regConfig.constructor as any).type;
+        if (!regConfig) {
+            console.error(type);
+            throw "Node not registered!"
+        }
+
+        var sCN = (regConfig.type as any).__litegraph_type__;
 
         if (typeof slot_type == "string") {
             var aTypes = slot_type.split(",");
@@ -345,7 +340,7 @@ export default class LiteGraph {
             typeID = type;
         }
         else {
-            typeID = (type as any).__litegraph_type__
+            typeID = (type as any).__LITEGRAPH_TYPE__
             if (!typeID) {
                 console.error(type);
                 throw "Node was not registered yet!"
@@ -376,31 +371,7 @@ export default class LiteGraph {
             node = new regConfig.type(title) as T;
         }
 
-        const propertyLayout = getStaticProperty<PropertyLayout>(regConfig, "propertyLayout")
-        if (propertyLayout) {
-            console.log("Found property layout!", propertyLayout);
-            for (const item of propertyLayout) {
-                const { name, defaultValue, type, options } = item;
-                node.addProperty(name, defaultValue, type, options)
-            }
-        }
-
-        const slotLayout = getStaticProperty<SlotLayout>(regConfig, "slotLayout")
-        if (slotLayout) {
-            console.log("Found slot layout!", slotLayout);
-            if (slotLayout.inputs) {
-                for (const item of slotLayout.inputs) {
-                    const { name, type, options } = item;
-                    node.addInput(name, type, options);
-                }
-                for (const item of slotLayout.outputs) {
-                    const { name, type, options } = item;
-                    node.addOutput(name, type, options);
-                }
-            }
-        }
-
-        node.typeName = type;
+        node.typeName = typeID;
 
         if (!node.title && title) {
             node.title = title;
@@ -429,6 +400,30 @@ export default class LiteGraph {
         if (options) {
             for (var i in options) {
                 node[i] = options[i];
+            }
+        }
+
+        const propertyLayout = getStaticProperty<PropertyLayout>(regConfig.type, "propertyLayout")
+        if (propertyLayout) {
+            console.log("Found property layout!", propertyLayout);
+            for (const item of propertyLayout) {
+                const { name, defaultValue, type, options } = item;
+                node.addProperty(name, defaultValue, type, options)
+            }
+        }
+
+        const slotLayout = getStaticProperty<SlotLayout>(regConfig.type, "slotLayout")
+        if (slotLayout) {
+            console.log("Found slot layout!", slotLayout);
+            if (slotLayout.inputs) {
+                for (const item of slotLayout.inputs) {
+                    const { name, type, options } = item;
+                    node.addInput(name, type, options);
+                }
+                for (const item of slotLayout.outputs) {
+                    const { name, type, options } = item;
+                    node.addOutput(name, type, options);
+                }
             }
         }
 

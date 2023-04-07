@@ -29,19 +29,19 @@ export type LGraphOutput = {
 
 export type SerializedLGraph<
     TNode = ReturnType<LGraphNode["serialize"]>,
-// https://github.com/jagenjo/litegraph.js/issues/74
-TLink = SerializedLLink,
-TGroup = ReturnType<LGraphGroup["serialize"]>
-    > = {
-        last_node_id: LGraph["last_node_id"];
-        last_link_id: LGraph["last_link_id"];
-        nodes: TNode[];
-        links: TLink[];
-        groups: TGroup[];
-        config: LGraph["config"];
-        extra: LGraph["extra"];
-        version: Version;
-    };
+    // https://github.com/jagenjo/litegraph.js/issues/74
+    TLink = SerializedLLink,
+    TGroup = ReturnType<LGraphGroup["serialize"]>
+> = {
+    last_node_id: LGraph["last_node_id"];
+    last_link_id: LGraph["last_link_id"];
+    nodes: TNode[];
+    links: TLink[];
+    groups: TGroup[];
+    config: LGraph["config"];
+    extra: LGraph["extra"];
+    version: Version;
+};
 
 export enum LGraphStatus {
     STATUS_STOPPED = 1,
@@ -234,29 +234,29 @@ export default class LGraph {
         interval = interval || 0;
         var that = this;
 
-		//execute once per frame
-        if ( interval == 0 && typeof window != "undefined" && window.requestAnimationFrame ) {
+        //execute once per frame
+        if (interval == 0 && typeof window != "undefined" && window.requestAnimationFrame) {
             function on_frame() {
                 if (that.execution_timer_id != -1) {
                     return;
                 }
                 window.requestAnimationFrame(on_frame);
-				if(that.onBeforeStep)
-					that.onBeforeStep();
+                if (that.onBeforeStep)
+                    that.onBeforeStep();
                 that.runStep(1, !that.catch_errors);
-				if(that.onAfterStep)
-					that.onAfterStep();
+                if (that.onAfterStep)
+                    that.onAfterStep();
             }
             this.execution_timer_id = -1;
             on_frame();
         } else { //execute every 'interval' ms
             this.execution_timer_id = setInterval(function() {
                 //execute
-				if(that.onBeforeStep)
-					that.onBeforeStep();
+                if (that.onBeforeStep)
+                    that.onBeforeStep();
                 that.runStep(1, !that.catch_errors);
-				if(that.onAfterStep)
-					that.onAfterStep();
+                if (that.onAfterStep)
+                    that.onAfterStep();
             }, interval);
         }
     }
@@ -300,7 +300,7 @@ export default class LGraph {
             return;
         }
 
-		limit = limit || nodes.length;
+        limit = limit || nodes.length;
 
         if (do_not_catch_errors) {
             //iterations
@@ -309,7 +309,7 @@ export default class LGraph {
                     var node = nodes[j];
                     if (node.mode == NodeMode.ALWAYS && node.onExecute) {
                         //wrap node.onExecute();
-						node.doExecute();
+                        node.doExecute();
                     }
                 }
 
@@ -780,10 +780,10 @@ export default class LGraph {
      * @param node the instance of the node
      */
     onNodeConnectionChange?(kind: LConnectionKind,
-                            node: LGraphNode,
-                            slot: SlotIndex,
-                            target_node?: LGraphNode,
-                            target_slot?: SlotIndex): void;
+        node: LGraphNode,
+        slot: SlotIndex,
+        target_node?: LGraphNode,
+        target_slot?: SlotIndex): void;
 
     /** Called by `LGraph.configure` */
     onConfigure?(data: SerializedLGraph): void;
@@ -812,7 +812,7 @@ export default class LGraph {
             return;
         } //cannot be removed
 
-		this.beforeChange(); //sure? - almost sure is wrong
+        this.beforeChange(); //sure? - almost sure is wrong
 
         //disconnect inputs
         if (node.inputs) {
@@ -868,11 +868,11 @@ export default class LGraph {
             this.onNodeRemoved(node);
         }
 
-		//close panels
-		this.sendActionToCanvas("checkPanels");
+        //close panels
+        this.sendActionToCanvas("checkPanels");
 
         this.setDirtyCanvas(true, true);
-		this.afterChange(); //sure? - almost sure is wrong
+        this.afterChange(); //sure? - almost sure is wrong
         this.change();
 
         this.updateExecutionOrder();
@@ -955,16 +955,16 @@ export default class LGraph {
      */
     getNodeOnPos(x: number, y: number, nodesList?: LGraphNode[], margin?: number): LGraphNode | null {
         nodesList = nodesList || this._nodes;
-		var nRet = null;
+        var nRet = null;
         for (var i = nodesList.length - 1; i >= 0; i--) {
             var n = nodesList[i];
             if (n.isPointInside(x, y, margin)) {
                 // check for lesser interest nodes (TODO check for overlapping, use the top)
-				/*if (typeof n == "LGraphGroup"){
-					nRet = n;
-				}else{*/
-					return n;
-				/*}*/
+                /*if (typeof n == "LGraphGroup"){
+                    nRet = n;
+                }else{*/
+                return n;
+                /*}*/
             }
         }
         return nRet;
@@ -1051,10 +1051,10 @@ export default class LGraph {
             return;
         }
 
-		this.beforeChange();
+        this.beforeChange();
         this.inputs[name] = { name: name, type: type, value: value };
         this._version++;
-		this.afterChange();
+        this.afterChange();
 
         if (this.onInputAdded) {
             this.onInputAdded(name, type, value);
@@ -1128,12 +1128,12 @@ export default class LGraph {
         if (
             this.inputs[name].type &&
             String(this.inputs[name].type).toLowerCase() ==
-                String(type).toLowerCase()
+            String(type).toLowerCase()
         ) {
             return;
         }
 
-        const oldType = this.inputs[name].type ;
+        const oldType = this.inputs[name].type;
         this.inputs[name].type = type;
         this._version++;
         if (this.onInputTypeChanged) {
@@ -1237,7 +1237,7 @@ export default class LGraph {
         if (
             this.outputs[name].type &&
             String(this.outputs[name].type).toLowerCase() ==
-                String(type).toLowerCase()
+            String(type).toLowerCase()
         ) {
             return;
         }
@@ -1288,18 +1288,18 @@ export default class LGraph {
     }
     */
 
-	/** used for undo, called before any change is made to the graph */
+    /** used for undo, called before any change is made to the graph */
     beforeChange(info?: LGraphNode): void {
         if (this.onBeforeChange) {
-            this.onBeforeChange(this,info);
+            this.onBeforeChange(this, info);
         }
         this.sendActionToCanvas("onBeforeChange", [this]);
     }
 
-	/** used to resend actions, called after any change is made to the graph */
+    /** used to resend actions, called after any change is made to the graph */
     afterChange(info?: LGraphNode): void {
         if (this.onAfterChange) {
-            this.onAfterChange(this,info);
+            this.onAfterChange(this, info);
         }
         this.sendActionToCanvas("onAfterChange", [this]);
     }
@@ -1415,12 +1415,12 @@ export default class LGraph {
             links: links,
             groups: groups_info,
             config: this.config,
-			extra: this.extra,
+            extra: this.extra,
             version: LiteGraph.VERSION
         };
 
-		if(this.onSerialize)
-			this.onSerialize(data);
+        if (this.onSerialize)
+            this.onSerialize(data);
 
         return data as T;
     }
@@ -1446,11 +1446,11 @@ export default class LGraph {
             var links = [];
             for (var i = 0; i < data.links.length; ++i) {
                 var link_data = data.links[i];
-				if(!link_data) //weird bug
-				{
-					console.warn("serialized graph link data contains errors, skipping.");
-					continue;
-				}
+                if (!link_data) //weird bug
+                {
+                    console.warn("serialized graph link data contains errors, skipping.");
+                    continue;
+                }
                 var link = LLink.configure(link_data);
                 links[link.id] = link;
             }
@@ -1459,8 +1459,8 @@ export default class LGraph {
 
         //copy all stored fields
         for (const i in data) {
-			if(i == "nodes" || i == "groups" ) //links must be accepted
-				continue;
+            if (i == "nodes" || i == "groups") //links must be accepted
+                continue;
             this[i] = data[i];
         }
 
@@ -1513,35 +1513,34 @@ export default class LGraph {
 
         this.updateExecutionOrder();
 
-		this.extra = data.extra || {};
+        this.extra = data.extra || {};
 
-		if(this.onConfigure)
-			this.onConfigure(data);
+        if (this.onConfigure)
+            this.onConfigure(data);
 
         this._version++;
         this.setDirtyCanvas(true, true);
         return error;
     }
 
-    load(url: string, callback: (any) => void): void {
+    load(url: string, callback?: (any) => void): void {
         var that = this;
 
-		//from file
-		if(url.constructor === File || url.constructor === Blob)
-		{
-			var reader = new FileReader();
-			reader.addEventListener('load', function(event) {
-				var data = JSON.parse(reader.result as string);
-				that.configure(data);
-				if(callback)
-					callback(data);
-			});
+        //from file
+        if (url.constructor === File || url.constructor === Blob) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function(event) {
+                var data = JSON.parse(reader.result as string);
+                that.configure(data);
+                if (callback)
+                    callback(data);
+            });
 
-			reader.readAsText(url);
-			return;
-		}
+            reader.readAsText(url);
+            return;
+        }
 
-		//is a string, then an URL
+        //is a string, then an URL
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
         req.send(null);
@@ -1550,10 +1549,10 @@ export default class LGraph {
                 console.error("Error loading graph:", req.status, req.response);
                 return;
             }
-            var data = JSON.parse( req.response );
+            var data = JSON.parse(req.response);
             that.configure(data);
-			if(callback)
-				callback(data);
+            if (callback)
+                callback(data);
         };
         req.onerror = function(err) {
             console.error("Error loading graph:", err);

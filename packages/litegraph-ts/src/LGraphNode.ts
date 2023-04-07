@@ -64,9 +64,9 @@ export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
     skip_list?: boolean
 }
 
-export function getStaticProperty<T>(type: LGraphNodeConstructor, name: string): T {
-    if (name in type.constructor) {
-        return type.constructor[name] as T;
+export function getStaticProperty<T>(type: new (...args: any[]) => any, name: string): T {
+    if (name in type) {
+        return type[name] as T;
     }
     return null;
 }

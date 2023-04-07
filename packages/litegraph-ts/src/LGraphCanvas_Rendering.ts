@@ -104,7 +104,7 @@ export default class LGraphCanvas_Rendering {
         this.dirty_canvas = false;
 
         if (!this.ctx) {
-            this.ctx = this.bgcanvas.getContext("2d");
+            this.ctx = this.canvas.getContext("2d");
         }
         var ctx = this.ctx;
         if (!ctx) {
@@ -638,7 +638,7 @@ export default class LGraphCanvas_Rendering {
         //     ctx.start();
         // }
 
-        var viewport = this.viewport || [0, 0, ctx.canvas.width, ctx.canvas.height];
+        let viewport = this.viewport || [0, 0, ctx.canvas.width, ctx.canvas.height];
 
         //clear
         if (this.clear_background) {
@@ -670,9 +670,9 @@ export default class LGraphCanvas_Rendering {
             ctx.restore();
         }
 
-        var bg_already_painted = false;
-        if (this.onRenderBackground) {
-            bg_already_painted = this.onRenderBackground(canvas, ctx);
+        let bg_already_painted = false;
+        if (this.onRenderBackground && this.onRenderBackground(canvas, ctx)) {
+            bg_already_painted = true;
         }
 
         //reset in case of error
@@ -708,8 +708,8 @@ export default class LGraphCanvas_Rendering {
                     this._bg_img.name = this.background_image;
                     this._bg_img.src = this.background_image;
                     var that = this;
-                    this._bg_img.onload = function() {
-                        that.draw(true, true);
+                    this._bg_img.onload = () => {
+                        this.draw(true, true);
                     };
                 }
 

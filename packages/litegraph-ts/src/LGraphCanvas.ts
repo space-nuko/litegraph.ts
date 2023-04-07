@@ -399,7 +399,6 @@ export default class LGraphCanvas
         this.last_mouseclick = 0;
         this.pointer_is_down = false;
         this.pointer_is_double = false;
-        this.visible_area = new Float32Array([0, 0, 0, 0])
 
         if (this.onClear) {
             this.onClear();
@@ -562,14 +561,14 @@ export default class LGraphCanvas
 
     //used in some events to capture them
     private _doNothing(e: Event) {
-        if (LiteGraph.debug)
-            console.log("pointerevents: _doNothing " + e.type);
+        // if (LiteGraph.debug)
+        // console.log("pointerevents: _doNothing " + e.type);
         e.preventDefault();
         return false;
     };
     private _doReturnTrue(e: Event) {
-        if (LiteGraph.debug)
-            console.log("pointerevents: _doReturnTrue " + e.type);
+        // if (LiteGraph.debug)
+        //     console.log("pointerevents: _doReturnTrue " + e.type);
         e.preventDefault();
         return true;
     };
@@ -1545,8 +1544,8 @@ export default class LGraphCanvas
         e.canvasX = clientX_rel / this.ds.scale - this.ds.offset[0];
         e.canvasY = clientY_rel / this.ds.scale - this.ds.offset[1];
 
-        if (LiteGraph.debug)
-            console.log("pointerevents: adjustMouseEvent " + e.clientX + ":" + e.clientY + " " + clientX_rel + ":" + clientY_rel + " " + e.canvasX + ":" + e.canvasY);
+        // if (LiteGraph.debug)
+        //     console.log("pointerevents: adjustMouseEvent " + e.clientX + ":" + e.clientY + " " + clientX_rel + ":" + clientY_rel + " " + e.canvasX + ":" + e.canvasY);
     }
 
     /** process an event on widgets */
