@@ -20,6 +20,10 @@ export default class LGraphGroup {
     graph?: LGraph = null
     private _bounding: Float32Array = new Float32Array([10, 10, 140, 80]);
 
+    get bounding(): Float32Array {
+        return this._bounding;
+    }
+
     private _pos: Float32Array;
 
     get pos(): Vector2 {

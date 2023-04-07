@@ -2114,7 +2114,7 @@ export default class LGraphCanvas
         LGraphCanvas_Rendering.prototype.drawNodeWidgets.apply(this, arguments);
     }
 
-    drawGroups(canvas: any, ctx: CanvasRenderingContext2D): void {
+    drawGroups(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
         LGraphCanvas_Rendering.prototype.drawGroups.apply(this, arguments);
     }
 }

@@ -522,7 +522,7 @@ export default class LGraphCanvas_Rendering {
         text?: string,
         bgcolor: string = LiteGraph.NODE_DEFAULT_COLOR,
         hovercolor: string = "#555",
-        textcolor: string = LiteGraph.NODE_TEXT_COLOR) {
+        textcolor: string = LiteGraph.NODE_TEXT_COLOR): boolean {
         var ctx = this.ctx;
         var yFix = y + LiteGraph.NODE_TITLE_HEIGHT + 2;	// fix the height with the title
         var pos = this.mouse;
@@ -554,7 +554,7 @@ export default class LGraphCanvas_Rendering {
     }
 
     /** draws every group area in the background */
-    drawGroups(this: LGraphCanvas, canvas: any, ctx: CanvasRenderingContext2D): void {
+    drawGroups(this: LGraphCanvas, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
         if (!this.graph) {
             return;
         }
@@ -1730,8 +1730,7 @@ export default class LGraphCanvas_Rendering {
      **/
     renderLink(
         this: LGraphCanvas,
-        ctx: CanvasRenderingContext2D,
-        a: Vector2,
+        ctx: CanvasRenderingContext2D, a: Vector2,
         b: Vector2,
         link: LLink,
         skipBorder: boolean,

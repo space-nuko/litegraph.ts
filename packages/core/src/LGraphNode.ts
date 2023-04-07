@@ -2531,6 +2531,8 @@ export default class LGraphNode {
     /** Called by `LGraph.runStep` `LGraphNode.getInputData` */
     onExecute?(param: any, options: object): void;
 
+    onExecuted?(value: any): void;
+
     onAction?(action: any, param: any, options: { action_call?: string }): void;
 
     /** Called by `LGraph.serialize` */
