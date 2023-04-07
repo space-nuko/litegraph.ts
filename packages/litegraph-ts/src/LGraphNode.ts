@@ -2644,7 +2644,7 @@ export default class LGraphNode {
 
     onWidgetChanged?(widget: IWidget, oldValue?: any): void;
 
-    onMenuNodeInputs?(item: IContextMenuItem[]): IContextMenuItem[];
+    onMenuNodeInputs?(item: ContextMenuItem[]): ContextMenuItem[];
 
     onInputAdded?(input: INodeInputSlot): void;
 
@@ -2654,7 +2654,7 @@ export default class LGraphNode {
 
     onInputDblClick?(slot: SlotIndex, event: MouseEventExt): void;
 
-    onMenuNodeOutputs?(item: IContextMenuItem[]): IContextMenuItem[];
+    onMenuNodeOutputs?(item: ContextMenuItem[]): ContextMenuItem[];
 
     onNodeOutputAdd?(value: any): void;
 

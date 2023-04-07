@@ -4,6 +4,10 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "build": {
+      "true": false,
+      "persistent": false
     }
   }
 }

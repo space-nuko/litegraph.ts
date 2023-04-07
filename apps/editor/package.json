@@ -6,8 +6,11 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "litegraph-ts": "workspace:*",
     "typescript": "^5.0.3",
-    "vite": "^4.2.1",
-    "litegraph-ts": "workspace:*"
+    "vite": "^4.2.1"
+  },
+  "devDependencies": {
+    "vite-plugin-checker": "^0.5.6"
   }
 }

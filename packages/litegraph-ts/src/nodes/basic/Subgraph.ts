@@ -1,4 +1,4 @@
-import type { IContextMenuItem } from "../../ContextMenu";
+import type { ContextMenuItem, IContextMenuItem } from "../../ContextMenu";
 import type { MouseEventExt } from "../../DragAndScale";
 import type { INumberWidget } from "../../IWidget";
 import LGraph from "../../LGraph";
@@ -241,7 +241,7 @@ export default class Subgraph extends LGraphNode {
     };
     // *****************************************************
 
-    override getExtraMenuOptions(graphCanvas: LGraphCanvas, options: IContextMenuItem[]): IContextMenuItem[] {
+    override getExtraMenuOptions(graphCanvas: LGraphCanvas, options: ContextMenuItem[]): ContextMenuItem[] {
         var that = this;
         return [
             {
@@ -361,6 +361,7 @@ export default class Subgraph extends LGraphNode {
 
 LiteGraph.registerNodeType({
     type: Subgraph,
+    title: "Subgraph",
     desc: "Graph inside a node",
     title_color: "#334",
     typeName: "basic/subgraph"

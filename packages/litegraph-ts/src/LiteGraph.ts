@@ -39,6 +39,7 @@ export default class LiteGraph {
 
     static LINK_COLOR: string = "#9A9";
     static EVENT_LINK_COLOR: string = "#A86";
+    static ACTION_LINK_COLOR: string = "#86A";
     static CONNECTING_LINK_COLOR: string = "#AFA";
 
     static MAX_NUMBER_OF_NODES: number = 1000; //avoid infinite loops
@@ -749,7 +750,7 @@ export default class LiteGraph {
 
     /* helper for interaction: pointer, touch, mouse Listeners
        used by LGraphCanvas DragAndScale ContextMenu*/
-    static pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
+    static pointerListenerAdd(oDOM: Node, sEvIn: string, fCall: EventListener, capture = false) {
         if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== "function") {
             //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
             return; // -- break --

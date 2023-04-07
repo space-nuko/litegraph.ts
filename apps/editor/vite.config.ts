@@ -1,7 +1,10 @@
-import type { UserConfig } from 'vite'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import checker from "vite-plugin-checker";
 
-const config: UserConfig = {
-}
-
-export default config
+export default defineConfig({
+    plugins: [
+        checker({
+            typescript: true
+        })
+    ]
+})

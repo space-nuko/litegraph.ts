@@ -1,4 +1,4 @@
-import type { IContextMenuItem } from "./ContextMenu";
+import type { ContextMenuItem, IContextMenuItem } from "./ContextMenu";
 import type { SlotIndex } from "./INodeSlot";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
@@ -773,7 +773,7 @@ export default class LGraph {
     onExecuteStep?(): void;
     onAfterExecute?(): void;
 
-    onGetNodeMenuOptions?(options: IContextMenuItem[], node: LGraphNode): IContextMenuItem[];
+    onGetNodeMenuOptions?(options: ContextMenuItem[], node: LGraphNode): ContextMenuItem[];
 
     /**
      * Called when a node's connection is changed

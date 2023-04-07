@@ -16,9 +16,9 @@ export interface EventExt {
     layerY?: number;
 }
 
-export interface MouseEventExt extends MouseEvent, EventExt {}
-export interface DragEventExt extends DragEvent, EventExt {}
-export interface CustomEventExt extends CustomEvent, EventExt {}
+export interface MouseEventExt extends MouseEvent, EventExt { }
+export interface DragEventExt extends DragEvent, EventExt { }
+export interface CustomEventExt extends CustomEvent, EventExt { }
 
 export default class DragAndScale {
     constructor(element?: HTMLCanvasElement, skipEvents: boolean = false) {
@@ -43,16 +43,16 @@ export default class DragAndScale {
 
     dragging: boolean = false;
 
-    private _binded_mouse_callback: EventListenerObject | null = null;
+    private _binded_mouse_callback: EventListener | null = null;
 
     bindEvents(element: HTMLCanvasElement): void {
         this.last_mouse = [0, 0]
 
         this._binded_mouse_callback = this.onMouse.bind(this);
 
-		LiteGraph.pointerListenerAdd(element, "down", this._binded_mouse_callback);
-		LiteGraph.pointerListenerAdd(element, "move", this._binded_mouse_callback);
-		LiteGraph.pointerListenerAdd(element, "up", this._binded_mouse_callback);
+        LiteGraph.pointerListenerAdd(element, "down", this._binded_mouse_callback);
+        LiteGraph.pointerListenerAdd(element, "move", this._binded_mouse_callback);
+        LiteGraph.pointerListenerAdd(element, "up", this._binded_mouse_callback);
 
         element.addEventListener(
             "mousewheel",
@@ -71,8 +71,7 @@ export default class DragAndScale {
         var height = this.element.height;
         var startx = -this.offset[0];
         var starty = -this.offset[1];
-        if( viewport )
-        {
+        if (viewport) {
             startx += viewport[0] / this.scale;
             starty += viewport[1] / this.scale;
             width = viewport[2];
@@ -100,7 +99,7 @@ export default class DragAndScale {
         e.canvasX = y;
         e.dragging = this.dragging;
 
-        var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
+        var is_inside = !this.viewport || (this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]));
 
         //console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
 
@@ -109,12 +108,12 @@ export default class DragAndScale {
         //     ignore = this.onmouse(e);
         // }
 
-        if (e.type == LiteGraph.pointerevents_method+"down" && is_inside) {
+        if (e.type == LiteGraph.pointerevents_method + "down" && is_inside) {
             this.dragging = true;
-            LiteGraph.pointerListenerRemove(canvas,"move",this._binded_mouse_callback);
-            LiteGraph.pointerListenerAdd(document,"move",this._binded_mouse_callback);
-            LiteGraph.pointerListenerAdd(document,"up",this._binded_mouse_callback);
-        } else if (e.type == LiteGraph.pointerevents_method+"move") {
+            LiteGraph.pointerListenerRemove(canvas, "move", this._binded_mouse_callback);
+            LiteGraph.pointerListenerAdd(document, "move", this._binded_mouse_callback);
+            LiteGraph.pointerListenerAdd(document, "up", this._binded_mouse_callback);
+        } else if (e.type == LiteGraph.pointerevents_method + "move") {
             if (!ignore) {
                 var deltax = x - this.last_mouse[0];
                 var deltay = y - this.last_mouse[1];
@@ -122,16 +121,16 @@ export default class DragAndScale {
                     this.mouseDrag(deltax, deltay);
                 }
             }
-        } else if (e.type == LiteGraph.pointerevents_method+"up") {
+        } else if (e.type == LiteGraph.pointerevents_method + "up") {
             this.dragging = false;
-            LiteGraph.pointerListenerRemove(document,"move",this._binded_mouse_callback);
-            LiteGraph.pointerListenerRemove(document,"up",this._binded_mouse_callback);
-            LiteGraph.pointerListenerAdd(canvas,"move",this._binded_mouse_callback);
-        } else if ( is_inside &&
+            LiteGraph.pointerListenerRemove(document, "move", this._binded_mouse_callback);
+            LiteGraph.pointerListenerRemove(document, "up", this._binded_mouse_callback);
+            LiteGraph.pointerListenerAdd(canvas, "move", this._binded_mouse_callback);
+        } else if (is_inside &&
             (e.type == "mousewheel" ||
                 e.type == "wheel" ||
                 e.type == "DOMMouseScroll")
-                  ) {
+        ) {
             e.eventType = "mousewheel";
             if (e.type == "wheel") {
                 e.wheel = -e.deltaY;
@@ -144,16 +143,15 @@ export default class DragAndScale {
             e.delta = e.wheelDelta
                 ? e.wheelDelta / 40
                 : e.deltaY
-                ? -e.deltaY / 3
-                : 0;
+                    ? -e.deltaY / 3
+                    : 0;
             this.changeDeltaScale(1.0 + e.delta * 0.05);
         }
 
         this.last_mouse[0] = x;
         this.last_mouse[1] = y;
 
-        if(is_inside)
-        {
+        if (is_inside) {
             e.preventDefault();
             e.stopPropagation();
             return false;

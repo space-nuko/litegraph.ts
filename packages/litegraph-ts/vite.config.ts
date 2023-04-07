@@ -1,5 +1,6 @@
 import { resolve } from 'path';
-import { defineConfig, LogLevel } from 'vite';
+import { defineConfig } from 'vite';
+import checker from "vite-plugin-checker";
 
 export default defineConfig({
     build: {
@@ -11,4 +12,9 @@ export default defineConfig({
             fileName: (format) => `index.${format}.js`
         },
     },
+    plugins: [
+        checker({
+            typescript: true
+        })
+    ]
 });

@@ -79,7 +79,13 @@ export default class LGraphCanvas
             groupcolor: string;
         }
     >;
-    static link_type_colors: Record<string, string>;
+    static link_type_colors: Record<string, string> = {
+        [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
+        [BuiltInSlotType.EVENT]: LiteGraph.EVENT_LINK_COLOR,
+        number: "#AAA",
+        node: "#DCA"
+    };
+
     static gradients: object;
     static search_limit: number;
 
@@ -552,12 +558,12 @@ export default class LGraphCanvas
 
     private _events_binded: boolean = false;
 
-    _mousedown_callback?: EventListenerObject;
-    _mousewheel_callback?: EventListenerObject;
-    _mousemove_callback?: EventListenerObject;
-    _mouseup_callback?: EventListenerObject;
-    _key_callback?: EventListenerObject;
-    _ondrop_callback?: EventListenerObject;
+    _mousedown_callback?: EventListener;
+    _mousewheel_callback?: EventListener;
+    _mousemove_callback?: EventListener;
+    _mouseup_callback?: EventListener;
+    _key_callback?: EventListener;
+    _ondrop_callback?: EventListener;
 
     //used in some events to capture them
     private _doNothing(e: Event) {
@@ -1312,8 +1318,8 @@ export default class LGraphCanvas
             }
         }
 
-        if (this.onDropItem) {
-            return this.onDropItem(e);
+        if (this.onDropItem && this.onDropItem(e)) {
+            return true;
         }
 
         return false;
