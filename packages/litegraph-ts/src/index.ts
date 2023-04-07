@@ -1,6 +1,5 @@
 export { default as LiteGraph } from "./LiteGraph"
 
-export { default as Editor } from "./Editor";
 export { default as ContextMenu } from "./ContextMenu";
 export { default as DragAndScale } from "./DragAndScale";
 export type { default as INodeConnection } from "./INodeConnection";
@@ -24,7 +23,6 @@ export { default as Watch } from "./nodes/basic/Watch";
 
 export * from "./ContextMenu";
 export * from "./DragAndScale";
-export * from "./Editor";
 export * from "./index";
 export * from "./INodeConnection";
 export * from "./INodeSlot";
@@ -46,7 +44,6 @@ export * from "./utils";
 
 export type * from "./ContextMenu";
 export type * from "./DragAndScale";
-export type * from "./Editor";
 export type * from "./index";
 export type * from "./INodeConnection";
 export type * from "./INodeSlot";

@@ -288,7 +288,7 @@ export default class LGraphCanvas
     onDrawForeground?(ctx: CanvasRenderingContext2D, visibleArea: Float32Array): void;
     /** to render foreground objects not affected by transform (for GUIs) */
     onDrawOverlay?(ctx: CanvasRenderingContext2D): void;
-    onDropItem?(e: DragEvent): boolean | undefined;
+    onDropItem?(e: DragEvent): boolean | void;
     /** Called by `LGraphCanvas.processMouseDown` */
     onMouse?(event: MouseEventExt): boolean;
     onMouseDown?(event: MouseEventExt): boolean;
@@ -407,7 +407,7 @@ export default class LGraphCanvas
     }
 
     /** assigns a graph, you can reassign graphs to the same canvas */
-    setGraph(graph: LGraph, skipClear: boolean = false): void {
+    setGraph(graph: LGraph | null, skipClear: boolean = false): void {
         if (this.graph == graph) {
             return;
         }
@@ -547,6 +547,8 @@ export default class LGraphCanvas
         if (!skipEvents) {
             this.bindEvents();
         }
+
+        this.adjustCanvasForHiDPI();
     }
 
     private _events_binded: boolean = false;
@@ -722,6 +724,18 @@ export default class LGraphCanvas
         }
         var doc = this.canvas.ownerDocument;
         return doc.defaultView;
+    }
+
+    adjustCanvasForHiDPI(ratio?: number) {
+        ratio ||= window.devicePixelRatio;
+        if (ratio == 1 || !this.canvas.parentNode) { return }
+        const rect = (this.canvas.parentNode as Element).getBoundingClientRect();
+        const { width, height } = rect;
+        this.canvas.width = width * ratio;
+        this.canvas.height = height * ratio;
+        this.canvas.style.width = width + "px";
+        this.canvas.style.height = height + "px";
+        this.canvas.getContext("2d").scale(ratio, ratio);
     }
 
     /** starts rendering the content of the canvas when needed */
@@ -1753,6 +1767,9 @@ export default class LGraphCanvas
         this.canvas.height = height;
         this.bgcanvas.width = this.canvas.width;
         this.bgcanvas.height = this.canvas.height;
+
+        this.adjustCanvasForHiDPI();
+
         this.setDirty(true, true);
     }
 

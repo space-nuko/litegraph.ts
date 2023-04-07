@@ -1,5 +1,4 @@
-import LGraph, { LGraphStatus } from "./LGraph"
-import LGraphCanvas from "./LGraphCanvas"
+import { LGraph, LGraphStatus, LGraphCanvas } from "litegraph-ts"
 
 export type EditorOptions = {
     skipLiveMode?: boolean;
@@ -13,6 +12,11 @@ export interface EditorPanel extends HTMLDivElement {
 
 export interface EditorMiniWindowPanel extends HTMLDivElement {
     graphCanvas: LGraphCanvas;
+    close: () => void;
+}
+
+export interface EditorLoadCounter extends HTMLDivElement {
+
 }
 
 export default class Editor {
@@ -25,9 +29,9 @@ export default class Editor {
     footer: HTMLDivElement;
     canvas: HTMLCanvasElement;
     graphCanvas: LGraphCanvas;
-    graphCanvas2: LGraphCanvas;
-    miniwindow_graphCanvas: LGraphCanvas;
-    miniwindow: any;
+    graphCanvas2: LGraphCanvas | null = null;
+    miniwindow: EditorMiniWindowPanel | null = null;
+    meter: EditorLoadCounter | null = null;
 
     constructor(containerId: string, options: EditorOptions = {}) {
         //fill container
@@ -47,6 +51,8 @@ export default class Editor {
 </div>
 `
 
+        this.options = options;
+
         var root = document.createElement("div") as EditorPanel;
         this.root = root;
         root.className = "litegraph litegraph-editor";
@@ -62,7 +68,7 @@ export default class Editor {
         this.graph = new LGraph();
         this.graphCanvas = new LGraphCanvas(this.canvas, this.graph);
         this.graphCanvas.background_image = "imgs/grid.png";
-        this.graph.onAfterExecute = function() {
+        this.graph.onAfterExecute = () => {
             this.graphCanvas.draw(true);
         };
 
@@ -122,8 +128,8 @@ export default class Editor {
     }
 
     addLoadCounter() {
-        var meter = document.createElement("div");
-        meter.className = "headerpanel loadmeter toolbar-widget";
+        this.meter = document.createElement("div") as EditorLoadCounter;
+        this.meter.className = "headerpanel loadmeter toolbar-widget";
 
         var html =
             `
@@ -141,33 +147,33 @@ export default class Editor {
 </div>
 `;
 
-        meter.innerHTML = html;
-        this.root.querySelector(".header .tools-left").appendChild(meter);
+        this.meter.innerHTML = html;
+        this.root.querySelector<HTMLDivElement>(".header .tools-left")!.appendChild(this.meter);
         var self = this;
 
-        setInterval(function() {
-            meter.querySelector<HTMLDivElement>(".cpuload .fgload").style.width =
+        setInterval(() => {
+            this.meter!.querySelector<HTMLDivElement>(".cpuload .fgload")!.style.width =
                 2 * self.graph.execution_time * 90 + "px";
             if (self.graph.status == LGraphStatus.STATUS_RUNNING) {
-                meter.querySelector<HTMLDivElement>(".gpuload .fgload").style.width =
+                this.meter!.querySelector<HTMLDivElement>(".gpuload .fgload")!.style.width =
                     self.graphCanvas.render_time * 10 * 90 + "px";
             } else {
-                meter.querySelector<HTMLDivElement>(".gpuload .fgload").style.width = 4 + "px";
+                this.meter!.querySelector<HTMLDivElement>(".gpuload .fgload")!.style.width = 4 + "px";
             }
         }, 200);
     };
 
-    addToolsButton(id: string, name: string, icon_url: string, callback, container: string) {
+    addToolsButton(id: string, name: string, icon_url: string, callback: EventListener, container: string) {
         if (!container) {
             container = ".tools";
         }
 
         var button = this.createButton(name, icon_url, callback);
         button.id = id;
-        this.root.querySelector(container).appendChild(button);
+        this.root.querySelector(container)!.appendChild(button);
     };
 
-    createButton(name: string, icon_url: string, callback) {
+    createButton(name: string, icon_url: string, callback?: EventListener) {
         var button = document.createElement("button");
         if (icon_url) {
             button.innerHTML = "<img src='" + icon_url + "'/> ";
@@ -190,7 +196,7 @@ export default class Editor {
 
     onPlayButton() {
         var graph = this.graph;
-        var button = this.root.querySelector("#playnode_button");
+        var button = this.root.querySelector<HTMLButtonElement>("#playnode_button")!;
 
         if (graph.status == LGraphStatus.STATUS_STOPPED) {
             button.innerHTML = "<img src='imgs/icon-stop.png'/> Stop";
@@ -211,21 +217,22 @@ export default class Editor {
         var is_live_mode = !this.graphCanvas.live_mode;
         this.graphCanvas.switchLiveMode(true);
         this.graphCanvas.draw();
-        var url = this.graphCanvas.live_mode
-            ? "imgs/gauss_bg_medium.jpg"
-            : "imgs/gauss_bg.jpg";
-        var button = this.root.querySelector("#livemode_button");
+        var button = this.root.querySelector<HTMLButtonElement>("#livemode_button")!;
         button.innerHTML = !is_live_mode
             ? "<img src='imgs/icon-record.png'/> Live"
             : "<img src='imgs/icon-gear.png'/> Edit";
     };
 
     onDropItem(e: DragEvent) {
+        if (!e.dataTransfer) {
+            return;
+        }
+
         var that = this;
-        for (var i = 0; i < e.dataTransfer.files.length; ++i) {
-            var file = e.dataTransfer.files[i];
-            var ext = LGraphCanvas.getFileExtension(file.name);
-            var reader = new FileReader();
+        for (let i = 0; i < e.dataTransfer.files.length; ++i) {
+            let file = e.dataTransfer.files[i];
+            let ext = LGraphCanvas.getFileExtension(file.name);
+            let reader = new FileReader();
             if (ext == "json") {
                 reader.onload = function(_event: Event) {
                     var data = JSON.parse(reader.result as string);
@@ -270,10 +277,8 @@ export default class Editor {
             "' height='" +
             h +
             "' tabindex=10></canvas>";
-        var canvas = this.miniwindow.querySelector("canvas");
-        var that = this;
 
-        var graphCanvas = new LGraphCanvas(canvas, this.graph);
+        var graphCanvas = new LGraphCanvas(this.canvas, this.graph);
         graphCanvas.show_info = false;
         graphCanvas.background_image = "imgs/grid.png";
         graphCanvas.scale = 0.25;
@@ -287,15 +292,15 @@ export default class Editor {
             graphCanvas.allow_dragnodes = false;
             graphCanvas.allow_interaction = false;
         };
-        graphCanvas.onRenderBackground = function(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+        graphCanvas.onRenderBackground = (_canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
             ctx.strokeStyle = "#567";
-            var tl = that.graphCanvas.convertOffsetToCanvas([0, 0]);
-            var br = that.graphCanvas.convertOffsetToCanvas([
-                that.graphCanvas.canvas.width,
-                that.graphCanvas.canvas.height
+            var tl = graphCanvas.convertOffsetToCanvas([0, 0]);
+            var br = graphCanvas.convertOffsetToCanvas([
+                graphCanvas.canvas.width,
+                graphCanvas.canvas.height
             ]);
-            tl = this.convertCanvasToOffset(tl);
-            br = this.convertCanvasToOffset(br);
+            tl = graphCanvas.convertCanvasToOffset(tl);
+            br = graphCanvas.convertCanvasToOffset(br);
             ctx.lineWidth = 1;
             ctx.strokeRect(
                 Math.floor(tl[0]) + 0.5,
@@ -311,7 +316,7 @@ export default class Editor {
 
         this.miniwindow.close = () => {
             graphCanvas.setGraph(null);
-            this.miniwindow.parentNode.removeChild(this.miniwindow);
+            this.miniwindow!.parentNode!.removeChild(this.miniwindow!);
         }
 
         var close_button = document.createElement("div");
@@ -320,7 +325,7 @@ export default class Editor {
         close_button.addEventListener("click", this.miniwindow.close.bind(this));
         this.miniwindow.appendChild(close_button);
 
-        this.root.querySelector(".content").appendChild(this.miniwindow);
+        this.root.querySelector<HTMLDivElement>(".content")!.appendChild(this.miniwindow);
     };
 
     addMultiview() {

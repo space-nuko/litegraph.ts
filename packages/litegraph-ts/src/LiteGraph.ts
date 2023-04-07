@@ -4,6 +4,8 @@ import type { PointerEventsMethod, SlotType, Vector2, Vector4 } from "./types";
 import { NodeMode } from "./types";
 import { BuiltInSlotType } from "./types";
 
+type TypeID = number;
+
 export default class LiteGraph {
     static VERSION: number = 10.0;
 
@@ -148,7 +150,7 @@ export default class LiteGraph {
 
         const prev = LiteGraph.registered_node_types[type];
         if (prev) {
-            console.log("replacing node type: " + type);
+            console.warn("replacing node type: " + type);
         }
 
         //used to know which nodes to create when dragging files to the canvas
@@ -161,8 +163,10 @@ export default class LiteGraph {
             }
         }
 
+        (config.type as any).__litegraph_type__ = type;
+
         LiteGraph.registered_node_types[type] = config;
-        if (config.type.constructor.name) {
+        if (config.type.name) {
             LiteGraph.Nodes[classname] = config;
         }
         if (LiteGraph.onNodeTypeRegistered) {
@@ -333,18 +337,31 @@ export default class LiteGraph {
      * @param name a name to distinguish from other nodes
      * @param options to set options
      */
-    static createNode<T extends LGraphNode>(type: string, title?: string, options?: object): T {
-        var regConfig = LiteGraph.registered_node_types[type];
-        if (!regConfig) {
-            if (LiteGraph.debug) {
-                console.log(
-                    'GraphNode type "' + type + '" not registered.'
-                );
+    static createNode<T extends LGraphNode>(type: string | (new () => T), title?: string, options?: object): T {
+        let regConfig: LGraphNodeConstructor | null = null;
+        let typeID: string; // serialization ID like "basic/const"
+
+        if (typeof type === "string") {
+            typeID = type;
+        }
+        else {
+            typeID = (type as any).__litegraph_type__
+            if (!typeID) {
+                console.error(type);
+                throw "Node was not registered yet!"
             }
+        }
+
+        regConfig = LiteGraph.registered_node_types[typeID];
+
+        if (!regConfig) {
+            console.warn(
+                'GraphNode type "' + type + '" not registered.'
+            );
             return null;
         }
 
-        title = title || regConfig.title || type;
+        title = title || regConfig.title || typeID;
 
         var node: T = null;
 
