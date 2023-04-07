@@ -2,7 +2,7 @@ import type { ContextMenuItem } from "../ContextMenu";
 import type { MouseEventExt } from "../DragAndScale";
 import LGraph from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
-import type { PropertyLayout, SlotLayout } from "../LGraphNode";
+import type { OptionalSlots, PropertyLayout, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
 import { BuiltInSlotShape, type NodeMode, type Vector2 } from "../types";
@@ -17,15 +17,19 @@ export default class Subgraph extends LGraphNode {
     }
 
     static slotLayout: SlotLayout = {
-        inputs: [
-            { name: "enabled", type: "boolean" }
-        ],
+        inputs: [],
         outputs: []
     }
 
     static propertyLayout: PropertyLayout = [
         { name: "enabled", defaultValue: true }
     ]
+
+    static optionalSlots: OptionalSlots = {
+        outputs: [
+            { name: "enabled", type: "boolean" }
+        ]
+    }
 
     override size: Vector2 = [140, 80];
 

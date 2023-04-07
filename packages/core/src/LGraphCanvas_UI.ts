@@ -5,7 +5,7 @@ import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSl
 import type { IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode from "./LGraphNode";
+import LGraphNode, { InputSlotLayout, OutputSlotLayout, getStaticProperty } from "./LGraphNode";
 import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { NODE_MODE_NAMES, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
@@ -217,10 +217,92 @@ export default class LGraphCanvas_UI {
         var canvas = LGraphCanvas.active_canvas;
         var ref_window = canvas.getCanvasWindow();
 
-        var options = node.optional_outputs;
-        if (node.onGetOutputs) {
-            options = node.onGetOutputs();
+        let options = node.getOptionalSlots().inputs;
+
+        let entries: ContextMenuItem[] = [];
+
+        if (options) {
+            for (let i = 0; i < options.length; i++) {
+                let entry = options[i];
+                if (!entry) {
+                    entries.push(ContextMenuSpecialItem.SEPARATOR);
+                    continue;
+                }
+
+                let { name: label, type: slotType, options: opts } = entry;
+
+                if (!opts)
+                    opts = {};
+
+                if (opts.label) {
+                    label = opts.label;
+                }
+
+                opts.removable = true;
+                var data: IContextMenuItem = { content: label, value: entry };
+                if (slotType == BuiltInSlotType.ACTION) {
+                    data.className = "event";
+                }
+                entries.push(data);
+            }
         }
+
+        if (node.onMenuNodeInputs) {
+            var retEntries = node.onMenuNodeInputs(entries);
+            if (retEntries) entries = retEntries;
+        }
+
+        if (!entries.length) {
+            console.log("no input entries");
+            return;
+        }
+
+        var menu = new ContextMenu(
+            entries,
+            {
+                event: mouseEvent,
+                callback: inner_clicked,
+                parentMenu: prevMenu,
+                node: node
+            },
+            ref_window
+        );
+
+        function inner_clicked(v: IContextMenuItem, options, e: MouseEventExt, prev: ContextMenu) {
+            if (!node) {
+                return;
+            }
+
+            if (v.callback) {
+                v.callback.call(that, node, v, e, prev);
+            }
+
+            if (v.value) {
+                let value = v.value as InputSlotLayout;
+                node.graph.beforeChange();
+                node.addInput(value.name, value.type, value.options);
+
+                if (node.onNodeOptionalInputAdd) { // callback to the node when adding a slot
+                    node.onNodeOptionalInputAdd(v.value);
+                }
+                node.setDirtyCanvas(true, true);
+                node.graph.afterChange();
+            }
+        }
+
+        return false;
+    };
+
+    static showMenuNodeOptionalOutputs: ContextMenuEventListener = function(_value: IContextMenuItem, _options, mouseEvent, prevMenu, node?: LGraphNode) {
+        if (!node) {
+            return;
+        }
+
+        var that = this;
+        var canvas = LGraphCanvas.active_canvas;
+        var ref_window = canvas.getCanvasWindow();
+
+        var options = node.getOptionalSlots().outputs;
 
         var entries: ContextMenuItem[] = [];
         if (options) {
@@ -231,7 +313,8 @@ export default class LGraphCanvas_UI {
                     entries.push(ContextMenuSpecialItem.SEPARATOR);
                     continue;
                 }
-                let [label, slotType, opts] = entry;
+
+                let { name: label, type: slotType, options: opts } = entry;
 
                 if (
                     node.flags &&
@@ -240,7 +323,7 @@ export default class LGraphCanvas_UI {
                 ) {
                     continue;
                 } //skip the ones already on
-                if (opts)
+                if (!opts)
                     opts = {};
                 if (opts.label) {
                     label = opts.label;
@@ -304,11 +387,12 @@ export default class LGraphCanvas_UI {
                 });
                 return false;
             } else {
+                const value = v.value as OutputSlotLayout;
                 node.graph.beforeChange();
-                node.addOutput(v.value[0], v.value[1], v.value[2]);
+                node.addOutput(value.name, value.type, value.options);
 
-                if (node.onNodeOutputAdd) { // a callback to the node when adding a slot
-                    node.onNodeOutputAdd(v.value);
+                if (node.onNodeOptionalOutputAdd) { // a callback to the node when adding a slot
+                    node.onNodeOptionalOutputAdd(v.value);
                 }
                 node.setDirtyCanvas(true, true);
                 node.graph.afterChange();
@@ -325,128 +409,6 @@ export default class LGraphCanvas_UI {
             },
             ref_window
         );
-
-        return false;
-    }
-
-    static showMenuNodeOptionalOutputs: ContextMenuEventListener = function(_value: IContextMenuItem, _options, mouseEvent, prevMenu, node?: LGraphNode) {
-        if (!node) {
-            return;
-        }
-
-        var that = this;
-        var canvas = LGraphCanvas.active_canvas;
-        var ref_window = canvas.getCanvasWindow();
-
-        var options = node.optional_outputs;
-        if (node.onGetOutputs) {
-            options = node.onGetOutputs();
-        }
-
-        var entries: ContextMenuItem[] = [];
-        if (options) {
-            for (var i = 0; i < options.length; i++) {
-                var entry = options[i];
-                if (!entry) {
-                    //separator?
-                    entries.push(ContextMenuSpecialItem.SEPARATOR);
-                    continue;
-                }
-
-                if (
-                    node.flags &&
-                    node.flags.skip_repeated_outputs &&
-                    node.findOutputSlotIndexByName(entry[0]) != -1
-                ) {
-                    continue;
-                } //skip the ones already on
-                var label = entry[0];
-                if (!entry[2])
-                    entry[2] = {};
-                if (entry[2].label) {
-                    label = entry[2].label;
-                }
-                entry[2].removable = true;
-                var data: IContextMenuItem = { content: label, value: entry };
-                if (entry[1] == BuiltInSlotType.EVENT) {
-                    data.className = "event";
-                }
-                entries.push(data);
-            }
-        }
-
-        if (this.onMenuNodeOutputs) {
-            entries = this.onMenuNodeOutputs(entries);
-        }
-        if (LiteGraph.do_add_triggers_slots) { //canvas.allow_addOutSlot_onExecuted
-            if (node.findOutputSlotIndexByName("onExecuted") == -1) {
-                entries.push({ content: "On Executed", value: ["onExecuted", BuiltInSlotType.EVENT, { nameLocked: true }], className: "event" }); //, opts: {}
-            }
-        }
-        // add callback for modifing the menu elements onMenuNodeOutputs
-        if (node.onMenuNodeOutputs) {
-            var retEntries = node.onMenuNodeOutputs(entries);
-            if (retEntries) entries = retEntries;
-        }
-
-        if (!entries.length) {
-            return;
-        }
-
-        let innerClicked: ContextMenuEventListener = function(v: IContextMenuItem, _options, mouseEvent: MouseEventExt, prev: ContextMenu) {
-            if (!node) {
-                return;
-            }
-
-            if (v.callback) {
-                v.callback.call(that, node, v, mouseEvent, prev);
-            }
-
-            if (!v.value) {
-                return;
-            }
-
-            var value = v.value[1];
-
-            if (
-                value &&
-                (value.constructor === Object || value.constructor === Array)
-            ) {
-                //submenu why?
-                var entries: ContextMenuItem[] = [];
-                for (var i in value) {
-                    entries.push({ content: i, value: value[i] });
-                }
-                new ContextMenu(entries, {
-                    event: mouseEvent,
-                    callback: innerClicked,
-                    parentMenu: prevMenu,
-                    node: node
-                });
-                return false;
-            } else {
-                node.graph.beforeChange();
-                node.addOutput(v.value[0], v.value[1], v.value[2]);
-
-                if (node.onNodeOutputAdd) { // a callback to the node when adding a slot
-                    node.onNodeOutputAdd(v.value);
-                }
-                node.setDirtyCanvas(true, true);
-                node.graph.afterChange();
-            }
-        }
-
-        var menu = new ContextMenu(
-            entries,
-            {
-                event: mouseEvent,
-                callback: innerClicked,
-                parentMenu: prevMenu,
-                node: node
-            },
-            ref_window
-        );
-
 
         return false;
     }
@@ -2068,7 +2030,6 @@ export default class LGraphCanvas_UI {
         }
 
         const setValue = (value: any) => {
-            debugger
             if (info && info.values && info.values.constructor === Object && info.values[value] != undefined)
                 value = info.values[value];
 
@@ -2292,16 +2253,13 @@ export default class LGraphCanvas_UI {
             );
         }
 
-        if (node.onGetInputs) {
-            var inputs = node.onGetInputs();
-            if (inputs && inputs.length && typeof options[0] === "object") {
+        const optionalSlots = node.getOptionalSlots();
+
+        if (optionalSlots) {
+            if (optionalSlots.inputs && optionalSlots.inputs.length > 0 && typeof options[0] === "object") {
                 options[0].disabled = false;
             }
-        }
-
-        if (node.onGetOutputs) {
-            var outputs = node.onGetOutputs();
-            if (outputs && outputs.length && typeof options[1] === "object") {
+            if (optionalSlots.outputs && optionalSlots.outputs.length && typeof options[1] === "object") {
                 options[1].disabled = false;
             }
         }

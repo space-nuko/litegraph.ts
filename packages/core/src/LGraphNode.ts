@@ -35,11 +35,10 @@ export type SearchboxExtra = {
     type: string;
 }
 
-export type NodeInput = [string, SlotType, Record<any, any>?];
-export type NodeOutput = [string, SlotType, Record<any, any>?];
 export type InputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
 export type OutputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
 export type SlotLayout = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] };
+export type OptionalSlots = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] }
 
 export type PropertyLayout = {
     name: string,
@@ -67,6 +66,13 @@ export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
 export function getStaticProperty<T>(type: new (...args: any[]) => any, name: string): T {
     if (name in type) {
         return type[name] as T;
+    }
+    return null;
+}
+
+export function getStaticPropertyOnInstance<T>(type: any, name: string): T {
+    if (name in type.constructor) {
+        return type.constructor[name] as T;
     }
     return null;
 }
@@ -153,8 +159,6 @@ export default class LGraphNode {
     redraw_on_mouse: boolean;
     removable: boolean = true;
     clonable: boolean = true;
-
-    optional_outputs: NodeOutput[] = [];
 
     id: number;
 
@@ -2650,6 +2654,8 @@ export default class LGraphNode {
 
     onMenuNodeInputs?(item: ContextMenuItem[]): ContextMenuItem[];
 
+    onNodeOptionalInputAdd?(value: any): void;
+
     onInputAdded?(input: INodeInputSlot): void;
 
     onInputRemoved?(slot: SlotIndex, input: INodeInputSlot): void;
@@ -2660,7 +2666,7 @@ export default class LGraphNode {
 
     onMenuNodeOutputs?(item: ContextMenuItem[]): ContextMenuItem[];
 
-    onNodeOutputAdd?(value: any): void;
+    onNodeOptionalOutputAdd?(value: any): void;
 
     updateOutputData?(slot: SlotIndex): void;
 
@@ -2672,9 +2678,9 @@ export default class LGraphNode {
 
     onOutputDblClick?(slot: SlotIndex, event: MouseEventExt): void;
 
-    onGetInputs?(): NodeInput[];
-    onGetOutputs?(): NodeOutput[];
-
+    getOptionalSlots(): OptionalSlots | null {
+        return getStaticPropertyOnInstance<OptionalSlots>(this, "optionalSlots");
+    }
 
     /** Called by `LGraphCanvas.processContextMenu` */
     getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];
