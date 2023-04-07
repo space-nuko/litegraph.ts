@@ -59,5 +59,5 @@ LiteGraph.registerNodeType({
     type: SetArray,
     title: "Set Array",
     desc: "Sets index of array",
-    typeName: "basic/set-array"
+    typeName: "basic/set_array"
 })

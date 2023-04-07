@@ -942,10 +942,6 @@ export default class LGraphCanvas_Rendering {
 
                     ctx.beginPath();
 
-                    if (slot_type == "array") {
-                        slot_shape = BuiltInSlotShape.GRID_SHAPE; // place in addInput? addOutput instead?
-                    }
-
                     var doStroke = true;
 
                     if (
@@ -1040,10 +1036,6 @@ export default class LGraphCanvas_Rendering {
                             this.default_connection_color.output_off;
                     ctx.beginPath();
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
-
-                    if (slot_type == "array") {
-                        slot_shape = BuiltInSlotShape.GRID_SHAPE;
-                    }
 
                     var doStroke = true;
 

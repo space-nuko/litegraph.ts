@@ -1,4 +1,4 @@
-import { ITextWidget, IWidget, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
+import { BuiltInSlotShape, ITextWidget, IWidget, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
 import Watch from "./Watch"
 
 export interface ConstantJSONProperties extends Record<string, any> {
@@ -73,6 +73,7 @@ export default class ConstantJSON extends LGraphNode {
         }
 
         this.valueWidget.value = this._value;
+        this.outputs[0].shape = BuiltInSlotShape.DEFAULT;
 
         if (type == "number") {
             this.valueWidget.type = "number";
@@ -86,6 +87,9 @@ export default class ConstantJSON extends LGraphNode {
         else if (type == "object" || type == "array") {
             this.valueWidget.type = "text";
             this.valueWidget.value = Watch.toString(this._value);
+            if (type == "array") {
+                this.outputs[0].shape = BuiltInSlotShape.GRID_SHAPE;
+            }
         }
         else {
             this.valueWidget.type = null;

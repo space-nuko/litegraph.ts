@@ -8,7 +8,7 @@ import LGraph from "./LGraph";
 import LGraphCanvas, { type INodePanel } from "./LGraphCanvas";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import { LConnectionKind } from "./types"
+import { BuiltInSlotShape, LConnectionKind } from "./types"
 import type { SlotShape, SlotType, Vector2 } from "./types";
 import { NodeMode } from "./types";
 import { BuiltInSlotType } from "./types"
@@ -35,8 +35,8 @@ export type SearchboxExtra = {
     type: string;
 }
 
-export type InputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
-export type OutputSlotLayout = { name: string, type: SlotType, options?: Record<string, any> }
+export type InputSlotLayout = { name: string, type: SlotType, options?: Partial<INodeInputSlot> }
+export type OutputSlotLayout = { name: string, type: SlotType, options?: Partial<INodeOutputSlot> }
 export type SlotLayout = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] };
 export type OptionalSlots = { inputs?: InputSlotLayout[], outputs?: OutputSlotLayout[] }
 
@@ -1033,6 +1033,10 @@ export default class LGraphNode {
             }
         }
 
+        if (type == "array" && (output.shape == null || output.shape == BuiltInSlotShape.DEFAULT)) {
+            output.shape = BuiltInSlotShape.GRID_SHAPE;
+        }
+
         if (!this.outputs) {
             this.outputs = [];
         }
@@ -1047,39 +1051,6 @@ export default class LGraphNode {
         this.setSize(this.computeSize());
         this.setDirtyCanvas(true, true);
         return output;
-    }
-
-    /**
-     * add a new output slot to use in this node
-     * @param array of triplets like [[name,type,extra_info],[...]]
-     */
-    addOutputs(
-        array: [string, SlotType, Partial<INodeOutputSlot> | undefined][]
-    ): void {
-        for (var i = 0; i < array.length; ++i) {
-            let [name, type, links] = array[i];
-
-            var o = { name, type, links: null };
-            if (links) {
-                for (var j in links) {
-                    o[j] = links[j];
-                }
-            }
-
-            if (!this.outputs) {
-                this.outputs = [];
-            }
-            this.outputs.push(o);
-            if (this.onOutputAdded) {
-                this.onOutputAdded(o);
-            }
-
-            if (LiteGraph.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this as any, type, true);
-
-        }
-
-        this.setSize(this.computeSize());
-        this.setDirtyCanvas(true, true);
     }
 
     /** remove an existing output slot */
@@ -1120,11 +1091,15 @@ export default class LGraphNode {
         type: SlotType = BuiltInSlotType.DEFAULT,
         extra_info?: Partial<INodeInputSlot>
     ): INodeInputSlot {
-        var input = { name: name, type: type, link: null };
+        var input: INodeInputSlot = { name: name, type: type, link: null };
         if (extra_info) {
             for (var i in extra_info) {
                 input[i] = extra_info[i];
             }
+        }
+
+        if (type == "array" && (input.shape == null || input.shape == BuiltInSlotShape.DEFAULT)) {
+            input.shape = BuiltInSlotShape.GRID_SHAPE;
         }
 
         if (!this.inputs) {
@@ -1142,37 +1117,6 @@ export default class LGraphNode {
 
         this.setDirtyCanvas(true, true);
         return input;
-    }
-
-    /**
-     * add several new input slots in this node
-     * @param array of triplets like [[name,type,extra_info],[...]]
-     */
-    addInputs(
-        array: [string, string | -1, Partial<INodeInputSlot> | undefined][]
-    ): void {
-        for (var i = 0; i < array.length; ++i) {
-            var info = array[i];
-            var o = { name: info[0], type: info[1], link: null };
-            if (array[2]) {
-                for (var j in info[2]) {
-                    o[j] = info[2][j];
-                }
-            }
-
-            if (!this.inputs) {
-                this.inputs = [];
-            }
-            this.inputs.push(o);
-            if (this.onInputAdded) {
-                this.onInputAdded(o);
-            }
-
-            LiteGraph.registerNodeAndSlotType(this, info[1]);
-        }
-
-        this.setSize(this.computeSize());
-        this.setDirtyCanvas(true, true);
     }
 
     /** remove an existing input slot */
