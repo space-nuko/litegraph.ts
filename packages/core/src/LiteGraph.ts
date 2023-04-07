@@ -12,7 +12,7 @@ export default class LiteGraph {
     static CANVAS_GRID_SIZE: number = 10;
 
     static NODE_TITLE_HEIGHT: number = 20;
-    static NODE_TITLE_TEXT_Y: number = 20;
+    static NODE_TITLE_TEXT_Y: number = 15;
     static NODE_SLOT_HEIGHT: number = 20;
     static NODE_WIDGET_HEIGHT: number = 20;
     static NODE_WIDTH: number = 140;
