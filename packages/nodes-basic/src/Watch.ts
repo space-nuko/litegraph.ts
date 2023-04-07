@@ -65,6 +65,7 @@ export default class Watch extends LGraphNode {
 
     override onDrawBackground(_ctx: CanvasRenderingContext2D) {
         //show the current value
+        // BUG can overflow the node panel
         this.inputs[0].label = Watch.toString(this.value);
     }
 }

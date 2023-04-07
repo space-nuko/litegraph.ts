@@ -29,8 +29,6 @@ export default class ConstantBoolean extends LGraphNode {
 
     widget: IToggleWidget;
 
-    nameInGraph: string = "";
-
     override size: Vector2 = [140, 30];
 
     constructor(title?: string) {

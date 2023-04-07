@@ -1362,7 +1362,7 @@ export default class LGraphCanvas_UI {
 
                 // add general type if filtering
                 if (options.show_general_after_typefiltered
-                    && (sIn.value || sOut.value)
+                    && (sIn?.value || sOut?.value)
                 ) {
                     let filtered_extra = [];
                     for (const i in LiteGraph.registered_node_types) {
@@ -1378,8 +1378,8 @@ export default class LGraphCanvas_UI {
                 }
 
                 // check il filtering gave no results
-                if ((sIn.value || sOut.value) &&
-                    ((helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
+                if ((sIn?.value || sOut?.value) &&
+                    ((helper?.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
                 ) {
                     let filtered_extra = [];
                     for (const i in LiteGraph.registered_node_types) {
@@ -1411,7 +1411,7 @@ export default class LGraphCanvas_UI {
                     if (options.do_type_filter && !opts.skipFilter) {
                         var sType = type;
 
-                        var sV = sIn.value;
+                        var sV = sIn?.value;
                         if (opts.inTypeOverride !== false) sV = opts.inTypeOverride;
                         //if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
 
@@ -1430,7 +1430,7 @@ export default class LGraphCanvas_UI {
                             }
                         }
 
-                        var sV = sOut.value;
+                        var sV = sOut?.value;
                         if (opts.outTypeOverride !== false) sV = opts.outTypeOverride;
                         //if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
 

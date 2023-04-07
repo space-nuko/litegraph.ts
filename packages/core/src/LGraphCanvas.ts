@@ -56,6 +56,12 @@ export interface IGraphDialog extends HTMLDivElement {
     graph?: LGraph;
 };
 
+export type NodeColor = {
+    color: string;
+    bgColor: string;
+    groupcolor: string;
+}
+
 /**
  * This class is in charge of rendering one graph inside a canvas. And provides all the interaction required.
  * Valid callbacks are: onNodeSelected, onNodeDeselected, onShowNodePanel, onNodeDblClicked
@@ -68,14 +74,18 @@ export default class LGraphCanvas
     implements LGraphCanvas_Rendering, LGraphCanvas_UI, LGraphCanvas_Events {
     static DEFAULT_BACKGROUND_IMAGE: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
 
-    static node_colors: Record<
-        string,
-        {
-            color: string;
-            bgColor: string;
-            groupcolor: string;
-        }
-    >;
+    static node_colors: Record<string, NodeColor> = {
+        red: { color: "#322", bgColor: "#533", groupcolor: "#A88" },
+        brown: { color: "#332922", bgColor: "#593930", groupcolor: "#b06634" },
+        green: { color: "#232", bgColor: "#353", groupcolor: "#8A8" },
+        blue: { color: "#223", bgColor: "#335", groupcolor: "#88A" },
+        pale_blue: { color: "#2a363b", bgColor: "#3f5159", groupcolor: "#3f789e" },
+        cyan: { color: "#233", bgColor: "#355", groupcolor: "#8AA" },
+        purple: { color: "#323", bgColor: "#535", groupcolor: "#a1309b" },
+        yellow: { color: "#432", bgColor: "#653", groupcolor: "#b58b2a" },
+        black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
+    }
+
     static link_type_colors: Record<string, string> = {
         [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
         [BuiltInSlotType.EVENT]: LiteGraph.EVENT_LINK_COLOR,
