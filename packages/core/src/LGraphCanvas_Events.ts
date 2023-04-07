@@ -68,7 +68,7 @@ export default class LGraphCanvas_Events {
         ContextMenu.closeAllContextMenus(ref_window);
 
         if (this.onMouse) {
-            if (this.onMouse(e) == true)
+            if (this.onMouse(e) === true)
                 return;
         }
 
@@ -348,7 +348,7 @@ export default class LGraphCanvas_Events {
                         }
                     }
 
-                    if (is_double_click && !this.read_only && this.allow_searchbox) {
+                    if (is_double_click && !this.read_only && this.allow_searchbox && this.allow_interaction) {
                         this.showSearchBox(e);
                         e.preventDefault();
                         e.stopPropagation();
