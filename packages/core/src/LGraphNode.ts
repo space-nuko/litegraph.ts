@@ -611,6 +611,22 @@ export default class LGraphNode {
         return null;
     }
 
+    /**
+     * Returns the link info in the connection of an input slot
+     * @param {number} slot
+     * @return {LLink} object or null
+     */
+    getInputLink(slot: SlotIndex): LLink | null {
+        if (!this.inputs) {
+            return null;
+        }
+        if (slot < this.inputs.length) {
+            var slot_info = this.inputs[slot];
+            return this.graph.links[slot_info.link];
+        }
+        return null;
+    };
+
     /** returns the node connected in the input slot */
     getInputNode(slot: SlotIndex): LGraphNode | null {
         if (!this.inputs) {
@@ -662,6 +678,25 @@ export default class LGraphNode {
         var info = this.outputs[slot];
         return info._data;
     }
+
+    /**
+     * Returns the link info in the connection of an output slot
+     * @param {number} slot
+     * @return {LLink} object or null
+     */
+    getOutputLinks(slot: SlotIndex): LLink[] | null {
+        if (!this.outputs) {
+            return null;
+        }
+        if (slot >= 0 && slot < this.outputs.length) {
+            var slot_info = this.outputs[slot];
+            var links: LLink[] = [];
+            for (const linkID in slot_info.links)
+                links.push(this.graph.links[linkID]);
+            return links;
+        }
+        return null;
+    };
 
     /** tells you info about an output connection (which node, type, etc) */
     getOutputInfo(slot: SlotIndex): INodeOutputSlot | null {

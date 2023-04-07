@@ -1,6 +1,6 @@
 import type { ContextMenuEventListener } from "./ContextMenu";
 import LGraphCanvas from "./LGraphCanvas"
-import LGraphNode from "./LGraphNode"
+import LGraphNode, { SerializedLGraphNode } from "./LGraphNode"
 import type { Vector2, WidgetTypes } from "./types"
 
 export type WidgetCallback<T extends IWidget> = (
@@ -53,6 +53,7 @@ export default interface IWidget<TOptions = any, TValue = any> {
     ): boolean;
     /** Called by `LGraphNode.computeSize` */
     computeSize?(width: number): [number, number];
+    serializeValue?(serialized: SerializedLGraphNode<LGraphNode>, slot: number): Promise<any>;
 }
 export interface IButtonWidget extends IWidget<{}, null> {
     type: "button";
@@ -61,14 +62,14 @@ export interface IToggleWidgetOptions extends WidgetPanelOptions {
     on?: string; off?: string
 }
 export interface IToggleWidget
-extends IWidget<IToggleWidgetOptions, boolean> {
+    extends IWidget<IToggleWidgetOptions, boolean> {
     type: "toggle";
 }
 export interface ISliderWidgetOptions extends WidgetPanelOptions {
     max: number; min: number
 }
 export interface ISliderWidget
-extends IWidget<ISliderWidgetOptions, number> {
+    extends IWidget<ISliderWidgetOptions, number> {
     type: "slider";
 }
 export interface INumberWidgetOptions extends WidgetPanelOptions {
@@ -79,13 +80,13 @@ export interface INumberWidget extends IWidget<INumberWidgetOptions, number> {
 }
 export interface IComboWidgetOptions extends WidgetPanelOptions {
     values:
-        | string[]
-        | ((widget: IComboWidget, node: LGraphNode) => string[]);
+    | string[]
+    | ((widget: IComboWidget, node: LGraphNode) => string[]);
 }
 export interface IComboWidget
-extends IWidget<IComboWidgetOptions, string[]> {
-        type: "combo";
-    }
+    extends IWidget<IComboWidgetOptions, string[]> {
+    type: "combo";
+}
 
 export interface ITextWidget extends IWidget<{}, string> {
     type: "text";
@@ -94,6 +95,6 @@ export interface IEnumWidgetOptions extends WidgetPanelOptions {
     values: string[]
 }
 export interface IEnumWidget
-extends IWidget<IEnumWidgetOptions, string[]> {
-        type: "enum";
-    }
+    extends IWidget<IEnumWidgetOptions, string[]> {
+    type: "enum";
+}

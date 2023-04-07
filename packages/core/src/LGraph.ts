@@ -89,15 +89,15 @@ export default class LGraph {
     starttime: number;
     status: LGraphStatus;
 
-    private _nodes: LGraphNode[] = [];
-    private _groups: LGraphGroup[] = [];
-    private _nodes_by_id: Record<number, LGraphNode> = {};
+    _nodes: LGraphNode[] = [];
+    _groups: LGraphGroup[] = [];
+    _nodes_by_id: Record<number, LGraphNode> = {};
     /** nodes that are executable sorted in execution order */
-    private _nodes_executable:
+    _nodes_executable:
         | LGraphNodeExecutable[]
         | null = null;
     /** nodes that contain onExecute */
-    private _nodes_in_order: LGraphNode[] = [];
+    _nodes_in_order: LGraphNode[] = [];
     /** used to detect changes */
     private _version: number = -1;
     _last_trigger_time: number = 0;
