@@ -453,6 +453,19 @@ export default class LGraphCanvas_Events {
 
         }
 
+        this.selected_group_moving = false;
+
+        if (this.selected_group && !this.selected_group_resizing) {
+            var font_size =
+                this.selected_group.fontSize || LiteGraph.DEFAULT_GROUP_FONT_SIZE;
+            var height = font_size * 1.4;
+
+            // Move group by header
+            if (LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, this.selected_group.pos[0], this.selected_group.pos[1], this.selected_group.size[0], height)) {
+                this.selected_group_moving = true;
+            }
+        }
+
         //TODO
         //if(this.node_selected != prev_selected)
         //	this.onNodeSelectionChange(this.node_selected);
@@ -484,6 +497,7 @@ export default class LGraphCanvas_Events {
         if (this.onMouseDown) {
             this.onMouseDown(e);
         }
+
 
         return false;
     }
@@ -533,6 +547,12 @@ export default class LGraphCanvas_Events {
                 this.node_widget[1]
             );
             this.dirty_canvas = true;
+        }
+
+        const orig_selected_group = this.selected_group;
+
+        if (this.selected_group && !this.selected_group_resizing && !this.selected_group_moving) {
+            this.selected_group = null;
         }
 
         if (this.dragging_rectangle) {
@@ -730,6 +750,10 @@ export default class LGraphCanvas_Events {
                 this.dirty_canvas = true;
                 this.dirty_bgcanvas = true;
             }
+        }
+
+        if (orig_selected_group && !this.selected_group_resizing && !this.selected_group_moving) {
+            this.selected_group = orig_selected_group;
         }
 
         e.preventDefault();
@@ -1031,8 +1055,8 @@ export default class LGraphCanvas_Events {
         }
 
         /*
-        if((this.dirty_canvas || this.dirty_bgcanvas) && this.rendering_timer_id == null)
-            this.draw();
+          if((this.dirty_canvas || this.dirty_bgcanvas) && this.rendering_timer_id == null)
+          this.draw();
         */
 
         if (is_primary) {

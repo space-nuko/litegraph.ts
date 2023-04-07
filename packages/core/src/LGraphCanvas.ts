@@ -349,6 +349,7 @@ export default class LGraphCanvas
     round_radius: number = 8;
     selected_group: null | LGraphGroup;
     selected_group_resizing: boolean;
+    selected_group_moving: boolean;
     selected_nodes: Record<number, LGraphNode>;
     /** forces to redraw the canvas if the mouse does anything */
     set_canvas_dirty_on_mouse_event: boolean = true;
