@@ -17,6 +17,9 @@ import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } fro
 export default class LGraphCanvas_UI {
 
     // TODO refactor :: this is used fot title but not for properties!
+    /*
+     * Shows a dialog option for setting a JS property directly on a LGraphNode like `title` (NOT LGraphNode.properties!)
+     */
     static onShowPropertyEditor: ContextMenuEventListener = function(
         item: IContextMenuItem,
         options,
@@ -81,6 +84,25 @@ export default class LGraphCanvas_UI {
             dialog.style.top = canvas.height * 0.5 + offsety + "px";
         }
 
+        const inner = () => {
+            if (input)
+                setValue(input.value);
+        }
+
+        const setValue = (value: any) => {
+            // TODO refactor
+            // if (item.type == "Number") {
+            //     value = Number(value);
+            // } else if (item.type == "Boolean") {
+            //     value = Boolean(value);
+            // }
+            node[property] = value;
+            if (dialog.parentNode) {
+                dialog.parentNode.removeChild(dialog);
+            }
+            node.setDirtyCanvas(true, true);
+        }
+
         var button = dialog.querySelector("button");
         button.addEventListener("click", inner);
         canvas.parentNode.appendChild(dialog);
@@ -97,24 +119,6 @@ export default class LGraphCanvas_UI {
             if (LiteGraph.dialog_close_on_mouse_leave)
                 if (dialogCloseTimer) clearTimeout(dialogCloseTimer);
         });
-
-        function inner() {
-            if (input) setValue(input.value);
-        }
-
-        function setValue(value: any) {
-            // TODO refactor
-            // if (item.type == "Number") {
-            //     value = Number(value);
-            // } else if (item.type == "Boolean") {
-            //     value = Boolean(value);
-            // }
-            node[property] = value;
-            if (dialog.parentNode) {
-                dialog.parentNode.removeChild(dialog);
-            }
-            node.setDirtyCanvas(true, true);
-        }
     }
 
     /** Create menu for `Add Group` */
@@ -473,6 +477,9 @@ export default class LGraphCanvas_UI {
         node.setDirtyCanvas(true, true);
     };
 
+    /*
+     * Shows a dropdown of LGraphNode.properties for editing. Clicking on one opens the editor popup.
+     */
     static onShowMenuNodeProperties: ContextMenuEventListener = function(_value: IContextMenuItem, _options, e, prevMenu, node: LGraphNode) {
         if (!node || !node.properties) {
             return;
@@ -520,7 +527,7 @@ export default class LGraphCanvas_UI {
             ref_window
         );
 
-        function inner_clicked(v, options, e, prev) {
+        function inner_clicked(v: IContextMenuItem, options: IContextMenuOptions, e: MouseEventExt, prev: ContextMenu) {
             if (!node) {
                 return;
             }
@@ -1911,7 +1918,7 @@ export default class LGraphCanvas_UI {
         if (node_right && node_right.outputs && node_right.outputs[link.target_slot])
             destType = node_right.inputs[link.target_slot].type;
 
-        var options: ContextMenuItem[] = [{ content: "Add Node" }, null, { content: "Delete" }, null];
+        var options: ContextMenuItem[] = ["Add Node", ContextMenuSpecialItem.SEPARATOR, "Delete", ContextMenuSpecialItem.SEPARATOR];
 
 
         var menu = new ContextMenu(options, {
@@ -1954,6 +1961,9 @@ export default class LGraphCanvas_UI {
         return false;
     }
 
+    /*
+     * Shows a popup for editing one of the LGraphNode.properties.
+     */
     showEditPropertyValue(this: LGraphCanvas, node: LGraphNode, property: any, options: any): IGraphDialog {
         if (!node || node.properties[property] === undefined) {
             return;
@@ -2053,14 +2063,12 @@ export default class LGraphCanvas_UI {
         }
         if (input) input.focus();
 
-        var button = dialog.querySelector("button");
-        button.addEventListener("click", inner);
-
-        function inner() {
+        const inner = () => {
             setValue(input.value);
         }
 
-        function setValue(value: any) {
+        const setValue = (value: any) => {
+            debugger
             if (info && info.values && info.values.constructor === Object && info.values[value] != undefined)
                 value = info.values[value];
 
@@ -2070,18 +2078,15 @@ export default class LGraphCanvas_UI {
             if (type == "array" || type == "object") {
                 value = JSON.parse(value);
             }
-            node.properties[property] = value;
-            if (node.graph) {
-                (node.graph as any)._version++;
-            }
-            if (node.onPropertyChanged) {
-                node.onPropertyChanged(property, value);
-            }
+            node.setProperty(property, value);
             if (options.onclose)
                 options.onclose();
             dialog.close();
             node.setDirtyCanvas(true, true);
         }
+
+        var button = dialog.querySelector("button");
+        button.addEventListener("click", inner);
 
         return dialog;
     }
@@ -2210,7 +2215,7 @@ export default class LGraphCanvas_UI {
               }*/
 
             if (this._graph_stack && this._graph_stack.length > 0) {
-                options.push(null, {
+                options.push(ContextMenuSpecialItem.SEPARATOR, {
                     content: "Close subgraph",
                     callback: this.closeSubgraph.bind(this)
                 });
@@ -2246,13 +2251,13 @@ export default class LGraphCanvas_UI {
                     disabled: true,
                     callback: LGraphCanvas.showMenuNodeOptionalOutputs
                 },
-                null,
+                ContextMenuSpecialItem.SEPARATOR,
                 {
                     content: "Properties",
                     has_submenu: true,
                     callback: LGraphCanvas.onShowMenuNodeProperties
                 },
-                null,
+                ContextMenuSpecialItem.SEPARATOR,
                 {
                     content: "Title",
                     callback: LGraphCanvas.onShowPropertyEditor
@@ -2283,7 +2288,7 @@ export default class LGraphCanvas_UI {
                     has_submenu: true,
                     callback: LGraphCanvas.onMenuNodeShapes
                 },
-                null
+                ContextMenuSpecialItem.SEPARATOR
             );
         }
 
@@ -2304,7 +2309,7 @@ export default class LGraphCanvas_UI {
         if (node.getExtraMenuOptions) {
             var extra = node.getExtraMenuOptions(this, options);
             if (extra) {
-                extra.push(null);
+                extra.push(ContextMenuSpecialItem.SEPARATOR);
                 options = extra.concat(options);
             }
         }
@@ -2322,7 +2327,7 @@ export default class LGraphCanvas_UI {
                 callback: LGraphCanvas.onMenuNodeToSubgraph
             });
 
-        options.push(null, {
+        options.push(ContextMenuSpecialItem.SEPARATOR, {
             content: "Remove",
             disabled: !(node.removable !== false && !node.block_delete),
             callback: LGraphCanvas.onMenuNodeRemove
@@ -2349,7 +2354,7 @@ export default class LGraphCanvas_UI {
                 type: "Number",
                 callback: LGraphCanvas.onShowPropertyEditor
             },
-            null,
+            ContextMenuSpecialItem.SEPARATOR,
             { content: "Remove", callback: LGraphCanvas.onMenuNodeRemove }
         ];
 
@@ -2364,7 +2369,7 @@ export default class LGraphCanvas_UI {
 
         let event = _event as MouseEventExt;
 
-        var menu_info = null;
+        let menu_info: ContextMenuItem[] | null = null;
         var options: any = {
             event: event,
             callback: inner_option_clicked,
@@ -2428,7 +2433,7 @@ export default class LGraphCanvas_UI {
                 );
                 if (group) {
                     //on group
-                    menu_info.push(null, {
+                    menu_info.push(ContextMenuSpecialItem.SEPARATOR, {
                         content: "Edit Group",
                         has_submenu: true,
                         submenu: {

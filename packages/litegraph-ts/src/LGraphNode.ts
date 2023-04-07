@@ -436,6 +436,9 @@ export default class LGraphNode {
             return;
         var prev_value = this.properties[name];
         this.properties[name] = value;
+        if (this.graph) {
+            (this.graph as any)._version++;
+        }
         if (this.onPropertyChanged) {
             if (this.onPropertyChanged(name, value, prev_value) === false) //abort change
                 this.properties[name] = prev_value;
@@ -1734,7 +1737,8 @@ export default class LGraphNode {
                 }
             }
 
-            console.error("no way to connect type: ", targetSlotType, " to targetNODE ", targetNode);
+            if (LiteGraph.debug)
+                console.error("no way to connect type: ", targetSlotType, " to targetNODE ", targetNode);
             //TODO filter
 
             return null;

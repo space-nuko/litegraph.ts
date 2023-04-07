@@ -125,6 +125,8 @@ export default class Editor {
 
         this.graphCanvas.resize();
         //graphCanvas.draw(true,true);
+
+        this.onPlayButton();
     }
 
     addLoadCounter() {

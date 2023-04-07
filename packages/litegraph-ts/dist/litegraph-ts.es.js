@@ -1,9 +1,9 @@
-class ie {
+class se {
   constructor(e, i, n, s, r, a) {
     this.data = null, this._pos = [0, 0], this._last_time = 0, this.id = e, this.type = i, this.origin_id = n, this.origin_slot = s, this.target_id = r, this.target_slot = a;
   }
   static configure(e) {
-    return e instanceof Array ? new ie(e[0], e[5], e[1], e[2], e[3], e[4]) : new ie(e.id, e.type, e.origin_id, e.origin_slot, e.target_id, e.target_slot);
+    return e instanceof Array ? new se(e[0], e[5], e[1], e[2], e[3], e[4]) : new se(e.id, e.type, e.origin_id, e.origin_slot, e.target_id, e.target_slot);
   }
   serialize() {
     return [
@@ -16,17 +16,17 @@ class ie {
     ];
   }
 }
-var A = /* @__PURE__ */ ((t) => (t[t.UP = 1] = "UP", t[t.DOWN = 2] = "DOWN", t[t.LEFT = 3] = "LEFT", t[t.RIGHT = 4] = "RIGHT", t[t.CENTER = 5] = "CENTER", t))(A || {}), K = /* @__PURE__ */ ((t) => (t[t.ALWAYS = 0] = "ALWAYS", t[t.ON_EVENT = 1] = "ON_EVENT", t[t.NEVER = 2] = "NEVER", t[t.ON_TRIGGER = 3] = "ON_TRIGGER", t[t.ON_REQUEST = 4] = "ON_REQUEST", t))(K || {});
-const ee = ["Always", "On Event", "Never", "On Trigger"], Ee = ["#666", "#422", "#333", "#224", "#626"];
+var A = /* @__PURE__ */ ((t) => (t[t.UP = 1] = "UP", t[t.DOWN = 2] = "DOWN", t[t.LEFT = 3] = "LEFT", t[t.RIGHT = 4] = "RIGHT", t[t.CENTER = 5] = "CENTER", t))(A || {}), x = /* @__PURE__ */ ((t) => (t[t.ALWAYS = 0] = "ALWAYS", t[t.ON_EVENT = 1] = "ON_EVENT", t[t.NEVER = 2] = "NEVER", t[t.ON_TRIGGER = 3] = "ON_TRIGGER", t[t.ON_REQUEST = 4] = "ON_REQUEST", t))(x || {});
+const te = ["Always", "On Event", "Never", "On Trigger"], Te = ["#666", "#422", "#333", "#224", "#626"];
 var S = /* @__PURE__ */ ((t) => (t[t.DEFAULT = 0] = "DEFAULT", t[t.BOX_SHAPE = 1] = "BOX_SHAPE", t[t.ROUND_SHAPE = 2] = "ROUND_SHAPE", t[t.CIRCLE_SHAPE = 3] = "CIRCLE_SHAPE", t[t.CARD_SHAPE = 4] = "CARD_SHAPE", t[t.ARROW_SHAPE = 5] = "ARROW_SHAPE", t[t.GRID_SHAPE = 6] = "GRID_SHAPE", t))(S || {});
-const Ce = ["default", "box", "round", "circle", "card", "arrow", "square"];
-var U = /* @__PURE__ */ ((t) => (t[t.INPUT = 0] = "INPUT", t[t.OUTPUT = 1] = "OUTPUT", t))(U || {}), ae = /* @__PURE__ */ ((t) => (t[t.STRAIGHT_LINK = 0] = "STRAIGHT_LINK", t[t.LINEAR_LINK = 1] = "LINEAR_LINK", t[t.SPLINE_LINK = 2] = "SPLINE_LINK", t))(ae || {});
+const Ee = ["default", "box", "round", "circle", "card", "arrow", "square"];
+var U = /* @__PURE__ */ ((t) => (t[t.INPUT = 0] = "INPUT", t[t.OUTPUT = 1] = "OUTPUT", t))(U || {}), oe = /* @__PURE__ */ ((t) => (t[t.STRAIGHT_LINK = 0] = "STRAIGHT_LINK", t[t.LINEAR_LINK = 1] = "LINEAR_LINK", t[t.SPLINE_LINK = 2] = "SPLINE_LINK", t))(oe || {});
 const Pe = ["Straight", "Linear", "Spline"];
-var $ = /* @__PURE__ */ ((t) => (t[t.NORMAL_TITLE = 0] = "NORMAL_TITLE", t[t.NO_TITLE = 1] = "NO_TITLE", t[t.TRANSPARENT_TITLE = 2] = "TRANSPARENT_TITLE", t[t.AUTOHIDE_TITLE = 3] = "AUTOHIDE_TITLE", t))($ || {}), I = /* @__PURE__ */ ((t) => (t[t.EVENT = -2] = "EVENT", t[t.ACTION = -1] = "ACTION", t[t.DEFAULT = 0] = "DEFAULT", t))(I || {}), te = /* @__PURE__ */ ((t) => (t.VERTICAL_LAYOUT = "vertical", t.HORIZONTAL_LAYOUT = "horizontal", t))(te || {});
-function Oe(t, e) {
+var ee = /* @__PURE__ */ ((t) => (t[t.NORMAL_TITLE = 0] = "NORMAL_TITLE", t[t.NO_TITLE = 1] = "NO_TITLE", t[t.TRANSPARENT_TITLE = 2] = "TRANSPARENT_TITLE", t[t.AUTOHIDE_TITLE = 3] = "AUTOHIDE_TITLE", t))(ee || {}), I = /* @__PURE__ */ ((t) => (t[t.EVENT = -2] = "EVENT", t[t.ACTION = -1] = "ACTION", t[t.DEFAULT = 0] = "DEFAULT", t))(I || {}), ie = /* @__PURE__ */ ((t) => (t.VERTICAL_LAYOUT = "vertical", t.HORIZONTAL_LAYOUT = "horizontal", t))(ie || {});
+function Ce(t, e) {
   return e in t ? t[e] : null;
 }
-const de = class {
+const fe = class {
   constructor(t) {
     this.desc = "", this.pos = [0, 0], this.subgraph = null, this.skip_subgraph_button = !1, this.priority = 0, this.removable = !0, this.clonable = !0, this.optional_outputs = [], this.serialize_widgets = !1, this.skip_list = !1, this.block_delete = !1, this.ignore_remove = !1, this.last_serialization = null, this._relative_id = null, this.exec_version = 0, this.action_call = null, this.execute_triggered = 0, this.action_triggered = 0, this.console = [], this.title = t || "Unnamed", this.size = [u.NODE_WIDTH, 60], this.graph = null, this.pos = [10, 10], this.id = -1, this.typeName = null, this.inputs = [], this.outputs = [], this.connections = [], this.properties = {}, this.properties_info = [], this.flags = {};
   }
@@ -82,7 +82,7 @@ const de = class {
       order: this.order,
       mode: this.mode
     };
-    if (this.constructor === de && this.last_serialization)
+    if (this.constructor === fe && this.last_serialization)
       return this.last_serialization;
     if (this.inputs && (t.inputs = this.inputs), this.outputs) {
       for (var e = 0; e < this.outputs.length; e++)
@@ -298,16 +298,16 @@ const de = class {
   }
   changeMode(t) {
     switch (t) {
-      case K.ON_EVENT:
+      case x.ON_EVENT:
         break;
-      case K.ON_TRIGGER:
+      case x.ON_TRIGGER:
         this.addOnTriggerInput(), this.addOnExecutedOutput();
         break;
-      case K.NEVER:
+      case x.NEVER:
         break;
-      case K.ALWAYS:
+      case x.ALWAYS:
         break;
-      case K.ON_REQUEST:
+      case x.ON_REQUEST:
         break;
       default:
         return !1;
@@ -363,7 +363,7 @@ const de = class {
                 var h = this.graph.getNodeById(l.target_id);
                 if (h) {
                   var p = h.inputs[l.target_slot];
-                  if (h.mode === K.ON_TRIGGER)
+                  if (h.mode === x.ON_TRIGGER)
                     n.action_call || (n.action_call = this.id + "_trigg_" + Math.floor(Math.random() * 9999)), h.onExecute && h.doExecute(e, n);
                   else if (h.onAction) {
                     n.action_call || (n.action_call = this.id + "_act_" + Math.floor(Math.random() * 9999));
@@ -774,7 +774,7 @@ const de = class {
       if (u.debug && console.debug("connect TO TheFirstFREE ", i, " to ", e, "RES_SLOT:", o), o >= 0)
         return this.connect(t, e, o);
     }
-    return console.error("no way to connect type: ", i, " to targetNODE ", e), null;
+    return u.debug && console.error("no way to connect type: ", i, " to targetNODE ", e), null;
   }
   /**
    * connect this node input to the output of another node BY TYPE
@@ -836,7 +836,7 @@ const de = class {
         ), null;
     } else if (i === I.EVENT)
       if (u.do_add_triggers_slots)
-        e.changeMode(K.ON_TRIGGER), i = e.findInputSlotIndexByName("onTrigger");
+        e.changeMode(x.ON_TRIGGER), i = e.findInputSlotIndexByName("onTrigger");
       else
         return null;
     else if (!e.inputs || i >= e.inputs.length)
@@ -854,7 +854,7 @@ const de = class {
           u.allow_multi_output_for_events || (this.graph.beforeChange(), this.disconnectOutput(t, null, { doProcessChange: !1 }), n = !0);
           break;
       }
-    return r = new ie(
+    return r = new se(
       ++this.graph.last_link_id,
       s.type || a.type,
       this.id,
@@ -1048,7 +1048,7 @@ const de = class {
   }
   /** Console output */
   trace(t) {
-    this.console || (this.console = []), this.console.push(t), this.console.length > de.MAX_CONSOLE && this.console.shift(), this.graph.onNodeTrace && this.graph.onNodeTrace(this, t);
+    this.console || (this.console = []), this.console.push(t), this.console.length > fe.MAX_CONSOLE && this.console.shift(), this.graph.onNodeTrace && this.graph.onNodeTrace(this, t);
   }
   /** Forces to redraw or the main canvas (LGraphNode) or the bg canvas (links) */
   setDirtyCanvas(t, e = !1) {
@@ -1085,9 +1085,9 @@ const de = class {
     ];
   }
 };
-let Z = de;
-Z.registerCategory = "";
-Z.MAX_CONSOLE = 100;
+let J = fe;
+J.registerCategory = "";
+J.MAX_CONSOLE = 100;
 const k = class {
   /** Register a node class so it can be listed when the user wants to create a new one */
   static registerNodeType(t) {
@@ -1226,10 +1226,10 @@ const k = class {
       }
     else
       r = new n.type(e);
-    if (r.typeName = s, !r.title && e && (r.title = e), r.properties || (r.properties = {}), r.properties_info || (r.properties_info = []), r.flags || (r.flags = {}), r.size || (r.size = r.computeSize()), r.pos || (r.pos = [k.DEFAULT_POSITION[0], k.DEFAULT_POSITION[1]]), r.mode || (r.mode = K.ALWAYS), i)
+    if (r.typeName = s, !r.title && e && (r.title = e), r.properties || (r.properties = {}), r.properties_info || (r.properties_info = []), r.flags || (r.flags = {}), r.size || (r.size = r.computeSize()), r.pos || (r.pos = [k.DEFAULT_POSITION[0], k.DEFAULT_POSITION[1]]), r.mode || (r.mode = x.ALWAYS), i)
       for (var a in i)
         r[a] = i[a];
-    const o = Oe(n.type, "propertyLayout");
+    const o = Ce(n.type, "propertyLayout");
     if (o) {
       console.log("Found property layout!", o);
       for (const h of o) {
@@ -1237,7 +1237,7 @@ const k = class {
         r.addProperty(p, d, c, m);
       }
     }
-    const l = Oe(n.type, "slotLayout");
+    const l = Ce(n.type, "slotLayout");
     if (l && (console.log("Found slot layout!", l), l.inputs)) {
       for (const h of l.inputs) {
         const { name: p, type: d, options: c } = h;
@@ -1539,7 +1539,7 @@ u.allow_multi_output_for_events = !0;
 u.middle_click_slot_add_default_node = !1;
 u.release_link_on_empty_shows_menu = !1;
 u.pointerevents_method = "mouse";
-var oe = /* @__PURE__ */ ((t) => (t[t.SEPARATOR = 0] = "SEPARATOR", t))(oe || {});
+var K = /* @__PURE__ */ ((t) => (t[t.SEPARATOR = 0] = "SEPARATOR", t))(K || {});
 class X {
   static trigger(e, i, n, s) {
     var r = document.createEvent("CustomEvent");
@@ -1606,7 +1606,7 @@ class X {
     this.values = [];
     for (let _ = 0; _ < e.length; _++) {
       let v = e[_], y = "";
-      v !== 0 && (y = (v == null ? void 0 : v.content) === void 0 ? String(v) : v.content), this.addItem(y, v, i);
+      v === 0 ? y = "" : typeof v == "string" ? y = v : y = v.content, this.addItem(y, v, i);
     }
     u.pointerListenerAdd(a, "enter", function(_) {
       a.closing_timer && clearTimeout(a.closing_timer);
@@ -1628,7 +1628,7 @@ class X {
     var s = this, r = document.createElement("div");
     r.className = "litemenu-entry submenu";
     var a = !1;
-    i === 0 ? r.classList.add("separator") : (r.innerHTML = i && i.title ? i.title : e, i && (i.disabled && (a = !0, r.classList.add("disabled")), (i.submenu || i.has_submenu) && r.classList.add("has_submenu")), typeof i == "function" ? r.dataset.value = e : r.dataset.value = "" + this.values.length, i.className && (r.className += " " + i.className)), this.values.push(i), this.root.appendChild(r), a || r.addEventListener("click", h), n.autoopen && u.pointerListenerAdd(r, "enter", l);
+    typeof i == "string" && (i = { content: i }), i === 0 ? r.classList.add("separator") : (r.innerHTML = i.title ? i.title : e, i.disabled && (a = !0, r.classList.add("disabled")), (i.submenu || i.has_submenu) && r.classList.add("has_submenu"), typeof i == "function" ? r.dataset.value = e : r.dataset.value = "" + this.values.length, i.className && (r.className += " " + i.className)), this.values.push(i), this.root.appendChild(r), a || r.addEventListener("click", h), n.autoopen && u.pointerListenerAdd(r, "enter", l);
     let o = this;
     function l(p) {
       var d = this.value;
@@ -1650,7 +1650,7 @@ class X {
         );
         f === !0 && (m = !1);
       }
-      if (c) {
+      if (c && typeof c == "object") {
         if (c.callback && !n.ignore_item_callbacks && c.disabled !== !0) {
           var f = c.callback.call(
             this,
@@ -1690,7 +1690,7 @@ class X {
     return this.options.parentMenu ? this.options.parentMenu.getFirstEvent() : this.options.event;
   }
 }
-class fe {
+class Le {
   constructor(e, i = !1) {
     this.offset = [0, 0], this.scale = 1, this.max_scale = 10, this.min_scale = 0.1, this.onredraw = null, this.enabled = !0, this.last_mouse = [0, 0], this.element = null, this.visible_area = new Float32Array([0, 0, 0, 0]), this.viewport = null, this.dragging = !1, this._binded_mouse_callback = null, e && (this.element = e, i || this.bindEvents(e));
   }
@@ -2109,7 +2109,7 @@ class he {
     }
   }
 }
-const Q = class {
+const $ = class {
   /** changes the zoom level of the graph (default is 1), you can pass also a place used to pivot the zoom */
   setZoom(t, e) {
     this.ds.changeScale(t, e), this.maxZoom && this.ds.scale > this.maxZoom ? this.scale = this.maxZoom : this.minZoom && this.ds.scale < this.minZoom && (this.scale = this.minZoom);
@@ -2130,7 +2130,7 @@ const Q = class {
     i.length = 0, t = t || this.graph._nodes;
     for (var n = 0, s = t.length; n < s; ++n) {
       var r = t[n];
-      this.live_mode && !r.onDrawBackground && !r.onDrawForeground || u.overlapBounding(this.visible_area, r.getBounding(Q.temp)) && i.push(r);
+      this.live_mode && !r.onDrawBackground && !r.onDrawForeground || u.overlapBounding(this.visible_area, r.getBounding($.temp)) && i.push(r);
     }
     return i;
   }
@@ -2366,8 +2366,8 @@ const Q = class {
     }
     var r = this.editor_alpha;
     if (e.globalAlpha = r, this.render_shadows && !s ? (e.shadowColor = u.DEFAULT_SHADOW_COLOR, e.shadowOffsetX = 2 * this.ds.scale, e.shadowOffsetY = 2 * this.ds.scale, e.shadowBlur = 3 * this.ds.scale) : e.shadowColor = "transparent", !(t.flags.collapsed && t.onDrawCollapsed && t.onDrawCollapsed(e, this) == !0)) {
-      var a = t.shape || S.BOX_SHAPE, o = Q.temp_vec2;
-      Q.temp_vec2.set(t.size);
+      var a = t.shape || S.BOX_SHAPE, o = $.temp_vec2;
+      $.temp_vec2.set(t.size);
       var l = t.horizontal;
       if (t.flags.collapsed) {
         e.font = this.inner_text_font;
@@ -2501,8 +2501,8 @@ const Q = class {
   drawNodeShape(t, e, i, n, s, r, a) {
     e.strokeStyle = n, e.fillStyle = s;
     var o = u.NODE_TITLE_HEIGHT, l = this.ds.scale < 0.5, h = t.shape || t.constructor.shape || S.ROUND_SHAPE, p = t.constructor.title_mode, d = !0;
-    p == $.TRANSPARENT_TITLE || p == $.NO_TITLE ? d = !1 : p == $.AUTOHIDE_TITLE && a && (d = !0);
-    var c = Q.tmp_area;
+    p == ee.TRANSPARENT_TITLE || p == ee.NO_TITLE ? d = !1 : p == ee.AUTOHIDE_TITLE && a && (d = !0);
+    var c = $.tmp_area;
     c[0] = 0, c[1] = d ? -o : 0, c[2] = i[0] + 1, c[3] = d ? i[1] + o : i[1];
     var m = e.globalAlpha;
     if (e.beginPath(), h == S.BOX_SHAPE || l ? e.fillRect(c[0], c[1], c[2], c[3]) : h == S.ROUND_SHAPE || h == S.CARD_SHAPE ? e.roundRect(
@@ -2517,10 +2517,10 @@ const Q = class {
       i[0] * 0.5,
       0,
       Math.PI * 2
-    ), e.fill(), !t.flags.collapsed && d && (e.shadowColor = "transparent", e.fillStyle = "rgba(0,0,0,0.2)", e.fillRect(0, -1, c[2], 2)), e.shadowColor = "transparent", t.onDrawBackground && t.onDrawBackground(e, this, this.canvas, this.graph_mouse), d || p == $.TRANSPARENT_TITLE) {
+    ), e.fill(), !t.flags.collapsed && d && (e.shadowColor = "transparent", e.fillStyle = "rgba(0,0,0,0.2)", e.fillRect(0, -1, c[2], 2)), e.shadowColor = "transparent", t.onDrawBackground && t.onDrawBackground(e, this, this.canvas, this.graph_mouse), d || p == ee.TRANSPARENT_TITLE) {
       if (t.onDrawTitleBar)
         t.onDrawTitleBar(e, this, o, i, this.ds.scale, n);
-      else if (p != $.TRANSPARENT_TITLE && (t.constructor.title_color || this.render_title_colored)) {
+      else if (p != ee.TRANSPARENT_TITLE && (t.constructor.title_color || this.render_title_colored)) {
         var f = t.constructor.title_color || n;
         if (t.flags.collapsed && (e.shadowColor = u.DEFAULT_SHADOW_COLOR), this.use_gradients) {
           var _ = b.gradients[f];
@@ -2536,7 +2536,7 @@ const Q = class {
         ), e.fill(), e.shadowColor = "transparent";
       }
       var v = null;
-      u.node_box_coloured_by_mode && Ee[t.mode] && (v = Ee[t.mode]), u.node_box_coloured_when_on && (v = t.action_triggered ? "#FFF" : t.execute_triggered ? "#AAA" : v);
+      u.node_box_coloured_by_mode && Te[t.mode] && (v = Te[t.mode]), u.node_box_coloured_when_on && (v = t.action_triggered ? "#FFF" : t.execute_triggered ? "#AAA" : v);
       var y = 10;
       if (t.onDrawTitleBox ? t.onDrawTitleBox(e, this, o, i, this.ds.scale) : h == S.ROUND_SHAPE || h == S.CIRCLE_SHAPE || h == S.CARD_SHAPE ? (l && (e.fillStyle = "black", e.beginPath(), e.arc(
         o * 0.5,
@@ -2589,7 +2589,7 @@ const Q = class {
       }
       t.onDrawTitle && t.onDrawTitle(e, this);
     }
-    r && (t.onBounding && t.onBounding(c), p == $.TRANSPARENT_TITLE && (c[1] -= o, c[3] += o), e.lineWidth = 1, e.globalAlpha = 0.8, e.beginPath(), h == S.BOX_SHAPE ? e.rect(
+    r && (t.onBounding && t.onBounding(c), p == ee.TRANSPARENT_TITLE && (c[1] -= o, c[3] += o), e.lineWidth = 1, e.globalAlpha = 0.8, e.beginPath(), h == S.BOX_SHAPE ? e.rect(
       -6 + c[0],
       -6 + c[1],
       12 + c[2],
@@ -2617,7 +2617,7 @@ const Q = class {
   /** draws every connection visible in the canvas */
   drawConnections(t) {
     var e = u.getTime(), i = this.visible_area;
-    let n = Q.margin_area;
+    let n = $.margin_area;
     n[0] = i[0] - 20, n[1] = i[1] - 20, n[2] = i[2] + 40, n[3] = i[3] + 40, t.lineWidth = this.connections_width, t.fillStyle = "#AAA", t.strokeStyle = "#AAA", t.globalAlpha = this.editor_alpha;
     for (var s = this.graph._nodes, r = 0, a = s.length; r < a; ++r) {
       var o = s[r];
@@ -2639,10 +2639,10 @@ const Q = class {
           ] : f = c.getConnectionPos(
             !1,
             m,
-            Q.tempA
+            $.tempA
           );
-          var _ = o.getConnectionPos(!0, l, Q.tempB);
-          let O = Q.link_bounding;
+          var _ = o.getConnectionPos(!0, l, $.tempB);
+          let O = $.link_bounding;
           if (O[0] = f[0], O[1] = f[1], O[2] = _[0] - f[0], O[3] = _[1] - f[1], O[2] < 0 && (O[0] += O[2], O[2] = Math.abs(O[2])), O[3] < 0 && (O[1] += O[3], O[3] = Math.abs(O[3])), !!u.overlapBounding(O, n)) {
             var v = c.outputs[m], y = o.inputs[l];
             if (!(!v || !y)) {
@@ -2695,7 +2695,7 @@ const Q = class {
     this.render_connections_border && this.ds.scale > 0.6 && (t.lineWidth = this.connections_width + 4), t.lineJoin = "round", h = h || 1, h > 1 && (t.lineWidth = 0.5), t.beginPath();
     for (var d = 0; d < h; d += 1) {
       var c = (d - (h - 1) * 0.5) * 5;
-      if (this.links_render_mode == ae.SPLINE_LINK) {
+      if (this.links_render_mode == oe.SPLINE_LINK) {
         t.moveTo(e[0], e[1] + c);
         var m = 0, f = 0, _ = 0, v = 0;
         switch (o) {
@@ -2734,7 +2734,7 @@ const Q = class {
           i[0],
           i[1] + c
         );
-      } else if (this.links_render_mode == ae.LINEAR_LINK) {
+      } else if (this.links_render_mode == oe.LINEAR_LINK) {
         t.moveTo(e[0], e[1] + c);
         var m = 0, f = 0, _ = 0, v = 0;
         switch (o) {
@@ -2773,7 +2773,7 @@ const Q = class {
           i[0] + _ * y,
           i[1] + v * y + c
         ), t.lineTo(i[0], i[1] + c);
-      } else if (this.links_render_mode == ae.STRAIGHT_LINK) {
+      } else if (this.links_render_mode == oe.STRAIGHT_LINK) {
         t.moveTo(e[0], e[1]);
         var T = e[0], g = e[1], E = i[0], C = i[1];
         o == A.RIGHT ? T += 10 : g += 10, l == A.LEFT ? E -= 10 : C -= 10, t.lineTo(T, g), t.lineTo((T + E) * 0.5, g), t.lineTo((T + E) * 0.5, C), t.lineTo(E, C), t.lineTo(i[0], i[1]);
@@ -2955,7 +2955,7 @@ const Q = class {
     }
   }
 };
-let R = Q;
+let R = $;
 R.temp = new Float32Array(4);
 R.temp_vec2 = new Float32Array(2);
 R.tmp_area = new Float32Array(4);
@@ -3240,26 +3240,26 @@ class N {
         var P = s.onSearchBox(f, L, r);
         if (P)
           for (var z = 0; z < P.length; ++z)
-            ne(P[z]);
+            re(P[z]);
       } else {
-        let J = function(Y, V = {}) {
-          var Se = {
+        let Q = function(Y, V = {}) {
+          var Ae = {
             skipFilter: !1,
             inTypeOverride: null,
             outTypeOverride: null
-          }, re = Object.assign(Se, V), Le = u.registered_node_types[Y];
-          if (M && Le.filter != M || (!i.show_all_if_empty || L) && Y.toLowerCase().indexOf(L) === -1)
+          }, ae = Object.assign(Ae, V), Se = u.registered_node_types[Y];
+          if (M && Se.filter != M || (!i.show_all_if_empty || L) && Y.toLowerCase().indexOf(L) === -1)
             return !1;
-          if (i.do_type_filter && !re.skipFilter) {
-            var Te = Y, j = x.value;
-            if (re.inTypeOverride !== !1 && (j = re.inTypeOverride), x && j && u.registered_slot_in_types[j] && u.registered_slot_in_types[j].nodes) {
-              var ce = u.registered_slot_in_types[j].nodes.includes(Te);
+          if (i.do_type_filter && !ae.skipFilter) {
+            var be = Y, Z = j.value;
+            if (ae.inTypeOverride !== !1 && (Z = ae.inTypeOverride), j && Z && u.registered_slot_in_types[Z] && u.registered_slot_in_types[Z].nodes) {
+              var ce = u.registered_slot_in_types[Z].nodes.includes(be);
               if (ce === !1)
                 return !1;
             }
-            var j = q.value;
-            if (re.outTypeOverride !== !1 && (j = re.outTypeOverride), q && j && u.registered_slot_out_types[j] && u.registered_slot_out_types[j].nodes) {
-              var ce = u.registered_slot_out_types[j].nodes.includes(Te);
+            var Z = q.value;
+            if (ae.outTypeOverride !== !1 && (Z = ae.outTypeOverride), q && Z && u.registered_slot_out_types[Z] && u.registered_slot_out_types[Z].nodes) {
+              var ce = u.registered_slot_out_types[Z].nodes.includes(be);
               if (ce === !1)
                 return !1;
             }
@@ -3269,44 +3269,44 @@ class N {
         var W = 0;
         L = L.toLowerCase();
         var M = r.filter || r.graph.filter;
-        let x, q;
-        i.do_type_filter && s.search_box ? (x = s.search_box.querySelector(".slot_in_type_filter"), q = s.search_box.querySelector(".slot_out_type_filter")) : (x = null, q = null);
+        let j, q;
+        i.do_type_filter && s.search_box ? (j = s.search_box.querySelector(".slot_in_type_filter"), q = s.search_box.querySelector(".slot_out_type_filter")) : (j = null, q = null);
         for (const Y in u.searchbox_extras) {
           var le = u.searchbox_extras[Y];
           if (!((!i.show_all_if_empty || L) && le.desc.toLowerCase().indexOf(L) === -1)) {
-            var be = u.registered_node_types[le.type];
-            if (!(be && be.filter != M) && J(le.type) && (ne(le.desc, "searchbox_extra"), b.search_limit !== -1 && W++ > b.search_limit))
+            var ye = u.registered_node_types[le.type];
+            if (!(ye && ye.filter != M) && Q(le.type) && (re(le.desc, "searchbox_extra"), b.search_limit !== -1 && W++ > b.search_limit))
               break;
           }
         }
-        var se = null;
+        var ne = null;
         if (Array.prototype.filter)
-          var Ae = Object.keys(u.registered_node_types), se = Ae.filter((V) => J(V));
+          var ke = Object.keys(u.registered_node_types), ne = ke.filter((V) => Q(V));
         else {
-          se = [];
+          ne = [];
           for (const Y in u.registered_node_types)
-            J(Y) && se.push(Y);
+            Q(Y) && ne.push(Y);
         }
-        for (var z = 0; z < se.length && (ne(se[z]), !(b.search_limit !== -1 && W++ > b.search_limit)); z++)
+        for (var z = 0; z < ne.length && (re(ne[z]), !(b.search_limit !== -1 && W++ > b.search_limit)); z++)
           ;
-        if (i.show_general_after_typefiltered && (x.value || q.value)) {
+        if (i.show_general_after_typefiltered && (j.value || q.value)) {
           let Y = [];
           for (const V in u.registered_node_types)
-            J(V, { inTypeOverride: x && x.value ? "*" : null, outTypeOverride: q && q.value ? "*" : null }) && Y.push(V);
-          for (let V = 0; V < Y.length && (ne(Y[V], "generic_type"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
+            Q(V, { inTypeOverride: j && j.value ? "*" : null, outTypeOverride: q && q.value ? "*" : null }) && Y.push(V);
+          for (let V = 0; V < Y.length && (re(Y[V], "generic_type"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
             ;
         }
-        if ((x.value || q.value) && f.childNodes.length == 0 && i.show_general_if_none_on_typefilter) {
+        if ((j.value || q.value) && f.childNodes.length == 0 && i.show_general_if_none_on_typefilter) {
           let Y = [];
           for (const V in u.registered_node_types)
-            J(V, { skipFilter: !0 }) && Y.push(V);
-          for (let V = 0; V < Y.length && (ne(Y[V], "not_in_filter"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
+            Q(V, { skipFilter: !0 }) && Y.push(V);
+          for (let V = 0; V < Y.length && (re(Y[V], "not_in_filter"), !(b.search_limit !== -1 && W++ > b.search_limit)); V++)
             ;
         }
       }
-      function ne(J, x) {
+      function re(Q, j) {
         var q = document.createElement("div");
-        _ || (_ = J), q.innerText = J, q.dataset.type = escape(J), q.className = "litegraph lite-search-item", x && (q.className += " " + x), q.addEventListener("click", function(Y) {
+        _ || (_ = Q), q.innerText = Q, q.dataset.type = escape(Q), q.className = "litegraph lite-search-item", j && (q.className += " " + j), q.addEventListener("click", function(Y) {
           H(unescape(this.dataset.type));
         }), f.appendChild(q);
       }
@@ -3333,8 +3333,8 @@ class N {
             e.title = c;
             break;
           case "Mode":
-            var m = Object.values(ee).indexOf(c);
-            m >= K.ALWAYS && ee[m] ? e.changeMode(m) : console.warn("unexpected mode: " + c);
+            var m = Object.values(te).indexOf(c);
+            m >= x.ALWAYS && te[m] ? e.changeMode(m) : console.warn("unexpected mode: " + c);
             break;
           case "Color":
             b.node_colors[c] ? (e.color = b.node_colors[c].color, e.bgColor = b.node_colors[c].bgColor) : console.warn("unexpected color: " + c);
@@ -3345,7 +3345,7 @@ class N {
         }
         n.graph.afterChange(), n.dirty_canvas = !0;
       };
-      s.addWidget("string", "Title", e.title, {}, a), s.addWidget("combo", "Mode", ee[e.mode], { values: ee }, a);
+      s.addWidget("string", "Title", e.title, {}, a), s.addWidget("combo", "Mode", te[e.mode], { values: te }, a);
       var o = "";
       e.color !== void 0 && (o = Object.keys(b.node_colors).filter(function(d) {
         return b.node_colors[d].color == e.color;
@@ -3466,8 +3466,8 @@ class N {
         return console.warn("Cant get slot information " + a), !1;
     }
     a = a;
-    var l = [{ content: "Add Node" }, oe.SEPARATOR];
-    i.allow_searchbox && (l.push({ content: "Search" }), l.push(oe.SEPARATOR));
+    var l = [{ content: "Add Node" }, K.SEPARATOR];
+    i.allow_searchbox && (l.push({ content: "Search" }), l.push(K.SEPARATOR));
     var h = a.type == I.EVENT ? "_event_" : a.type, p = n ? u.slot_types_default_out : u.slot_types_default_in;
     const d = p[h];
     if (p && p[h])
@@ -3506,7 +3506,7 @@ class N {
     s && s.outputs && s.outputs[e.origin_slot] && (a = s.outputs[e.origin_slot].type);
     var o = null;
     r && r.outputs && r.outputs[e.target_slot] && (o = r.inputs[e.target_slot].type);
-    var l = [{ content: "Add Node" }, null, { content: "Delete" }, null], h = new X(l, {
+    var l = ["Add Node", K.SEPARATOR, "Delete", K.SEPARATOR], h = new X(l, {
       event: i,
       title: e.data != null ? e.data.constructor.name : null,
       callback: p
@@ -3637,7 +3637,7 @@ class N {
       { content: "Add Group", callback: b.onGroupAdd }
       //{ content: "Arrange", callback: that.graph.arrange },
       //{content:"Collapse All", callback: LGraphCanvas.onMenuCollapseAll }
-    ], this._graph_stack && this._graph_stack.length > 0 && e.push(null, {
+    ], this._graph_stack && this._graph_stack.length > 0 && e.push(K.SEPARATOR, {
       content: "Close subgraph",
       callback: this.closeSubgraph.bind(this)
     })), this.getExtraMenuOptions) {
@@ -3661,13 +3661,13 @@ class N {
         disabled: !0,
         callback: b.showMenuNodeOptionalOutputs
       },
-      null,
+      K.SEPARATOR,
       {
         content: "Properties",
         has_submenu: !0,
         callback: b.onShowMenuNodeProperties
       },
-      null,
+      K.SEPARATOR,
       {
         content: "Title",
         callback: b.onShowPropertyEditor
@@ -3696,7 +3696,7 @@ class N {
         has_submenu: !0,
         callback: b.onMenuNodeShapes
       },
-      null
+      K.SEPARATOR
     )), e.onGetInputs) {
       var n = e.onGetInputs();
       n && n.length && typeof i[0] == "object" && (i[0].disabled = !1);
@@ -3707,12 +3707,12 @@ class N {
     }
     if (e.getExtraMenuOptions) {
       var r = e.getExtraMenuOptions(this, i);
-      r && (r.push(null), i = r.concat(i));
+      r && (r.push(K.SEPARATOR), i = r.concat(i));
     }
     return e.clonable !== !1 && i.push({
       content: "Clone",
       callback: b.onMenuNodeClone
-    }), i.push(null, {
+    }), i.push(K.SEPARATOR, {
       content: "Remove",
       disabled: !(e.removable !== !1 && !e.block_delete),
       callback: b.onMenuNodeRemove
@@ -3732,7 +3732,7 @@ class N {
         type: "Number",
         callback: b.onShowPropertyEditor
       },
-      null,
+      K.SEPARATOR,
       { content: "Remove", callback: b.onMenuNodeRemove }
     ];
     return i;
@@ -3740,8 +3740,8 @@ class N {
   /** Called when mouse right click */
   processContextMenu(e, i) {
     var n = this, s = b.active_canvas, r = s.getCanvasWindow();
-    let a = i;
-    var o = null, l = {
+    let a = i, o = null;
+    var l = {
       event: a,
       callback: c,
       extra: e
@@ -3767,7 +3767,7 @@ class N {
         a.canvasX,
         a.canvasY
       );
-      d && o.push(null, {
+      d && o.push(K.SEPARATOR, {
         content: "Edit Group",
         has_submenu: !0,
         submenu: {
@@ -4017,7 +4017,7 @@ N.showMenuNodeOptionalInputs = function(t, e, i, n, s) {
     for (var p = 0; p < l.length; p++) {
       var d = l[p];
       if (!d) {
-        h.push(oe.SEPARATOR);
+        h.push(K.SEPARATOR);
         continue;
       }
       let [_, v, y] = d;
@@ -4071,7 +4071,7 @@ N.showMenuNodeOptionalOutputs = function(t, e, i, n, s) {
     for (var p = 0; p < l.length; p++) {
       var d = l[p];
       if (!d) {
-        h.push(oe.SEPARATOR);
+        h.push(K.SEPARATOR);
         continue;
       }
       if (!(s.flags && s.flags.skip_repeated_outputs && s.findOutputSlotIndexByName(d[0]) != -1)) {
@@ -4187,15 +4187,15 @@ N.onMenuNodePin = function(t, e, i, n, s) {
   s.pin();
 };
 N.onMenuNodeMode = function(t, e, i, n, s) {
-  let r = Array.from(ee).map((o) => ({ content: o }));
+  let r = Array.from(te).map((o) => ({ content: o }));
   new X(
     r,
     { event: i, callback: a, parentMenu: n, node: s }
   );
   function a(o) {
     if (s) {
-      var l = Object.values(ee).indexOf(o.content), h = function(c) {
-        l >= K.ALWAYS && ee[l] ? c.changeMode(l) : (console.warn("unexpected mode: " + o), c.changeMode(K.ALWAYS));
+      var l = Object.values(te).indexOf(o.content), h = function(c) {
+        l >= x.ALWAYS && te[l] ? c.changeMode(l) : (console.warn("unexpected mode: " + o), c.changeMode(x.ALWAYS));
       }, p = b.active_canvas;
       if (!p.selected_nodes || Object.keys(p.selected_nodes).length <= 1)
         h(s);
@@ -4232,7 +4232,7 @@ N.onMenuNodeColors = function(t, e, i, n, s) {
   function o(l) {
     if (s) {
       var h = l.value ? b.node_colors[l.value] : null, p = function(m) {
-        h ? m instanceof pe ? m.color = h.groupcolor : (m.color = h.color, m.bgColor = h.bgColor) : (delete m.color, m instanceof Z && delete m.bgColor);
+        h ? m instanceof pe ? m.color = h.groupcolor : (m.color = h.color, m.bgColor = h.bgColor) : (delete m.color, m instanceof J && delete m.bgColor);
       }, d = b.active_canvas;
       if (!d.selected_nodes || Object.keys(d.selected_nodes).length <= 1)
         p(s);
@@ -4247,7 +4247,7 @@ N.onMenuNodeColors = function(t, e, i, n, s) {
 N.onMenuNodeShapes = function(t, e, i, n, s) {
   if (!s)
     throw "no node passed";
-  const r = Array.from(Ce).map((o) => ({ content: o }));
+  const r = Array.from(Ee).map((o) => ({ content: o }));
   new X(r, {
     event: i,
     callback: a,
@@ -4260,7 +4260,7 @@ N.onMenuNodeShapes = function(t, e, i, n, s) {
         /*?*/
       );
       var l = function(d) {
-        d.shape = Ce.indexOf(o.content);
+        d.shape = Ee.indexOf(o.content);
       }, h = b.active_canvas;
       if (!h.selected_nodes || Object.keys(h.selected_nodes).length <= 1)
         l(s);
@@ -4317,7 +4317,7 @@ const we = function(t, e, i) {
   return e > t ? e : i < t ? i : t;
 }, ue = class {
   constructor(t, e, i = {}) {
-    this.node_panel = null, this.options_panel = null, this.render_time = 0, this.allow_dragcanvas = !0, this.allow_dragnodes = !0, this.allow_interaction = !0, this.allow_reconnect_links = !0, this.allow_searchbox = !0, this.always_render_background = !1, this.background_image = ue.DEFAULT_BACKGROUND_IMAGE, this.block_click = !1, this.connecting_pos = null, this.connecting_slot = null, this.connecting_input = null, this.connecting_output = null, this.connections_width = 3, this.current_node = null, this.drag_mode = !1, this.dragging_rectangle = null, this.ds = new fe(), this.editor_alpha = 1, this.filter = null, this.highquality_render = !0, this.skip_events = !1, this.last_mouse_position = [0, 0], this.last_click_position = [0, 0], this.last_mouse_dragging = !1, this.links_render_mode = ae.SPLINE_LINK, this.live_mode = !1, this.mouse = [0, 0], this.graph_mouse = [0, 0], this.node_widget = null, this.maxZoom = null, this.minZoom = null, this.multi_select = !1, this.over_link_center = null, this.pause_rendering = !1, this.read_only = !1, this.render_canvas_border = !0, this.render_collapsed_slots = !0, this.render_connection_arrows = !1, this.render_connections_border = !0, this.render_connections_shadows = !1, this.render_curved_connections = !1, this.render_execution_order = !1, this.render_link_tooltip = !0, this.render_only_selected = !0, this.render_shadows = !0, this.render_title_colored = !0, this.round_radius = 8, this.set_canvas_dirty_on_mouse_event = !0, this.show_info = !0, this.use_gradients = !1, this.visible_links = [], this.zoom_modify_alpha = !0, this.pointer_is_down = !1, this.pointer_is_double = !1, this._highlight_input = null, this._highlight_input_slot = null, this._highlight_output = null, this._graph_stack = null, this._bg_img = null, this._pattern = null, this._pattern_img = null, this.search_box = null, this.prompt_box = null, this._events_binded = !1, this.resizing_node = null, this.convertOffsetToCanvas = fe.prototype.convertOffsetToCanvas, this.convertCanvasToOffset = fe.prototype.convertCanvasToOffset, this.getCanvasMenuOptions = N.prototype.getCanvasMenuOptions, this.getNodeMenuOptions = N.prototype.getNodeMenuOptions, this.getGroupMenuOptions = N.prototype.getGroupMenuOptions, this.checkPanels = N.prototype.checkPanels, this.closePanels = N.prototype.closePanels, this.createDialog = N.prototype.createDialog, this.createPanel = N.prototype.createPanel, this.showSearchBox = N.prototype.showSearchBox, this.prompt = N.prototype.prompt, this.showConnectionMenu = N.prototype.showConnectionMenu, this.showLinkMenu = N.prototype.showLinkMenu, this.showEditPropertyValue = N.prototype.showEditPropertyValue, this.showShowNodePanel = N.prototype.showShowNodePanel, this.showSubgraphPropertiesDialog = N.prototype.showSubgraphPropertiesDialog, this.showSubgraphPropertiesDialogRight = N.prototype.showSubgraphPropertiesDialogRight, this.processContextMenu = N.prototype.processContextMenu, this.processMouseMove = he.prototype.processMouseMove, this.processMouseDown = he.prototype.processMouseDown, this.processMouseUp = he.prototype.processMouseUp, this.processMouseWheel = he.prototype.processMouseWheel, this.setZoom = R.prototype.setZoom, this.bringToFront = R.prototype.bringToFront, this.sendToBack = R.prototype.sendToBack, this.computeVisibleNodes = R.prototype.computeVisibleNodes, this.draw = R.prototype.draw, this.drawFrontCanvas = R.prototype.drawFrontCanvas, this.drawSubgraphPanel = R.prototype.drawSubgraphPanel, this.drawSubgraphPanelLeft = R.prototype.drawSubgraphPanelLeft, this.drawSubgraphPanelRight = R.prototype.drawSubgraphPanelRight, this.drawButton = R.prototype.drawButton, this.drawBackCanvas = R.prototype.drawBackCanvas, this.renderInfo = R.prototype.renderInfo, this.drawNode = R.prototype.drawNode, this.drawLinkTooltip = R.prototype.drawLinkTooltip, this.drawNodeShape = R.prototype.drawNodeShape, this.drawConnections = R.prototype.drawConnections, this.renderLink = R.prototype.renderLink, this.computeConnectionPoint = R.prototype.computeConnectionPoint, this.drawExecutionOrder = R.prototype.drawExecutionOrder, this.drawNodeWidgets = R.prototype.drawNodeWidgets, this.drawGroups = R.prototype.drawGroups, typeof t == "string" && (t = document.querySelector(t)), this.skip_events = i.skip_events || !1, this.title_text_font = "" + u.NODE_TEXT_SIZE + "px Arial", this.inner_text_font = "normal " + u.NODE_SUBTEXT_SIZE + "px Arial", this.node_title_color = u.NODE_TITLE_COLOR, this.default_link_color = u.LINK_COLOR, this.default_connection_color = {
+    this.node_panel = null, this.options_panel = null, this.render_time = 0, this.allow_dragcanvas = !0, this.allow_dragnodes = !0, this.allow_interaction = !0, this.allow_reconnect_links = !0, this.allow_searchbox = !0, this.always_render_background = !1, this.background_image = ue.DEFAULT_BACKGROUND_IMAGE, this.block_click = !1, this.connecting_pos = null, this.connecting_slot = null, this.connecting_input = null, this.connecting_output = null, this.connections_width = 3, this.current_node = null, this.drag_mode = !1, this.dragging_rectangle = null, this.ds = new Le(), this.editor_alpha = 1, this.filter = null, this.highquality_render = !0, this.skip_events = !1, this.last_mouse_position = [0, 0], this.last_click_position = [0, 0], this.last_mouse_dragging = !1, this.links_render_mode = oe.SPLINE_LINK, this.live_mode = !1, this.mouse = [0, 0], this.graph_mouse = [0, 0], this.node_widget = null, this.maxZoom = null, this.minZoom = null, this.multi_select = !1, this.over_link_center = null, this.pause_rendering = !1, this.read_only = !1, this.render_canvas_border = !0, this.render_collapsed_slots = !0, this.render_connection_arrows = !1, this.render_connections_border = !0, this.render_connections_shadows = !1, this.render_curved_connections = !1, this.render_execution_order = !1, this.render_link_tooltip = !0, this.render_only_selected = !0, this.render_shadows = !0, this.render_title_colored = !0, this.round_radius = 8, this.set_canvas_dirty_on_mouse_event = !0, this.show_info = !0, this.use_gradients = !1, this.visible_links = [], this.zoom_modify_alpha = !0, this.pointer_is_down = !1, this.pointer_is_double = !1, this._highlight_input = null, this._highlight_input_slot = null, this._highlight_output = null, this._graph_stack = null, this._bg_img = null, this._pattern = null, this._pattern_img = null, this.search_box = null, this.prompt_box = null, this._events_binded = !1, this.resizing_node = null, this.getCanvasMenuOptions = N.prototype.getCanvasMenuOptions, this.getNodeMenuOptions = N.prototype.getNodeMenuOptions, this.getGroupMenuOptions = N.prototype.getGroupMenuOptions, this.checkPanels = N.prototype.checkPanels, this.closePanels = N.prototype.closePanels, this.createDialog = N.prototype.createDialog, this.createPanel = N.prototype.createPanel, this.showSearchBox = N.prototype.showSearchBox, this.prompt = N.prototype.prompt, this.showConnectionMenu = N.prototype.showConnectionMenu, this.showLinkMenu = N.prototype.showLinkMenu, this.showEditPropertyValue = N.prototype.showEditPropertyValue, this.showShowNodePanel = N.prototype.showShowNodePanel, this.showSubgraphPropertiesDialog = N.prototype.showSubgraphPropertiesDialog, this.showSubgraphPropertiesDialogRight = N.prototype.showSubgraphPropertiesDialogRight, this.processContextMenu = N.prototype.processContextMenu, this.processMouseMove = he.prototype.processMouseMove, this.processMouseDown = he.prototype.processMouseDown, this.processMouseUp = he.prototype.processMouseUp, this.processMouseWheel = he.prototype.processMouseWheel, this.setZoom = R.prototype.setZoom, this.bringToFront = R.prototype.bringToFront, this.sendToBack = R.prototype.sendToBack, this.computeVisibleNodes = R.prototype.computeVisibleNodes, this.draw = R.prototype.draw, this.drawFrontCanvas = R.prototype.drawFrontCanvas, this.drawSubgraphPanel = R.prototype.drawSubgraphPanel, this.drawSubgraphPanelLeft = R.prototype.drawSubgraphPanelLeft, this.drawSubgraphPanelRight = R.prototype.drawSubgraphPanelRight, this.drawButton = R.prototype.drawButton, this.drawBackCanvas = R.prototype.drawBackCanvas, this.renderInfo = R.prototype.renderInfo, this.drawNode = R.prototype.drawNode, this.drawLinkTooltip = R.prototype.drawLinkTooltip, this.drawNodeShape = R.prototype.drawNodeShape, this.drawConnections = R.prototype.drawConnections, this.renderLink = R.prototype.renderLink, this.computeConnectionPoint = R.prototype.computeConnectionPoint, this.drawExecutionOrder = R.prototype.drawExecutionOrder, this.drawNodeWidgets = R.prototype.drawNodeWidgets, this.drawGroups = R.prototype.drawGroups, typeof t == "string" && (t = document.querySelector(t)), this.skip_events = i.skip_events || !1, this.title_text_font = "" + u.NODE_TEXT_SIZE + "px Arial", this.inner_text_font = "normal " + u.NODE_SUBTEXT_SIZE + "px Arial", this.node_title_color = u.NODE_TITLE_COLOR, this.default_link_color = u.LINK_COLOR, this.default_connection_color = {
       input_off: "#778",
       input_on: "#7F7",
       //"#BBD"
@@ -4970,6 +4970,12 @@ const we = function(t, e, i) {
   }
   touchHandler(t) {
   }
+  convertOffsetToCanvas(t) {
+    return this.ds.convertOffsetToCanvas(t);
+  }
+  convertCanvasToOffset(t, e = [0, 0]) {
+    return this.ds.convertCanvasToOffset(t, e);
+  }
   /** converts event coordinates from canvas2D to graph coordinates */
   convertEventToCanvasOffset(t) {
     var e = this.canvas.getBoundingClientRect();
@@ -5007,7 +5013,7 @@ b.onMenuNodeShapes = N.onMenuNodeShapes;
 b.onMenuNodeRemove = N.onMenuNodeRemove;
 b.onMenuNodeClone = N.onMenuNodeClone;
 b.onMenuNodeToSubgraph = N.onMenuNodeToSubgraph;
-class ge extends Z {
+class _e extends J {
   constructor(e) {
     super(e), this.properties = {
       name: "",
@@ -5073,25 +5079,25 @@ class ge extends Z {
     this.nameInGraph && this.graph.removeInput(this.nameInGraph);
   }
 }
-ge.slotLayout = {
+_e.slotLayout = {
   inputs: [
     { name: "", type: "number" }
   ],
   outputs: []
 };
 u.registerNodeType({
-  type: ge,
+  type: _e,
   title: "Input",
   desc: "Input of the graph",
   typeName: "graph/input"
 });
 var De = /* @__PURE__ */ ((t) => (t[t.STATUS_STOPPED = 1] = "STATUS_STOPPED", t[t.STATUS_RUNNING = 2] = "STATUS_RUNNING", t))(De || {});
-const Ne = class {
+const Oe = class {
   constructor(t) {
     this.supported_types = null, this.vars = {}, this.extra = {}, this.inputs = {}, this.outputs = {}, this._nodes = [], this._groups = [], this._nodes_by_id = {}, this._nodes_executable = null, this._nodes_in_order = [], this._version = -1, this._last_trigger_time = 0, this._is_subgraph = !1, this._subgraph_node = null, this.nodes_executing = [], this.nodes_actioning = [], this.nodes_executedAction = [], this.execution_timer_id = -1, this.execution_time = 0, this.errors_in_execution = !1, this._input_nodes = [], u.debug && console.log("Graph created"), this.list_of_graphcanvas = null, this.clear(), t && this.configure(t);
   }
   getSupportedTypes() {
-    return this.supported_types || Ne.DEFAULT_SUPPORTED_TYPES;
+    return this.supported_types || Oe.DEFAULT_SUPPORTED_TYPES;
   }
   /** Removes all nodes from this graph */
   clear() {
@@ -5152,7 +5158,7 @@ const Ne = class {
         for (var r = 0; r < t; r++) {
           for (var a = 0; a < i; ++a) {
             var o = s[a];
-            o.mode == K.ALWAYS && o.onExecute && o.doExecute();
+            o.mode == x.ALWAYS && o.onExecute && o.doExecute();
           }
           this.fixedtime += this.fixedtime_lapse, this.onExecuteStep && this.onExecuteStep();
         }
@@ -5162,7 +5168,7 @@ const Ne = class {
           for (var r = 0; r < t; r++) {
             for (var a = 0; a < i; ++a) {
               var o = s[a];
-              o.mode == K.ALWAYS && o.onExecute && o.onExecute(null, {});
+              o.mode == x.ALWAYS && o.onExecute && o.onExecute(null, {});
             }
             this.fixedtime += this.fixedtime_lapse, this.onExecuteStep && this.onExecuteStep();
           }
@@ -5256,7 +5262,7 @@ const Ne = class {
   /**
    * Positions every node in a more readable manner
    */
-  arrange(t = 100, e = te.HORIZONTAL_LAYOUT) {
+  arrange(t = 100, e = ie.HORIZONTAL_LAYOUT) {
     const i = this.computeExecutionOrder(!1, !0), n = [];
     for (let r = 0; r < i.length; ++r) {
       const a = i[r], o = a._level || 1;
@@ -5270,10 +5276,10 @@ const Ne = class {
       let o = 100, l = t + u.NODE_TITLE_HEIGHT;
       for (let h = 0; h < a.length; ++h) {
         const p = a[h];
-        p.pos[0] = e == te.VERTICAL_LAYOUT ? l : s, p.pos[1] = e == te.VERTICAL_LAYOUT ? s : l;
-        const d = e == te.VERTICAL_LAYOUT ? 1 : 0;
+        p.pos[0] = e == ie.VERTICAL_LAYOUT ? l : s, p.pos[1] = e == ie.VERTICAL_LAYOUT ? s : l;
+        const d = e == ie.VERTICAL_LAYOUT ? 1 : 0;
         p.size[d] > o && (o = p.size[d]);
-        const c = e == te.VERTICAL_LAYOUT ? 0 : 1;
+        const c = e == ie.VERTICAL_LAYOUT ? 0 : 1;
         l += p.size[c] + t + u.NODE_TITLE_HEIGHT;
       }
       s += o + t;
@@ -5307,7 +5313,7 @@ const Ne = class {
    * @param eventName the name of the event (function to be called)
    * @param params parameters in array format
    */
-  sendEventToAllNodes(t, e = [], i = K.ALWAYS) {
+  sendEventToAllNodes(t, e = [], i = x.ALWAYS) {
     var n = this._nodes_in_order ? this._nodes_in_order : this._nodes;
     if (n)
       for (var s = 0, r = n.length; s < r; ++s) {
@@ -5458,7 +5464,7 @@ const Ne = class {
     return this.updateExecutionOrder(), t;
   }
   onAction(t, e, i = {}) {
-    this._input_nodes = this.findNodesByClass(ge, this._input_nodes);
+    this._input_nodes = this.findNodesByClass(_e, this._input_nodes);
     for (var n = 0; n < this._input_nodes.length; ++n) {
       var s = this._input_nodes[n];
       if (s.properties.name == t) {
@@ -5605,7 +5611,7 @@ const Ne = class {
           "weird LLink bug, link info is not a LLink but a regular object",
           s
         );
-        var r = ie.configure(s);
+        var r = se.configure(s);
         for (var a in s)
           r[a] = s[a];
         this.links[h] = r, s = r;
@@ -5642,7 +5648,7 @@ const Ne = class {
             console.warn("serialized graph link data contains errors, skipping.");
             continue;
           }
-          var a = ie.configure(r);
+          var a = se.configure(r);
           n[a.id] = a;
         }
         t.links = n;
@@ -5655,7 +5661,7 @@ const Ne = class {
           var h = i[s], p = u.createNode(h.type, h.title);
           p || (u.debug && console.log(
             "Node not found or has errors: " + h.type
-          ), p = new Z(), p.last_serialization = h, p.has_errors = !0, o = !0), p.id = h.id, this.add(p, { skipComputeOrder: !0 });
+          ), p = new J(), p.last_serialization = h, p.has_errors = !0, o = !0), p.id = h.id, this.add(p, { skipComputeOrder: !0 });
         }
         for (var s = 0, l = i.length; s < l; ++s) {
           var h = i[s], p = this.getNodeById(h.id);
@@ -5693,9 +5699,9 @@ const Ne = class {
     };
   }
 };
-let Ie = Ne;
-Ie.DEFAULT_SUPPORTED_TYPES = ["number", "string", "boolean"];
-class ve extends Z {
+let Ne = Oe;
+Ne.DEFAULT_SUPPORTED_TYPES = ["number", "string", "boolean"];
+class ge extends J {
   constructor(e) {
     super(e), this.properties = {
       value: 1
@@ -5714,22 +5720,22 @@ class ve extends Z {
     this.outputs[0].label = this.properties.value.toFixed(3);
   }
 }
-ve.slotLayout = {
+ge.slotLayout = {
   inputs: [],
   outputs: [
     { name: "value", type: "number" }
   ]
 };
-ve.propertyLayout = [
+ge.propertyLayout = [
   { name: "value", defaultValue: 1 }
 ];
 u.registerNodeType({
-  type: ve,
+  type: ge,
   title: "Const Number",
   desc: "Constant number",
   typeName: "basic/number"
 });
-class ke extends Z {
+class Ie extends J {
   constructor(e) {
     super(e), this.properties = {
       name: "",
@@ -5766,23 +5772,23 @@ class ke extends Z {
     this.nameInGraph && this.graph.removeOutput(this.nameInGraph);
   }
 }
-ke.slotLayout = {
+Ie.slotLayout = {
   inputs: [
     { name: "", type: "" }
   ],
   outputs: []
 };
 u.registerNodeType({
-  type: ke,
+  type: Ie,
   title: "Output",
   desc: "Output of the graph",
   typeName: "graph/output"
 });
-class me extends Z {
+class ve extends J {
   constructor(e) {
     super(e), this.properties = {
       enabled: !0
-    }, this.size = [140, 80], this.enabled = !0, this.subgraph = new Ie(), this.subgraph._subgraph_node = this, this.subgraph._is_subgraph = !0, this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this), this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this), this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this), this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this), this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this), this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this), this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this), this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this), this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this);
+    }, this.size = [140, 80], this.enabled = !0, this.subgraph = new Ne(), this.subgraph._subgraph_node = this, this.subgraph._is_subgraph = !0, this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this), this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this), this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this), this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this), this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this), this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this), this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this), this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this), this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this);
   }
   onDblClick(e, i, n) {
     var s = this;
@@ -5899,7 +5905,7 @@ class me extends Z {
     console.error("TEST subgraph resize"), e[1] += 20;
   }
   serialize() {
-    var e = Z.prototype.serialize.call(this);
+    var e = J.prototype.serialize.call(this);
     return e.subgraph = this.subgraph.serialize(), e;
   }
   //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
@@ -5937,23 +5943,23 @@ class me extends Z {
     }
   }
 }
-me.slotLayout = {
+ve.slotLayout = {
   inputs: [
     { name: "enabled", type: "boolean" }
   ],
   outputs: []
 };
-me.propertyLayout = [
+ve.propertyLayout = [
   { name: "enabled", defaultValue: !0 }
 ];
 u.registerNodeType({
-  type: me,
+  type: ve,
   title: "Subgraph",
   desc: "Graph inside a node",
   title_color: "#334",
   typeName: "basic/subgraph"
 });
-const _e = class extends Z {
+const de = class extends J {
   constructor(t) {
     super(t), this.properties = {
       value: 0
@@ -5963,7 +5969,7 @@ const _e = class extends Z {
     this.inputs[0] && (this.value = this.getInputData(0));
   }
   getTitle() {
-    return this.flags.collapsed ? this.inputs[0].label : this.title;
+    return this.flags.collapsed ? this.inputs[0].label || "" : this.title;
   }
   static toString(t) {
     if (t == null)
@@ -5972,27 +5978,27 @@ const _e = class extends Z {
       return t.toFixed(3);
     if (t.constructor === Array) {
       for (var e = "[", i = 0; i < t.length; ++i)
-        e += _e.toString(t[i]) + (i + 1 != t.length ? "," : "");
+        e += de.toString(t[i]) + (i + 1 != t.length ? "," : "");
       return e += "]", e;
     } else
       return String(t);
   }
   onDrawBackground(t) {
-    this.inputs[0].label = _e.toString(this.value);
+    this.inputs[0].label = de.toString(this.value);
   }
 };
-let ye = _e;
-ye.slotLayout = {
+let me = de;
+me.slotLayout = {
   inputs: [
     { name: "value", type: I.DEFAULT, options: { label: "" } }
   ],
   outputs: []
 };
-ye.propertyLayout = [
+me.propertyLayout = [
   { name: "value", defaultValue: 1 }
 ];
 u.registerNodeType({
-  type: ye,
+  type: me,
   title: "Watch",
   desc: "Show value of input",
   typeName: "basic/watch"
@@ -6000,34 +6006,34 @@ u.registerNodeType({
 export {
   S as BuiltInSlotShape,
   I as BuiltInSlotType,
-  ve as ConstantNumber,
+  ge as ConstantNumber,
   X as ContextMenu,
-  oe as ContextMenuSpecialItem,
+  K as ContextMenuSpecialItem,
   A as Dir,
-  fe as DragAndScale,
-  ge as GraphInput,
-  ke as GraphOutput,
+  Le as DragAndScale,
+  _e as GraphInput,
+  Ie as GraphOutput,
   U as LConnectionKind,
-  Ie as LGraph,
+  Ne as LGraph,
   b as LGraphCanvas,
   he as LGraphCanvas_Events,
   R as LGraphCanvas_Rendering,
   N as LGraphCanvas_UI,
   pe as LGraphGroup,
-  Z as LGraphNode,
+  J as LGraphNode,
   De as LGraphStatus,
-  ie as LLink,
-  te as LayoutDirection,
-  ae as LinkRenderMode,
+  se as LLink,
+  ie as LayoutDirection,
+  oe as LinkRenderMode,
   Pe as LinkRenderModeNames,
   u as LiteGraph,
-  Ee as NODE_MODE_COLORS,
-  ee as NODE_MODE_NAMES,
-  K as NodeMode,
-  Ce as SLOT_SHAPE_NAMES,
-  me as Subgraph,
-  $ as TitleType,
-  ye as Watch,
+  Te as NODE_MODE_COLORS,
+  te as NODE_MODE_NAMES,
+  x as NodeMode,
+  Ee as SLOT_SHAPE_NAMES,
+  ve as Subgraph,
+  ee as TitleType,
+  me as Watch,
   we as clamp,
-  Oe as getStaticProperty
+  Ce as getStaticProperty
 };

@@ -1832,10 +1832,13 @@ export default class LGraphCanvas
     touchHandler(event: TouchEvent): void {
     }
 
+    convertOffsetToCanvas(pos: Vector2): Vector2 {
+        return this.ds.convertOffsetToCanvas(pos);
+    }
 
-
-    convertOffsetToCanvas = DragAndScale.prototype.convertOffsetToCanvas;
-    convertCanvasToOffset = DragAndScale.prototype.convertCanvasToOffset;
+    convertCanvasToOffset(pos: Vector2, out: Vector2 = [0, 0]): Vector2 {
+        return this.ds.convertCanvasToOffset(pos, out);
+    }
 
     /** converts event coordinates from canvas2D to graph coordinates */
     convertEventToCanvasOffset(this: LGraphCanvas, e: MouseEventExt): Vector2 {

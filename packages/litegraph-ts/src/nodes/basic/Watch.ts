@@ -45,7 +45,7 @@ export default class Watch extends LGraphNode {
 
     override getTitle(): string {
         if (this.flags.collapsed) {
-            return this.inputs[0].label;
+            return this.inputs[0].label || "";
         }
         return this.title;
     }

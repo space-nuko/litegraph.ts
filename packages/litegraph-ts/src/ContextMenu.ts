@@ -1,6 +1,7 @@
 import LGraphNode from "./LGraphNode"
 import LiteGraph from "./LiteGraph"
 import type { MouseEventExt, CustomEventExt, EventExt } from "./DragAndScale"
+import INodeSlot from "./INodeSlot";
 
 export interface ContextMenuRoot extends HTMLDivElement {
     closing_timer?: number
@@ -15,6 +16,7 @@ export interface IContextMenuItem {
     title?: string;
     disabled?: boolean;
     has_submenu?: boolean;
+    slot?: INodeSlot;
     submenu?: {
         options: ContextMenuItem[];
     } & IContextMenuOptions;
@@ -42,7 +44,7 @@ export enum ContextMenuSpecialItem {
     SEPARATOR
 }
 export type ContextMenuExtraArg = LGraphNode | any;
-export type ContextMenuItem = IContextMenuItem | ContextMenuSpecialItem;
+export type ContextMenuItem = IContextMenuItem | string | ContextMenuSpecialItem;
 export type ContextMenuEventListener = (
     value: IContextMenuItem,
     options: IContextMenuOptions,
@@ -217,8 +219,12 @@ export default class ContextMenu {
         for (let i = 0; i < values.length; i++) {
             let value = values[i];
             let name: string = "";
-            if (value !== ContextMenuSpecialItem.SEPARATOR)
-                name = value?.content === undefined ? String(value) : value.content;
+            if (value === ContextMenuSpecialItem.SEPARATOR)
+                name = "";
+            else if (typeof value === "string")
+                name = value;
+            else
+                name = value.content;
             this.addItem(name, value, options);
         }
 
@@ -309,22 +315,23 @@ export default class ContextMenu {
 
         var disabled = false;
 
+        if (typeof value === "string")
+            value = { content: value }
+
         if (value === ContextMenuSpecialItem.SEPARATOR) {
             element.classList.add("separator");
             //element.innerHTML = "<hr/>"
             //continue;
         } else {
-            element.innerHTML = value && value.title ? value.title : name;
+            element.innerHTML = value.title ? value.title : name;
             // element.value = value;
 
-            if (value) {
-                if (value.disabled) {
-                    disabled = true;
-                    element.classList.add("disabled");
-                }
-                if (value.submenu || value.has_submenu) {
-                    element.classList.add("has_submenu");
-                }
+            if (value.disabled) {
+                disabled = true;
+                element.classList.add("disabled");
+            }
+            if (value.submenu || value.has_submenu) {
+                element.classList.add("has_submenu");
             }
 
             if (typeof value == "function") {
@@ -389,7 +396,7 @@ export default class ContextMenu {
             }
 
             //special cases
-            if (value) {
+            if (value && typeof value === "object") {
                 if (
                     value.callback &&
                     !options.ignore_item_callbacks &&
