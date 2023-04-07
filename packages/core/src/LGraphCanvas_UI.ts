@@ -1932,7 +1932,7 @@ export default class LGraphCanvas_UI {
      * Shows a popup for editing one of the LGraphNode.properties.
      */
     showEditPropertyValue(this: LGraphCanvas, node: LGraphNode, property: any, options: any): IGraphDialog {
-        if (!node || node.properties[property] === undefined) {
+        if (!node || node.properties[property] === undefined || LiteGraph.ignore_all_widget_events) {
             return;
         }
 
@@ -2221,6 +2221,7 @@ export default class LGraphCanvas_UI {
                 {
                     content: "Properties",
                     has_submenu: true,
+                    disabled: LiteGraph.ignore_all_widget_events,
                     callback: LGraphCanvas.onShowMenuNodeProperties
                 },
                 ContextMenuSpecialItem.SEPARATOR,

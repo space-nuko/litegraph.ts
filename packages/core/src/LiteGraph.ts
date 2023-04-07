@@ -120,6 +120,9 @@ export default class LiteGraph {
     //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
     static release_link_on_empty_shows_menu: boolean = false;
 
+    //[false!] do not allow interacting with widgets
+    static ignore_all_widget_events: boolean = false;
+
     // use mouse for retrocompatibility issues? (none found @ now)
     static pointerevents_method: PointerEventsMethod = "mouse";
 

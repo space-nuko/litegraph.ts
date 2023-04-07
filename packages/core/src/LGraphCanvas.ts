@@ -1569,7 +1569,7 @@ export default class LGraphCanvas
         event: MouseEventExt,
         activeWidget?: object
     ): IWidget | null {
-        if (!node.widgets || !node.widgets.length) {
+        if (!node.widgets || !node.widgets.length || LiteGraph.ignore_all_widget_events) {
             return null;
         }
 

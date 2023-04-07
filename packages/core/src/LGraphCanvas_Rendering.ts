@@ -2139,7 +2139,7 @@ export default class LGraphCanvas_Rendering {
                         this.dirty_canvas = true;
                     }
                     ctx.fillRect(margin, y, widget_width - margin * 2, H);
-                    if (show_text && !w.disabled)
+                    if (show_text && !w.disabled && !LiteGraph.ignore_all_widget_events)
                         ctx.strokeRect(margin, y, widget_width - margin * 2, H);
                     if (show_text) {
                         ctx.textAlign = "center";
@@ -2157,7 +2157,7 @@ export default class LGraphCanvas_Rendering {
                     else
                         ctx.rect(margin, y, widget_width - margin * 2, H);
                     ctx.fill();
-                    if (show_text && !w.disabled)
+                    if (show_text && !w.disabled && !LiteGraph.ignore_all_widget_events)
                         ctx.stroke();
                     ctx.fillStyle = w.value ? "#89A" : "#333";
                     ctx.beginPath();
@@ -2215,10 +2215,10 @@ export default class LGraphCanvas_Rendering {
                         ctx.rect(margin, y, widget_width - margin * 2, H);
                     ctx.fill();
                     if (show_text) {
-                        if (!w.disabled)
+                        if (!w.disabled && !LiteGraph.ignore_all_widget_events)
                             ctx.stroke();
                         ctx.fillStyle = text_color;
-                        if (!w.disabled) {
+                        if (!w.disabled && !LiteGraph.ignore_all_widget_events) {
                             ctx.beginPath();
                             ctx.moveTo(margin + 16, y + 5);
                             ctx.lineTo(margin + 6, y + H * 0.5);
