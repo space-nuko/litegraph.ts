@@ -7,28 +7,51 @@ importers:
 
   apps/editor:
     specifiers:
-      litegraph-ts: workspace:*
+      '@litegraph-ts/core': workspace:*
+      '@litegraph-ts/nodes-basic': workspace:*
+      tsconfig: workspace:*
       typescript: ^5.0.3
       vite: ^4.2.1
       vite-plugin-checker: ^0.5.6
     dependencies:
-      litegraph-ts: link:../../packages/litegraph-ts
+      '@litegraph-ts/core': link:../../packages/core
+      '@litegraph-ts/nodes-basic': link:../../packages/nodes-basic
       typescript: 5.0.3
       vite: 4.2.1
     devDependencies:
+      tsconfig: link:../../packages/tsconfig
       vite-plugin-checker: 0.5.6_mqt6hr36lqfsnn3kcfure5ceka
 
-  packages/litegraph-ts:
+  apps/example-minimal:
+    specifiers:
+      '@litegraph-ts/core': workspace:*
+      '@litegraph-ts/nodes-basic': workspace:*
+      tsconfig: workspace:*
+      typescript: ^5.0.3
+      vite: ^4.2.1
+      vite-plugin-checker: ^0.5.6
+    dependencies:
+      '@litegraph-ts/core': link:../../packages/core
+      '@litegraph-ts/nodes-basic': link:../../packages/nodes-basic
+      typescript: 5.0.3
+      vite: 4.2.1
+    devDependencies:
+      tsconfig: link:../../packages/tsconfig
+      vite-plugin-checker: 0.5.6_mqt6hr36lqfsnn3kcfure5ceka
+
+  packages/core:
     specifiers:
       '@types/jest': ^29.5.0
       eslint: '^8.37.0 '
       eslint-plugin-jest: ^27.2.1
       jest: ^29.5.0
+      tsconfig: workspace:*
       typescript: ^5.0.3
       vite: ^4.2.1
       vite-plugin-checker: ^0.5.6
       vite-plugin-dts: ^2.2.0
     dependencies:
+      tsconfig: link:../tsconfig
       vite-plugin-dts: 2.2.0_vite@4.2.1
     devDependencies:
       '@types/jest': 29.5.0
@@ -38,6 +61,22 @@ importers:
       typescript: 5.0.3
       vite: 4.2.1
       vite-plugin-checker: 0.5.6_f5nufr4or4t7h35md6hcbavw34
+
+  packages/nodes-basic:
+    specifiers:
+      '@litegraph-ts/core': workspace:*
+      tsconfig: workspace:*
+      typescript: ^5.0.3
+      vite: ^4.2.1
+    dependencies:
+      '@litegraph-ts/core': link:../core
+    devDependencies:
+      tsconfig: link:../tsconfig
+      typescript: 5.0.3
+      vite: 4.2.1
+
+  packages/tsconfig:
+    specifiers: {}
 
 packages:
 

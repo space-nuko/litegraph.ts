@@ -1,4 +1,4 @@
-import { LGraph, LGraphStatus, LGraphCanvas } from "litegraph-ts"
+import { LGraph, LGraphStatus, LGraphCanvas } from "@litegraph-ts/core"
 
 export type EditorOptions = {
     skipLiveMode?: boolean;
@@ -67,7 +67,7 @@ export default class Editor {
         //create graph
         this.graph = new LGraph();
         this.graphCanvas = new LGraphCanvas(this.canvas, this.graph);
-        this.graphCanvas.background_image = "imgs/grid.png";
+        this.graphCanvas.background_image = "../imgs/grid.png";
         this.graph.onAfterExecute = () => {
             this.graphCanvas.draw(true);
         };

@@ -1,4 +1,4 @@
-import { LiteGraph } from "litegraph-ts";
+import { LiteGraph } from "@litegraph-ts/core";
 import Editor from "./Editor"
 import configure from "./configure"
 

@@ -1,5 +1,5 @@
 {
-  "name": "@litegraph-ts/editor",
+  "name": "@litegraph-ts/example-minimal",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
