@@ -25,7 +25,7 @@ export default interface IWidget<TOptions = any, TValue = any> {
     name: string | null;
     value: TValue;
     options?: TOptions;
-    type?: WidgetTypes;
+    type?: WidgetTypes | string;
     y?: number;
     property?: string;
     last_y?: number;

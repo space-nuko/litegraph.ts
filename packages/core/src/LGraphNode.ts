@@ -1382,6 +1382,7 @@ export default class LGraphNode {
             this.widgets = [];
         }
         this.widgets.push(customWidget);
+        this.setSize(this.computeSize());
         return customWidget;
     }
 
