@@ -386,7 +386,7 @@ export default class LGraph {
     }
 
     /** This is more internal, it computes the executable nodes in order and returns it */
-    computeExecutionOrder<T extends LGraphNodeExecutable>(only_onExecute: boolean = false, set_level?: any): T[] {
+    computeExecutionOrder<T extends LGraphNode>(only_onExecute: boolean = false, set_level?: any): T[] {
         var L: T[] = [];
         var S = [];
         var M = {};

@@ -138,7 +138,9 @@ export default class LiteGraph {
         if (!type) {
             throw ("Config has no type: " + config);
         }
-        console.debug(classname, type)
+        if (LiteGraph.debug) {
+            console.debug(classname, type)
+        }
 
         const pos = type.lastIndexOf("/");
         config.category = type.substring(0, pos);
@@ -429,6 +431,8 @@ export default class LiteGraph {
                     const { name, type, options } = item;
                     node.addInput(name, type, options);
                 }
+            }
+            if (slotLayout.outputs) {
                 for (const item of slotLayout.outputs) {
                     const { name, type, options } = item;
                     node.addOutput(name, type, options);
