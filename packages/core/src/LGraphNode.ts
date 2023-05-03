@@ -87,7 +87,7 @@ export type SerializedLGraphNode<T extends LGraphNode = LGraphNode> = {
     outputs?: T["outputs"];
     title?: T["title"];
     color?: T["color"];
-    bgcolor?: T["bgColor"];
+    bgColor?: T["bgColor"];
     boxcolor?: T["boxcolor"];
     shape?: T["shape"];
     properties?: T["properties"];
@@ -361,7 +361,7 @@ export default class LGraphNode {
             o.color = this.color;
         }
         if (this.bgColor) {
-            o.bgcolor = this.bgColor;
+            o.bgColor = this.bgColor;
         }
         if (this.boxcolor) {
             o.boxcolor = this.boxcolor;
