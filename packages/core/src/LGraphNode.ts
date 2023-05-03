@@ -694,7 +694,7 @@ export default class LGraphNode {
         if (slot >= 0 && slot < this.outputs.length) {
             var slot_info = this.outputs[slot];
             var links: LLink[] = [];
-            for (const linkID in slot_info.links)
+            for (const linkID of slot_info.links)
                 links.push(this.graph.links[linkID]);
             return links;
         }
