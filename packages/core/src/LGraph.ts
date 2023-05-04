@@ -496,7 +496,7 @@ export default class LGraph {
         }
 
         //the remaining ones (loops)
-        for (let i in M) {
+        for (let i of Object.keys(M).sort()) {
             L.push(M[i]);
         }
 

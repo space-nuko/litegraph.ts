@@ -19,6 +19,7 @@ export interface WidgetPanelOptions {
     label?: string;
     callback?: WidgetPanelCallback;
     [rest: string]: any;
+    property?: string;
 }
 
 export default interface IWidget<TOptions = any, TValue = any> {
@@ -84,7 +85,7 @@ export interface IComboWidgetOptions extends WidgetPanelOptions {
     | ((widget: IComboWidget, node: LGraphNode) => string[]);
 }
 export interface IComboWidget
-    extends IWidget<IComboWidgetOptions, string[]> {
+    extends IWidget<IComboWidgetOptions, string> {
     type: "combo";
 }
 
