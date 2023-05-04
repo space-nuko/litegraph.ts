@@ -592,6 +592,7 @@ export default class LiteGraph {
             || !type_b // generic input
             || type_a == type_b //same type (is valid for triggers)
             || (type_a == BuiltInSlotType.EVENT && type_b == BuiltInSlotType.ACTION)
+            || (type_a == BuiltInSlotType.ACTION && type_b == BuiltInSlotType.EVENT)
         ) {
             return true;
         }

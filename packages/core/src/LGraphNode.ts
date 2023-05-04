@@ -1047,8 +1047,17 @@ export default class LGraphNode {
             }
         }
 
-        if (type == "array" && (output.shape == null || output.shape == BuiltInSlotShape.DEFAULT)) {
-            output.shape = BuiltInSlotShape.GRID_SHAPE;
+        if ((output.shape == null || output.shape == BuiltInSlotShape.DEFAULT)) {
+            if (type == "array") {
+                output.shape = BuiltInSlotShape.GRID_SHAPE;
+            }
+            else if (type === BuiltInSlotType.EVENT || type === BuiltInSlotType.ACTION) {
+                output.shape = BuiltInSlotShape.BOX_SHAPE;
+            }
+        }
+
+        if (type === BuiltInSlotType.EVENT || type === BuiltInSlotType.ACTION) {
+            output.shape = BuiltInSlotShape.BOX_SHAPE;
         }
 
         if (!this.outputs) {
@@ -1112,8 +1121,13 @@ export default class LGraphNode {
             }
         }
 
-        if (type == "array" && (input.shape == null || input.shape == BuiltInSlotShape.DEFAULT)) {
-            input.shape = BuiltInSlotShape.GRID_SHAPE;
+        if ((input.shape == null || input.shape == BuiltInSlotShape.DEFAULT)) {
+            if (type == "array") {
+                input.shape = BuiltInSlotShape.GRID_SHAPE;
+            }
+            else if (type === BuiltInSlotType.EVENT || type === BuiltInSlotType.ACTION) {
+                input.shape = BuiltInSlotShape.BOX_SHAPE;
+            }
         }
 
         if (!this.inputs) {

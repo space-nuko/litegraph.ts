@@ -232,10 +232,7 @@ export default class LGraphCanvas_Rendering {
                 );
 
                 ctx.beginPath();
-                if (
-                    connType === BuiltInSlotType.EVENT ||
-                    connShape === BuiltInSlotShape.BOX_SHAPE
-                ) {
+                if (connShape === BuiltInSlotShape.BOX_SHAPE) {
                     ctx.rect(
                         this.connecting_pos[0] - 6 + 0.5,
                         this.connecting_pos[1] - 5 + 0.5,
@@ -944,10 +941,7 @@ export default class LGraphCanvas_Rendering {
 
                     var doStroke = true;
 
-                    if (
-                        slot.type === BuiltInSlotType.EVENT ||
-                        slot.shape === BuiltInSlotShape.BOX_SHAPE
-                    ) {
+                    if (slot.shape === BuiltInSlotShape.BOX_SHAPE) {
                         if (horizontal) {
                             ctx.rect(
                                 pos[0] - 5 + 0.5,
@@ -1039,10 +1033,7 @@ export default class LGraphCanvas_Rendering {
 
                     var doStroke = true;
 
-                    if (
-                        slot_type === BuiltInSlotType.EVENT ||
-                        slot_shape === BuiltInSlotShape.BOX_SHAPE
-                    ) {
+                    if (slot_shape === BuiltInSlotShape.BOX_SHAPE) {
                         if (horizontal) {
                             ctx.rect(
                                 pos[0] - 5 + 0.5,
@@ -1159,10 +1150,7 @@ export default class LGraphCanvas_Rendering {
                 }
                 ctx.fillStyle = "#686";
                 ctx.beginPath();
-                if (
-                    input_slot.type === BuiltInSlotType.EVENT ||
-                    input_slot.shape === BuiltInSlotShape.BOX_SHAPE
-                ) {
+                if (input_slot.shape === BuiltInSlotShape.BOX_SHAPE) {
                     ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
                 } else if (input_slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
                     ctx.moveTo(x + 8, y);
@@ -1185,10 +1173,7 @@ export default class LGraphCanvas_Rendering {
                 ctx.fillStyle = "#686";
                 ctx.strokeStyle = "black";
                 ctx.beginPath();
-                if (
-                    output_slot.type === BuiltInSlotType.EVENT ||
-                    output_slot.shape === BuiltInSlotShape.BOX_SHAPE
-                ) {
+                if (output_slot.shape === BuiltInSlotShape.BOX_SHAPE) {
                     ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
                 } else if (output_slot.shape === BuiltInSlotShape.ARROW_SHAPE) {
                     ctx.moveTo(x + 6, y);
