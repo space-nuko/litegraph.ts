@@ -86,8 +86,8 @@ export default class LGraphCanvas
         black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
     }
 
-        [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
     link_type_colors: Record<string, string> = {
+        [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
         [BuiltInSlotType.EVENT]: LiteGraph.EVENT_LINK_COLOR,
         number: "#AAA",
         node: "#DCA"
