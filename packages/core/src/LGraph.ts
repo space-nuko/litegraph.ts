@@ -10,6 +10,13 @@ import GraphInput from "./nodes/GraphInput";
 import type { LConnectionKind, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 
+export type LGraphAddNodeOptions = {
+    skipComputeOrder?: boolean,
+    doCalcSize?: boolean,
+    doProcessChange?: boolean,
+    addedByDeserialize?: boolean
+}
+
 export interface LGraphConfig {
     align_to_grid?: boolean;
     links_ontop?: boolean;
@@ -692,11 +699,7 @@ export default class LGraph {
      * Adds a new node instance to this graph
      * @param node the instance of the node
      */
-    add(node: LGraphNode, options: {
-        skipComputeOrder?: boolean,
-        doCalcSize?: boolean
-        doProcessChange?: boolean
-    } = {}): LGraphNode | null {
+    add(node: LGraphNode, options: LGraphAddNodeOptions = {}): LGraphNode | null {
         //nodes
         if (node.id != -1 && this._nodes_by_id[node.id] != null) {
             console.warn(
@@ -735,7 +738,7 @@ export default class LGraph {
         }
 
         if (this.onNodeAdded) {
-            this.onNodeAdded(node);
+            this.onNodeAdded(node, options);
         }
 
         this.setDirtyCanvas(true);
@@ -758,7 +761,7 @@ export default class LGraph {
      * Called when a new node is added
      * @param node the instance of the node
      */
-    onNodeAdded?(node: LGraphNode): void;
+    onNodeAdded?(node: LGraphNode, options: LGraphAddNodeOptions): void;
 
     /**
      * Called when a node is removed
@@ -1488,7 +1491,7 @@ export default class LGraph {
                 }
 
                 node.id = n_info.id; //id it or it will create a new id
-                this.add(node, { skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
+                this.add(node, { addedByDeserialize: true, skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
             }
 
             //configure nodes afterwards so they can reach each other
