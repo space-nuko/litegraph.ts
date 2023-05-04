@@ -926,11 +926,11 @@ export default class LGraphCanvas_Rendering {
                     ctx.fillStyle =
                         slot.link != null
                             ? slot.color_on ||
-                            // this.default_connection_color_byType[slot_type] ||
+                            this.default_connection_color_byType[slot_type] ||
                             this.default_connection_color.input_on
                             : slot.color_off ||
-                            // this.default_connection_color_byTypeOff[slot_type] ||
-                            // this.default_connection_color_byType[slot_type] ||
+                            this.default_connection_color_byTypeOff[slot_type] ||
+                            this.default_connection_color_byType[slot_type] ||
                             this.default_connection_color.input_off;
 
                     var pos = node.getConnectionPos(true, i, [slot_pos[0], slot_pos[1]]);
@@ -1028,11 +1028,11 @@ export default class LGraphCanvas_Rendering {
                     ctx.fillStyle =
                         slot.links && slot.links.length
                             ? slot.color_on ||
-                            // this.default_connection_color_byType[slot_type] ||
+                            this.default_connection_color_byType[slot_type] ||
                             this.default_connection_color.output_on
                             : slot.color_off ||
-                            // this.default_connection_color_byTypeOff[slot_type] ||
-                            // this.default_connection_color_byType[slot_type] ||
+                            this.default_connection_color_byTypeOff[slot_type] ||
+                            this.default_connection_color_byType[slot_type] ||
                             this.default_connection_color.output_off;
                     ctx.beginPath();
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
@@ -1746,7 +1746,7 @@ export default class LGraphCanvas_Rendering {
 
         //choose color
         if (!color && link) {
-            color = link.color || LGraphCanvas.link_type_colors[link.type];
+            color = link.color || this.link_type_colors[link.type];
         }
         if (!color) {
             color = this.default_link_color;

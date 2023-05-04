@@ -674,9 +674,9 @@ export default class LGraphNode {
      * @param {number} slot
      * @return {LLink} object or null
      */
-    getOutputLinks(slot: SlotIndex): LLink[] | null {
+    getOutputLinks(slot: SlotIndex): LLink[] {
         if (!this.outputs) {
-            return null;
+            return [];
         }
         if (slot >= 0 && slot < this.outputs.length) {
             var slot_info = this.outputs[slot];
@@ -685,7 +685,7 @@ export default class LGraphNode {
                 links.push(this.graph.links[linkID]);
             return links;
         }
-        return null;
+        return [];
     };
 
     /** tells you info about an output connection (which node, type, etc) */

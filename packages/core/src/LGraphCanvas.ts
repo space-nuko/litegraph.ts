@@ -86,8 +86,8 @@ export default class LGraphCanvas
         black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
     }
 
-    static link_type_colors: Record<string, string> = {
         [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
+    link_type_colors: Record<string, string> = {
         [BuiltInSlotType.EVENT]: LiteGraph.EVENT_LINK_COLOR,
         number: "#AAA",
         node: "#DCA"
@@ -161,16 +161,16 @@ export default class LGraphCanvas
             output_off: "#778",
             output_on: "#7F7" //"#BBD"
         };
-        // this.default_connection_color_byType = {
-        /*number: "#7F7",
-          string: "#77F",
-          boolean: "#F77",*/
-        // }
-        // this.default_connection_color_byTypeOff = {
-        /*number: "#474",
-          string: "#447",
-          boolean: "#744",*/
-        // };
+        this.default_connection_color_byType = {
+            number: "#7F7",
+            string: "#77F",
+            boolean: "#F77",
+        }
+        this.default_connection_color_byTypeOff = {
+            number: "#474",
+            string: "#447",
+            boolean: "#744",
+        };
 
         this.canvas_mouse = this.graph_mouse; //LEGACY: REMOVE THIS, USE GRAPH_MOUSE INSTEAD
 
@@ -234,6 +234,8 @@ export default class LGraphCanvas
         output_off: string;
         output_on: string;
     };
+    default_connection_color_byType: Record<string, string>;
+    default_connection_color_byTypeOff: Record<string, string>;
     default_link_color: string;
     dirty_area: Vector4 | null;
     dirty_bgcanvas?: boolean;
