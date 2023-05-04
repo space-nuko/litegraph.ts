@@ -10,6 +10,7 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { SlotShape, SlotType, TitleMode, Vector2 } from "./types";
 import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./types";
+import { getStaticPropertyOnInstance } from "./utils";
 
 export type NodeTypeOpts = {
     node: string,
@@ -59,20 +60,6 @@ export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
     name?: string,
     filter?: string,
     skip_list?: boolean
-}
-
-export function getStaticProperty<T>(type: new (...args: any[]) => any, name: string): T {
-    if (name in type) {
-        return type[name] as T;
-    }
-    return null;
-}
-
-export function getStaticPropertyOnInstance<T>(type: any, name: string): T {
-    if (name in type.constructor) {
-        return type.constructor[name] as T;
-    }
-    return null;
 }
 
 export type SerializedLGraphNode<T extends LGraphNode = LGraphNode> = {
@@ -2535,7 +2522,7 @@ export default class LGraphNode {
     onAction?(action: any, param: any, options: { action_call?: string }): void;
 
     /** Called by `LGraph.serialize` */
-    onSerialize?(o: SerializedLGraphNode): boolean;
+    onSerialize?(o: SerializedLGraphNode): void;
 
     /** Called by `LGraph.configure` */
     onConfigure?(o: SerializedLGraphNode): void;

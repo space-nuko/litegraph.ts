@@ -1,8 +1,9 @@
 import type { LGraphNodeConstructor, NodeTypeSpec, PropertyLayout, SearchboxExtra, SerializedLGraphNode, SlotLayout } from "./LGraphNode";
-import { default as LGraphNode, getStaticProperty } from "./LGraphNode";
+import { default as LGraphNode } from "./LGraphNode";
 import type { PointerEventsMethod, SlotType, Vector2, Vector4 } from "./types";
 import { NodeMode } from "./types";
 import { BuiltInSlotType } from "./types";
+import { getStaticProperty } from "./utils";
 
 type TypeID = number;
 

@@ -5,7 +5,7 @@ import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSl
 import type { IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { InputSlotLayout, OutputSlotLayout, getStaticProperty } from "./LGraphNode";
+import LGraphNode, { InputSlotLayout, OutputSlotLayout } from "./LGraphNode";
 import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { NODE_MODE_NAMES, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
