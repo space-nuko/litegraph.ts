@@ -680,10 +680,12 @@ export default class LGraphNode {
         }
         if (slot >= 0 && slot < this.outputs.length) {
             var slot_info = this.outputs[slot];
-            var links: LLink[] = [];
-            for (const linkID of slot_info.links)
-                links.push(this.graph.links[linkID]);
-            return links;
+            if (slot_info.links) {
+                var links: LLink[] = [];
+                for (const linkID of slot_info.links)
+                    links.push(this.graph.links[linkID]);
+                return links;
+            }
         }
         return [];
     };
@@ -2606,7 +2608,7 @@ export default class LGraphNode {
         slotIndex: number,
         isConnected: boolean,
         link: LLink,
-        ioSlot: (INodeOutputSlot | INodeInputSlot)
+        ioSlot: (INodeInputSlot | INodeOutputSlot)
     ): void;
 
 
