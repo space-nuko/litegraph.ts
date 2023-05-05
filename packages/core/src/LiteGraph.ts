@@ -417,7 +417,8 @@ export default class LiteGraph {
 
         const propertyLayout = getStaticProperty<PropertyLayout>(regConfig.class, "propertyLayout")
         if (propertyLayout) {
-            console.log("Found property layout!", propertyLayout);
+            if (LiteGraph.debug)
+                console.debug("Found property layout!", propertyLayout);
             for (const item of propertyLayout) {
                 const { name, defaultValue, type, options } = item;
                 node.addProperty(name, defaultValue, type, options)
@@ -426,7 +427,8 @@ export default class LiteGraph {
 
         const slotLayout = getStaticProperty<SlotLayout>(regConfig.class, "slotLayout")
         if (slotLayout) {
-            console.log("Found slot layout!", slotLayout);
+            if (LiteGraph.debug)
+                console.debug("Found slot layout!", slotLayout);
             if (slotLayout.inputs) {
                 for (const item of slotLayout.inputs) {
                     const { name, type, options } = item;
