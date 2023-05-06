@@ -9,4 +9,5 @@ export default interface IProperty {
     name: string;
     type: string;
     default_value: any;
+    values?: any | any[];
 }
