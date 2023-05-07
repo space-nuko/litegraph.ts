@@ -1,4 +1,4 @@
-import { BuiltInSlotType, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
+import { BuiltInSlotType, LGraphNode, LiteGraph, SlotLayout, Vector2 } from "@litegraph-ts/core"
 
 export interface TriggerEventProperties extends Record<string, any> {
     onlyOnChange: boolean

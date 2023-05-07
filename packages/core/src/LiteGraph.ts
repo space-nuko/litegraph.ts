@@ -143,8 +143,10 @@ export default class LiteGraph {
             console.debug(classname, type)
         }
 
-        const pos = type.lastIndexOf("/");
-        config.category = type.substring(0, pos);
+        if (config.category == null || config.category === "") {
+            const pos = type.lastIndexOf("/");
+            config.category = type.substring(0, pos);
+        }
 
         if (!config.title) {
             config.title = classname;
