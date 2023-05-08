@@ -923,12 +923,12 @@ export default class LGraphCanvas_Rendering {
                     ctx.fillStyle =
                         slot.link != null
                             ? slot.color_on ||
-                            this.default_connection_color_byType[slot_type] ||
-                            this.default_connection_color.input_on
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS.input_on
                             : slot.color_off ||
-                            this.default_connection_color_byTypeOff[slot_type] ||
-                            this.default_connection_color_byType[slot_type] ||
-                            this.default_connection_color.input_off;
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS.input_off;
 
                     var pos = node.getConnectionPos(true, i, [slot_pos[0], slot_pos[1]]);
                     pos[0] -= node.pos[0];
@@ -1022,12 +1022,12 @@ export default class LGraphCanvas_Rendering {
                     ctx.fillStyle =
                         slot.links && slot.links.length
                             ? slot.color_on ||
-                            this.default_connection_color_byType[slot_type] ||
-                            this.default_connection_color.output_on
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS.output_on
                             : slot.color_off ||
-                            this.default_connection_color_byTypeOff[slot_type] ||
-                            this.default_connection_color_byType[slot_type] ||
-                            this.default_connection_color.output_off;
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE[slot_type] ||
+                            LGraphCanvas.DEFAULT_CONNECTION_COLORS.output_off;
                     ctx.beginPath();
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
 

@@ -86,12 +86,23 @@ export default class LGraphCanvas
         black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
     }
 
-    link_type_colors: Record<string, string> = {
+    static DEFAULT_LINK_TYPE_COLORS: Record<string, string> = {
         [BuiltInSlotType.ACTION]: LiteGraph.ACTION_LINK_COLOR,
         [BuiltInSlotType.EVENT]: LiteGraph.EVENT_LINK_COLOR,
         number: "#AAA",
         node: "#DCA"
     };
+
+    static DEFAULT_CONNECTION_COLORS: {
+        input_off: string;
+        input_on: string;
+        output_off: string;
+        output_on: string;
+    };
+    static DEFAULT_CONNECTION_COLORS_BY_TYPE: Record<string, string>;
+    static DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF: Record<string, string>;
+
+    link_type_colors: Record<string, string> = {};
 
     static gradients: object;
     static search_limit: number;
@@ -155,22 +166,23 @@ export default class LGraphCanvas
             "normal " + LiteGraph.NODE_SUBTEXT_SIZE + "px Arial";
         this.node_title_color = LiteGraph.NODE_TITLE_COLOR;
         this.default_link_color = LiteGraph.LINK_COLOR;
-        this.default_connection_color = {
+        LGraphCanvas.DEFAULT_CONNECTION_COLORS = {
             input_off: "#778",
             input_on: "#7F7", //"#BBD"
             output_off: "#778",
             output_on: "#7F7" //"#BBD"
         };
-        this.default_connection_color_byType = {
+        LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE = {
             number: "#7F7",
             string: "#77F",
             boolean: "#F77",
         }
-        this.default_connection_color_byTypeOff = {
+        LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF = {
             number: "#474",
             string: "#447",
             boolean: "#744",
         };
+        this.link_type_colors = LiteGraph.cloneObject(LGraphCanvas.DEFAULT_LINK_TYPE_COLORS)
 
         this.canvas_mouse = this.graph_mouse; //LEGACY: REMOVE THIS, USE GRAPH_MOUSE INSTEAD
 
@@ -228,14 +240,6 @@ export default class LGraphCanvas
     connections_width: number = 3;
     ctx: CanvasRenderingContext2D;
     current_node: LGraphNode | null = null;
-    default_connection_color: {
-        input_off: string;
-        input_on: string;
-        output_off: string;
-        output_on: string;
-    };
-    default_connection_color_byType: Record<string, string>;
-    default_connection_color_byTypeOff: Record<string, string>;
     default_link_color: string;
     dirty_area: Vector4 | null;
     dirty_bgcanvas?: boolean;
