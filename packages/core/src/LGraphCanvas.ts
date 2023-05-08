@@ -98,9 +98,22 @@ export default class LGraphCanvas
         input_on: string;
         output_off: string;
         output_on: string;
+    } = {
+            input_off: "#778",
+            input_on: "#7F7", //"#BBD"
+            output_off: "#778",
+            output_on: "#7F7" //"#BBD"
+        };
+    static DEFAULT_CONNECTION_COLORS_BY_TYPE: Record<string, string> = {
+        number: "#7F7",
+        string: "#77F",
+        boolean: "#F77",
     };
-    static DEFAULT_CONNECTION_COLORS_BY_TYPE: Record<string, string>;
-    static DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF: Record<string, string>;
+    static DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF: Record<string, string> = {
+        number: "#474",
+        string: "#447",
+        boolean: "#744",
+    };
 
     link_type_colors: Record<string, string> = {};
 
@@ -166,22 +179,6 @@ export default class LGraphCanvas
             "normal " + LiteGraph.NODE_SUBTEXT_SIZE + "px Arial";
         this.node_title_color = LiteGraph.NODE_TITLE_COLOR;
         this.default_link_color = LiteGraph.LINK_COLOR;
-        LGraphCanvas.DEFAULT_CONNECTION_COLORS = {
-            input_off: "#778",
-            input_on: "#7F7", //"#BBD"
-            output_off: "#778",
-            output_on: "#7F7" //"#BBD"
-        };
-        LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE = {
-            number: "#7F7",
-            string: "#77F",
-            boolean: "#F77",
-        }
-        LGraphCanvas.DEFAULT_CONNECTION_COLORS_BY_TYPE_OFF = {
-            number: "#474",
-            string: "#447",
-            boolean: "#744",
-        };
         this.link_type_colors = LiteGraph.cloneObject(LGraphCanvas.DEFAULT_LINK_TYPE_COLORS)
 
         this.canvas_mouse = this.graph_mouse; //LEGACY: REMOVE THIS, USE GRAPH_MOUSE INSTEAD
