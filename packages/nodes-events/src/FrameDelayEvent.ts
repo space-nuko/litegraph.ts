@@ -1,11 +1,11 @@
 import { BuiltInSlotType, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
 
-export interface DelayEventFramesProperties extends Record<string, any> {
+export interface FrameDelayEventProperties extends Record<string, any> {
     timeInFrames: number
 }
 
-export default class DelayEventFrames extends LGraphNode {
-    override properties: DelayEventFramesProperties = {
+export default class FrameDelayEvent extends LGraphNode {
+    override properties: FrameDelayEventProperties = {
         timeInFrames: 30
     }
 
@@ -62,8 +62,8 @@ export default class DelayEventFrames extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    class: DelayEventFrames,
-    title: "Delay Frames",
+    class: FrameDelayEvent,
+    title: "Frame Delay",
     desc: "Delays one event by frame count",
-    type: "events/delay_frames"
+    type: "events/frame_delay"
 })
