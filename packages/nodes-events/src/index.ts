@@ -3,3 +3,4 @@ export { default as TriggerEvent } from "./TriggerEvent";
 export { default as FilterEvent } from "./FilterEvent";
 export { default as EventBranch } from "./EventBranch";
 export { default as DelayEvent } from "./DelayEvent";
+export { default as DelayEventFrames } from "./DelayEventFrames";

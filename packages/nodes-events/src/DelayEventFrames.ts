@@ -1,12 +1,12 @@
 import { BuiltInSlotType, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
 
-export interface DelayEventProperties extends Record<string, any> {
-    timeInMs: number
+export interface DelayEventFramesProperties extends Record<string, any> {
+    timeInFrames: number
 }
 
-export default class DelayEvent extends LGraphNode {
-    override properties: DelayEventProperties = {
-        timeInMs: 1000
+export default class DelayEventFrames extends LGraphNode {
+    override properties: DelayEventFramesProperties = {
+        timeInFrames: 30
     }
 
     static slotLayout: SlotLayout = {
@@ -29,19 +29,19 @@ export default class DelayEvent extends LGraphNode {
     override size: Vector2 = [60, 30];
 
     override onAction(action: any, param: any, options: { action_call?: string }) {
-        var time = this.properties.timeInMs;
-        if (time <= 0) {
+        var frames = this.properties.timeInFrames;
+        if (frames <= 0) {
             this.trigger(null, param, options);
         } else {
-            this._pending.push([time, param]);
+            this._pending.push([frames, param]);
         }
     }
 
     override onExecute(param: any, options: object) {
-        var dt = this.graph.elapsed_time * 1000; //in ms
+        var dt = 1;
 
         if (this.isInputConnected(1)) {
-            this.properties.timeInMs = this.getInputData(1);
+            this.properties.timeInFrames = this.getInputData(1);
         }
 
         for (var i = 0; i < this._pending.length; ++i) {
@@ -62,8 +62,8 @@ export default class DelayEvent extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    class: DelayEvent,
-    title: "Delay",
-    desc: "Delays one event",
-    type: "events/delay"
+    class: DelayEventFrames,
+    title: "Delay Frames",
+    desc: "Delays one event by frame count",
+    type: "events/delay_frames"
 })
