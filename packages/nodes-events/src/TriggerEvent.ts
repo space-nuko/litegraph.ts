@@ -31,11 +31,11 @@ export default class TriggerEvent extends LGraphNode {
             changed = false;
         var must_resend = (changed && this.properties.onlyOnChange) || (!changed && !this.properties.onlyOnChange);
         if (v && must_resend)
-            this.triggerSlot(0, param, null, options);
+            this.triggerSlot(0, v, null, options);
         if (!v && must_resend)
-            this.triggerSlot(2, param, null, options);
+            this.triggerSlot(2, v, null, options);
         if (changed)
-            this.triggerSlot(1, param, null, options);
+            this.triggerSlot(1, v, null, options);
         this.prev = v;
     }
 }

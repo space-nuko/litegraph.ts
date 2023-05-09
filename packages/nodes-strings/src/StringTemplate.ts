@@ -1,4 +1,4 @@
-import { INodeInputSlot, INodeOutputSlot, ITextWidget, LConnectionKind, LGraphNode, LiteGraph, LLink, PropertyLayout, SlotLayout } from "@litegraph-ts/core";
+import { BuiltInSlotType, INodeInputSlot, INodeOutputSlot, ITextWidget, LConnectionKind, LGraphNode, LiteGraph, LLink, PropertyLayout, SlotLayout } from "@litegraph-ts/core";
 
 export interface StringTemplateProperties extends Record<string, any> {
     template: string,
@@ -15,6 +15,7 @@ export default class StringTemplate extends LGraphNode {
         inputs: [
             { name: "", type: "string,array" },
             { name: "", type: "string" },
+            { name: "update", type: BuiltInSlotType.ACTION },
         ],
         outputs: [
             { name: "out", type: "string" },
@@ -62,14 +63,23 @@ export default class StringTemplate extends LGraphNode {
             else {
                 args = []
                 for (let index = 0; index < this.inputs.length; index++) {
-                    const data = this.getInputData(index);
-                    args.push(data)
+                    if (this.inputs[index].type !== BuiltInSlotType.ACTION) {
+                        const data = this.getInputData(index);
+                        args.push(data)
+                    }
                 }
             }
             this._value = this.substituteTemplate(template, args)
         }
         this.setOutputData(0, this._value)
     };
+
+    override onAction(action: any, param: any) {
+        if (action === "update") {
+            this._value = null;
+            this.onExecute();
+        }
+    }
 
     override onConnectionsChange(
         type: LConnectionKind,
@@ -86,13 +96,22 @@ export default class StringTemplate extends LGraphNode {
 
         // Try to auto-add new input
         if (isConnected) {
-            if (link != null && slotIndex === this.inputs.length - 1) {
+            if (link != null && slotIndex === this.inputs.length - 2) {
+                // Pop off update action input
+                this.removeInput(this.inputs.length - 1);
+
                 this.addInput("", "*")
+
+                // Readd action input
+                this.addInput("update", BuiltInSlotType.ACTION)
             }
         }
         else {
-            if (this.getInputLink(this.inputs.length - 1) != null)
+            if (this.getInputLink(this.inputs.length - 2) != null)
                 return;
+
+            // Pop off update action input
+            this.removeInput(this.inputs.length - 1);
 
             // Remove empty inputs
             for (let i = this.inputs.length - 1; i > 1; i--) {
@@ -106,6 +125,7 @@ export default class StringTemplate extends LGraphNode {
             if (this.getInputLink(this.inputs.length - 1) != null) {
                 this.addInput("", "*")
             }
+            this.addInput("update", BuiltInSlotType.ACTION)
         }
     }
 }
