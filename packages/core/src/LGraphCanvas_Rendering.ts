@@ -1198,10 +1198,12 @@ export default class LGraphCanvas_Rendering {
     /** used by this.over_link_center */
     drawLinkTooltip(this: LGraphCanvas, ctx: CanvasRenderingContext2D, link: LLink) {
         var pos = link._pos;
-        ctx.fillStyle = "black";
-        ctx.beginPath();
-        ctx.arc(pos[0], pos[1], 3, 0, Math.PI * 2);
-        ctx.fill();
+        if (this.allow_interaction && !this.read_only) {
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(pos[0], pos[1], 3, 0, Math.PI * 2);
+            ctx.fill();
+        }
 
         if (link.data == null)
             return;
