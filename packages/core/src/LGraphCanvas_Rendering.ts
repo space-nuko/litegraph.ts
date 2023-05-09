@@ -2105,6 +2105,9 @@ export default class LGraphCanvas_Rendering {
 
         for (var i = 0; i < widgets.length; ++i) {
             var w = widgets[i];
+            if (w.hidden)
+                continue;
+
             var y = posY;
             if (w.y) {
                 y = w.y;
@@ -2274,7 +2277,7 @@ export default class LGraphCanvas_Rendering {
                         }
                         ctx.fillStyle = text_color;
                         ctx.textAlign = "right";
-                        ctx.fillText(String(w.value).substr(0, 30), widget_width - margin * 2, y + H * 0.7); //30 chars max
+                        ctx.fillText(String(w.value).substr(0, w.options.max_length || 30), widget_width - margin * 2, y + H * 0.7);
                         ctx.restore();
                     }
                     break;

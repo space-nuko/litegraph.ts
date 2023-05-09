@@ -33,6 +33,7 @@ export default interface IWidget<TOptions = any, TValue = any> {
     clicked?: boolean;
     marker?: boolean;
     disabled?: boolean;
+    hidden?: boolean;
     callback?: WidgetCallback<this>;
     /** Called by `LGraphCanvas.drawNodeWidgets` */
     draw?(

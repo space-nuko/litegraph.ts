@@ -1248,8 +1248,11 @@ export default class LGraphNode {
         var widgets_height = 0;
         if (this.widgets && this.widgets.length) {
             for (var i = 0, l = this.widgets.length; i < l; ++i) {
-                if (this.widgets[i].computeSize)
-                    widgets_height += this.widgets[i].computeSize(size[0])[1] + 4;
+                const w = this.widgets[i]
+                if (w.hidden)
+                    continue;
+                else if (w.computeSize)
+                    widgets_height += w.computeSize(size[0])[1] + 4;
                 else
                     widgets_height += LiteGraph.NODE_WIDGET_HEIGHT + 4;
             }
@@ -1381,7 +1384,6 @@ export default class LGraphNode {
         return w;
     }
 
-
     addCustomWidget<T extends IWidget>(customWidget: T): T {
         if (!this.widgets) {
             this.widgets = [];
@@ -1391,6 +1393,10 @@ export default class LGraphNode {
         return customWidget;
     }
 
+    setWidgetHidden(widget: IWidget, hidden: boolean) {
+        widget.hidden = hidden;
+        this.setSize(this.computeSize());
+    }
 
     /**
      * returns the bounding of the object, used for rendering purposes
