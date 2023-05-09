@@ -737,39 +737,11 @@ export default class LGraphCanvas_UI {
     };
 
     static onMenuNodeClone: ContextMenuEventListener = function(value, options, e, menu, node) {
-        node.graph.beforeChange();
-
-        var newSelected: Record<number, LGraphNode> = {};
-
-        var fApplyMultiNode = function(node) {
-            if (node.clonable == false) {
-                return;
-            }
-            var newnode = node.clone();
-            if (!newnode) {
-                return;
-            }
-            newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
-            node.graph.add(newnode);
-            newSelected[newnode.id] = newnode;
-        }
-
         var graphcanvas = LGraphCanvas.active_canvas;
         if (!graphcanvas.selected_nodes || Object.keys(graphcanvas.selected_nodes).length <= 1) {
-            fApplyMultiNode(node);
-        } else {
-            for (var i in graphcanvas.selected_nodes) {
-                fApplyMultiNode(graphcanvas.selected_nodes[i]);
-            }
+            graphcanvas.selectNode(node);
         }
-
-        if (Object.keys(newSelected).length) {
-            graphcanvas.selectNodes(Object.values(newSelected));
-        }
-
-        node.graph.afterChange();
-
-        node.setDirtyCanvas(true, true);
+        graphcanvas.cloneSelection();
     }
 
 

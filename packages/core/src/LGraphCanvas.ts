@@ -1097,6 +1097,12 @@ export default class LGraphCanvas
                 this.pasteFromClipboard();
             }
 
+            if (e.code == "KeyD" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+                //duplicate (clone)
+                this.cloneSelection();
+                block_default = true;
+            }
+
             //delete or backspace
             if (e.keyCode == 46 || e.keyCode == 8) {
                 if (
@@ -1258,6 +1264,41 @@ export default class LGraphCanvas
         this.selectNodes(nodes);
 
         this.graph.afterChange();
+    }
+
+    cloneSelection() {
+        if (!this.selected_nodes || Object.keys(this.selected_nodes).length === 0)
+            return
+
+        this.graph.beforeChange();
+
+        var newSelected: Record<number, LGraphNode> = {};
+
+        var fApplyMultiNode = function(node: LGraphNode) {
+            if (node.clonable == false) {
+                return;
+            }
+            var newnode = node.clone();
+            if (!newnode) {
+                return;
+            }
+            newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
+            node.graph.add(newnode);
+            newSelected[newnode.id] = newnode;
+        }
+
+        var graphcanvas = LGraphCanvas.active_canvas;
+        for (var i in graphcanvas.selected_nodes) {
+            fApplyMultiNode(graphcanvas.selected_nodes[i]);
+        }
+
+        if (Object.keys(newSelected).length) {
+            this.selectNodes(Object.values(newSelected));
+        }
+
+        this.graph.afterChange();
+
+        this.setDirty(true, true);
     }
 
     processDrop(_e: DragEvent): boolean | undefined {
