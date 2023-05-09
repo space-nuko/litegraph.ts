@@ -1766,7 +1766,7 @@ export default class LGraphCanvas
                             this.value = v;
                             inner_value_change(this, v);
                         }.bind(w),
-                            event, w.options ? w.options.multiline : false, w.options.font);
+                            event, w.options ? w.options.multiline : false, w.options.inputStyle);
                     }
                     break;
                 default:
@@ -1980,7 +1980,7 @@ export default class LGraphCanvas
         callback: Function,
         event: any,
         multiline: boolean = false,
-        font: string | null = null
+        style: CSSStyleDeclaration | null = null
     ): IGraphDialog {
         return LGraphCanvas_UI.prototype.prompt.apply(this, arguments);
     }
