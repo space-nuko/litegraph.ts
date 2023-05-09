@@ -632,6 +632,10 @@ export default class LGraph {
         return this.elapsed_time;
     }
 
+    iterateNodesInOrder(): Iterable<LGraphNode> {
+        return (this._nodes_in_order ? this._nodes_in_order : this._nodes) || [];
+    }
+
     /**
      * Sends an event to all the nodes, useful to trigger stuff
      * @param eventName the name of the event (function to be called)
@@ -643,9 +647,7 @@ export default class LGraph {
             return;
         }
 
-        for (var j = 0, l = nodes.length; j < l; ++j) {
-            var node = nodes[j];
-
+        for (const node of this.iterateNodesInOrder()) {
             // TODO subgraph
             /*
             if (
