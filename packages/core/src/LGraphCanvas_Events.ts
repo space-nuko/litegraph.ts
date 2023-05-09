@@ -74,7 +74,7 @@ export default class LGraphCanvas_Events {
 
         //left button mouse / single finger
         if (e.which == 1 && !this.pointer_is_double) {
-            if (e.ctrlKey) {
+            if (e.ctrlKey && this.allow_interaction && !this.read_only) {
                 this.dragging_rectangle = new Float32Array(4);
                 this.dragging_rectangle[0] = e.canvasX;
                 this.dragging_rectangle[1] = e.canvasY;

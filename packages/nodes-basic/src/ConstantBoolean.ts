@@ -7,7 +7,7 @@ export interface ConstantBooleanProperties extends Record<string, any> {
 
 export default class ConstantBoolean extends LGraphNode {
     override properties: ConstantBooleanProperties = {
-        value: 1.0
+        value: true
     }
 
     static slotLayout: SlotLayout = {
@@ -18,7 +18,7 @@ export default class ConstantBoolean extends LGraphNode {
     }
 
     static propertyLayout: PropertyLayout = [
-        { name: "value", defaultValue: 1.0 }
+        { name: "value", defaultValue: true }
     ]
 
     static optionalSlots: OptionalSlots = {

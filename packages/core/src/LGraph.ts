@@ -14,7 +14,7 @@ export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
-    addedByDeserialize?: boolean
+    addedByDeserialize?: "configure" | "clone" | "paste" | null
 }
 
 export interface LGraphConfig {
@@ -1493,7 +1493,7 @@ export default class LGraph {
                 }
 
                 node.id = n_info.id; //id it or it will create a new id
-                this.add(node, { addedByDeserialize: true, skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
+                this.add(node, { addedByDeserialize: "configure", skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
             }
 
             //configure nodes afterwards so they can reach each other

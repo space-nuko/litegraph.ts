@@ -1064,6 +1064,8 @@ export default class LGraphCanvas
             return;
         }
 
+        const can_interact = this.allow_interaction && !this.read_only;
+
         if (e.type == "keydown") {
             if (e.keyCode == 32) {
                 //space
@@ -1078,51 +1080,53 @@ export default class LGraphCanvas
                 block_default = true;
             }
 
-            //select all Control A
-            if (e.keyCode == 65 && e.ctrlKey) {
-                this.selectNodes();
-                block_default = true;
-            }
+            if (can_interact) {
+                //select all Control A
+                if (e.keyCode == 65 && e.ctrlKey) {
+                    this.selectNodes();
+                    block_default = true;
+                }
 
-            if (e.code == "KeyC" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
-                //copy
+                if (e.code == "KeyC" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+                    //copy
+                    if (this.selected_nodes) {
+                        this.copyToClipboard();
+                        block_default = true;
+                    }
+                }
+
+                if (e.code == "KeyV" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+                    //paste
+                    this.pasteFromClipboard();
+                }
+
+                if (e.code == "KeyD" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+                    //duplicate (clone)
+                    this.cloneSelection();
+                    block_default = true;
+                }
+
+                //delete or backspace
+                if (e.keyCode == 46 || e.keyCode == 8) {
+                    if (
+                        e.target instanceof Element &&
+                        e.target.localName != "input" &&
+                        e.target.localName != "textarea"
+                    ) {
+                        this.deleteSelectedNodes();
+                        block_default = true;
+                    }
+                }
+
+                //collapse
+                //...
+
+                //TODO
                 if (this.selected_nodes) {
-                    this.copyToClipboard();
-                    block_default = true;
-                }
-            }
-
-            if (e.code == "KeyV" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
-                //paste
-                this.pasteFromClipboard();
-            }
-
-            if (e.code == "KeyD" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
-                //duplicate (clone)
-                this.cloneSelection();
-                block_default = true;
-            }
-
-            //delete or backspace
-            if (e.keyCode == 46 || e.keyCode == 8) {
-                if (
-                    e.target instanceof Element &&
-                    e.target.localName != "input" &&
-                    e.target.localName != "textarea"
-                ) {
-                    this.deleteSelectedNodes();
-                    block_default = true;
-                }
-            }
-
-            //collapse
-            //...
-
-            //TODO
-            if (this.selected_nodes) {
-                for (var i in this.selected_nodes) {
-                    if (this.selected_nodes[i].onKeyDown) {
-                        this.selected_nodes[i].onKeyDown(e);
+                    for (var i in this.selected_nodes) {
+                        if (this.selected_nodes[i].onKeyDown) {
+                            this.selected_nodes[i].onKeyDown(e);
+                        }
                     }
                 }
             }
@@ -1132,10 +1136,12 @@ export default class LGraphCanvas
                 this.dragging_canvas = false;
             }
 
-            if (this.selected_nodes) {
-                for (var i in this.selected_nodes) {
-                    if (this.selected_nodes[i].onKeyUp) {
-                        this.selected_nodes[i].onKeyUp(e);
+            if (can_interact) {
+                if (this.selected_nodes) {
+                    for (var i in this.selected_nodes) {
+                        if (this.selected_nodes[i].onKeyUp) {
+                            this.selected_nodes[i].onKeyUp(e);
+                        }
                     }
                 }
             }
@@ -1244,7 +1250,7 @@ export default class LGraphCanvas
                 node.pos[0] += this.graph_mouse[0] - posMin[0]; //+= 5;
                 node.pos[1] += this.graph_mouse[1] - posMin[1]; //+= 5;
 
-                this.graph.add(node, { doProcessChange: false });
+                this.graph.add(node, { doProcessChange: false, addedByDeserialize: "paste" });
 
                 nodes.push(node);
             }
@@ -1283,7 +1289,7 @@ export default class LGraphCanvas
                 return;
             }
             newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
-            node.graph.add(newnode);
+            node.graph.add(newnode, { addedByDeserialize: "clone" });
             newSelected[newnode.id] = newnode;
         }
 
