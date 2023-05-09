@@ -18,7 +18,6 @@ export interface WidgetPanelOptions {
     type?: string;
     label?: string;
     callback?: WidgetPanelCallback;
-    [rest: string]: any;
     property?: string;
 }
 
@@ -88,7 +87,10 @@ export interface IComboWidget
     extends IWidget<IComboWidgetOptions, string> {
     type: "combo";
 }
-
+export interface ITextWidgetOptions extends WidgetPanelOptions {
+    multiline: boolean;
+    font?: string;
+}
 export interface ITextWidget extends IWidget<{}, string> {
     type: "text";
 }

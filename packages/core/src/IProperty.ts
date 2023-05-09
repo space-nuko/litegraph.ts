@@ -3,6 +3,8 @@ export interface IPropertyInfo {
     values?: any | any[];
     label?: string;
     widget?: string;
+    multiline?: boolean;
+    font?: string;
 }
 
 export default interface IProperty {

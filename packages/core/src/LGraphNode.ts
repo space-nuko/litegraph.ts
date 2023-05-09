@@ -43,7 +43,7 @@ export type PropertyLayout = {
     name: string,
     defaultValue: any,
     type?: string,
-    options?: Partial<IProperty>
+    options?: Partial<IPropertyInfo>
 }[];
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
@@ -1012,7 +1012,7 @@ export default class LGraphNode {
         name: string,
         default_value: any,
         type?: string,
-        extra_info?: Partial<IProperty>
+        extra_info?: Partial<IPropertyInfo>
     ): IProperty {
         var o: IProperty = { name: name, type: type, default_value: default_value };
         if (extra_info) {
@@ -1238,7 +1238,9 @@ export default class LGraphNode {
         size[0] = Math.max(input_width + output_width + 10, title_width);
         size[0] = Math.max(size[0], LiteGraph.NODE_WIDTH);
         if (this.widgets && this.widgets.length) {
-            size[0] = Math.max(size[0], LiteGraph.NODE_WIDTH * 1.5);
+            for (const widget of this.widgets) {
+                size[0] = Math.max(size[0], widget.width || LiteGraph.NODE_WIDTH * 1.5);
+            }
         }
 
         size[1] = ((this.constructor as any).slot_start_y || 0) + rows * LiteGraph.NODE_SLOT_HEIGHT;

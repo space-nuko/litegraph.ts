@@ -24,7 +24,7 @@ export default class ConstantJSON extends LGraphNode {
     }
 
     static propertyLayout: PropertyLayout = [
-        { name: "json", defaultValue: "" },
+        { name: "json", defaultValue: "", options: { multiline: true } },
         { name: "value", defaultValue: "" },
         { name: "type", defaultValue: "object" }
     ]
@@ -43,7 +43,7 @@ export default class ConstantJSON extends LGraphNode {
 
     constructor(title?: string) {
         super(title)
-        this.jsonWidget = this.addWidget("text", "json", "", "json");
+        this.jsonWidget = this.addWidget("text", "json", "", "json", { multiline: true, font: "monospace" });
         this.valueWidget = this.addWidget("text", "value", "", "value");
         this.valueWidget.disabled = true;
         this.typeWidget = this.addWidget("text", "type", this.properties.type, "type");

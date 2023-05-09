@@ -775,7 +775,8 @@ export default class LGraphCanvas_UI {
         value: any,
         callback: Function,
         event: any,
-        multiline: boolean = false
+        multiline: boolean = false,
+        font: string | null = null
     ): IGraphDialog {
         var that = this;
 
@@ -868,6 +869,9 @@ export default class LGraphCanvas_UI {
             e.preventDefault();
             e.stopPropagation();
         });
+
+        if (font)
+            input.style.font = font;
 
         var button = dialog.querySelector("button");
         button.addEventListener("click", function(e) {
@@ -1945,7 +1949,17 @@ export default class LGraphCanvas_UI {
         var input_html = "";
 
         if (type == "string" || type == "number" || type == "array" || type == "object") {
-            input_html = "<input autofocus type='text' class='value'/>";
+            if (info.multiline) {
+                let value = node.properties[property];
+                if (type !== "string")
+                    value = JSON.stringify(value);
+                input_html = "<textarea autofocus type='text' rows='5' cols='30' class='value'>"
+                    + (value || "")
+                    + "</textarea>";
+            }
+            else {
+                input_html = "<input autofocus type='text' class='value'/>";
+            }
         } else if ((type == "enum" || type == "combo") && info.values) {
             input_html = "<select autofocus type='text' class='value'>";
             for (var i in info.values) {
@@ -2000,7 +2014,12 @@ export default class LGraphCanvas_UI {
                 });
             }
         } else {
-            input = dialog.querySelector("input");
+            if (info.multiline) {
+                input = dialog.querySelector("textarea");
+            }
+            else {
+                input = dialog.querySelector("input");
+            }
             if (input) {
                 input.addEventListener("blur", function(e) {
                     this.focus();
@@ -2016,7 +2035,7 @@ export default class LGraphCanvas_UI {
                     if (e.keyCode == 27) {
                         //ESC
                         dialog.close();
-                    } else if (e.keyCode == 13) {
+                    } else if (e.keyCode == 13 && !info.multiline) {
                         // ENTER
                         inner(); // save
                     } else if (e.keyCode != 13) {
