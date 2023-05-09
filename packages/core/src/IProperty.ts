@@ -4,7 +4,7 @@ export interface IPropertyInfo {
     label?: string;
     widget?: string;
     multiline?: boolean;
-    font?: string;
+    inputStyle?: Partial<CSSStyleDeclaration>
 }
 
 export default interface IProperty {

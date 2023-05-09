@@ -43,7 +43,7 @@ export default class ConstantJSON extends LGraphNode {
 
     constructor(title?: string) {
         super(title)
-        this.jsonWidget = this.addWidget("text", "json", "", "json", { multiline: true, font: "monospace" });
+        this.jsonWidget = this.addWidget("text", "json", "", "json", { multiline: true, inputStyle: { fontFamily: "monospace" } });
         this.valueWidget = this.addWidget("text", "value", "", "value");
         this.valueWidget.disabled = true;
         this.typeWidget = this.addWidget("text", "type", this.properties.type, "type");

@@ -13,6 +13,8 @@ import { BuiltInSlotType } from "./types";
 import Subgraph from "./nodes/Subgraph"
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
+import { IPropertyInfo } from "./IProperty";
+import { clamp, makeDraggable } from "./utils";
 
 export default class LGraphCanvas_UI {
 
@@ -27,7 +29,7 @@ export default class LGraphCanvas_UI {
         menu: ContextMenu,
         node?: LGraphNode
     ): void {
-        var propInfo = item.value;
+        var propInfo = item.value as IPropertyInfo;
 
         var property = propInfo.name;
         var value = node[property];
@@ -65,6 +67,9 @@ export default class LGraphCanvas_UI {
                 e.preventDefault();
                 e.stopPropagation();
             });
+            if (propInfo.inputStyle)
+                for (const [k, v] of Object.entries(propInfo.inputStyle))
+                    input.style[k] = v
         }
 
         var graphcanvas = LGraphCanvas.active_canvas;
@@ -776,7 +781,7 @@ export default class LGraphCanvas_UI {
         callback: Function,
         event: any,
         multiline: boolean = false,
-        font: string | null = null
+        inputStyle: Partial<CSSStyleDeclaration> | null = null
     ): IGraphDialog {
         var that = this;
 
@@ -870,8 +875,9 @@ export default class LGraphCanvas_UI {
             e.stopPropagation();
         });
 
-        if (font)
-            input.style.font = font;
+        if (inputStyle)
+            for (const [k, v] of Object.entries(inputStyle))
+                input.style[k] = v
 
         var button = dialog.querySelector("button");
         button.addEventListener("click", function(e) {
@@ -1951,9 +1957,13 @@ export default class LGraphCanvas_UI {
         if (type == "string" || type == "number" || type == "array" || type == "object") {
             if (info.multiline) {
                 let value = node.properties[property];
-                if (type !== "string")
-                    value = JSON.stringify(value);
-                input_html = "<textarea autofocus type='text' rows='5' cols='30' class='value'>"
+                let rows = 5;
+                if (type !== "string") {
+                    value = JSON.stringify(value, null, 2);
+                    const lines = (value.match(/\n/g) || '').length + 1
+                    rows = clamp(lines, 5, 10)
+                }
+                input_html = "<textarea autofocus type='text' rows='" + rows + "' cols='30' class='value'>"
                     + (value || "")
                     + "</textarea>";
             }
@@ -2027,30 +2037,53 @@ export default class LGraphCanvas_UI {
 
                 let v = node.properties[property] !== undefined ? node.properties[property] : "";
                 if (type !== 'string') {
-                    v = JSON.stringify(v);
+                    let space = null;
+                    if (info.multiline)
+                        space = 2;
+                    v = JSON.stringify(v, null, space);
                 }
 
                 input.value = v;
                 input.addEventListener("keydown", function(e) {
+                    let prevent_default = false;
                     if (e.keyCode == 27) {
                         //ESC
                         dialog.close();
+                        prevent_default = true;
                     } else if (e.keyCode == 13 && !info.multiline) {
                         // ENTER
                         inner(); // save
+                        prevent_default = true;
                     } else if (e.keyCode != 13) {
                         dialog.modified();
-                        return;
                     }
-                    e.preventDefault();
-                    e.stopPropagation();
+                    if (prevent_default) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
                 });
+
+                if (info.inputStyle)
+                    for (const [k, v] of Object.entries(info.inputStyle))
+                        input.style[k] = v
             }
         }
         if (input) input.focus();
 
+        const close = () => {
+            if (options.onclose)
+                options.onclose();
+            dialog.close();
+            node.setDirtyCanvas(true, true);
+        }
+
         const inner = () => {
-            setValue(input.value);
+            if (type != "boolean" && type != "toggle") {
+                setValue(input.value);
+            }
+            else {
+                close();
+            }
         }
 
         const setValue = (value: any) => {
@@ -2064,10 +2097,7 @@ export default class LGraphCanvas_UI {
                 value = JSON.parse(value);
             }
             node.setProperty(property, value);
-            if (options.onclose)
-                options.onclose();
-            dialog.close();
-            node.setDirtyCanvas(true, true);
+            close();
         }
 
         var button = dialog.querySelector("button");

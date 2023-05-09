@@ -89,7 +89,8 @@ export interface IComboWidget
 }
 export interface ITextWidgetOptions extends WidgetPanelOptions {
     multiline: boolean;
-    font?: string;
+    inputStyle?: Partial<CSSStyleDeclaration>;
+    max_length?: number
 }
 export interface ITextWidget extends IWidget<{}, string> {
     type: "text";
