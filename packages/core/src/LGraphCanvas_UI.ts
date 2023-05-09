@@ -122,13 +122,15 @@ export default class LGraphCanvas_UI {
         var dialogCloseTimer = null;
         dialog.addEventListener("mouseleave", function(e) {
             if (LiteGraph.dialog_close_on_mouse_leave)
-                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave)
+                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave && e.buttons === 0)
                     dialogCloseTimer = setTimeout(dialog.close, LiteGraph.dialog_close_on_mouse_leave_delay); //dialog.close();
         });
         dialog.addEventListener("mouseenter", function(e) {
             if (LiteGraph.dialog_close_on_mouse_leave)
                 if (dialogCloseTimer) clearTimeout(dialogCloseTimer);
         });
+
+        makeDraggable(dialog);
     }
 
     /** Create menu for `Add Group` */
@@ -788,14 +790,14 @@ export default class LGraphCanvas_UI {
 
         var dialogCloseTimer = null;
         var prevent_timeout = 0;
-        LiteGraph.pointerListenerAdd(dialog, "leave", function(e) {
+        LiteGraph.pointerListenerAdd(dialog, "leave", function(e: PointerEvent) {
             if (prevent_timeout)
                 return;
             if (LiteGraph.dialog_close_on_mouse_leave)
-                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave)
+                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave && e.buttons === 0)
                     dialogCloseTimer = setTimeout(dialog.close, LiteGraph.dialog_close_on_mouse_leave_delay); //dialog.close();
         });
-        LiteGraph.pointerListenerAdd(dialog, "enter", function(e) {
+        LiteGraph.pointerListenerAdd(dialog, "enter", function(e: PointerEvent) {
             if (LiteGraph.dialog_close_on_mouse_leave)
                 if (dialogCloseTimer) clearTimeout(dialogCloseTimer);
         });
@@ -879,6 +881,8 @@ export default class LGraphCanvas_UI {
         setTimeout(function() {
             input.focus();
         }, 10);
+
+        makeDraggable(dialog);
 
         return dialog;
     }
@@ -2075,6 +2079,8 @@ export default class LGraphCanvas_UI {
         var button = dialog.querySelector("button");
         button.addEventListener("click", inner);
 
+        makeDraggable(dialog);
+
         return dialog;
     }
 
@@ -2150,14 +2156,14 @@ export default class LGraphCanvas_UI {
 
         var dialogCloseTimer = null;
         var prevent_timeout = 0;
-        dialog.addEventListener("mouseleave", function(e) {
+        dialog.addEventListener("mouseleave", function(e: MouseEvent) {
             if (prevent_timeout)
                 return;
             if (options.closeOnLeave || LiteGraph.dialog_close_on_mouse_leave)
-                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave)
+                if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave && e.buttons === 0)
                     dialogCloseTimer = setTimeout(dialog.close, LiteGraph.dialog_close_on_mouse_leave_delay); //dialog.close();
         });
-        dialog.addEventListener("mouseenter", function(e) {
+        dialog.addEventListener("mouseenter", function(e: MouseEvent) {
             if (options.closeOnLeave || LiteGraph.dialog_close_on_mouse_leave)
                 if (dialogCloseTimer) clearTimeout(dialogCloseTimer);
         });
