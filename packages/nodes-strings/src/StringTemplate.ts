@@ -1,12 +1,14 @@
 import { INodeInputSlot, INodeOutputSlot, ITextWidget, LConnectionKind, LGraphNode, LiteGraph, LLink, PropertyLayout, SlotLayout } from "@litegraph-ts/core";
 
 export interface StringTemplateProperties extends Record<string, any> {
-    template: string
+    template: string,
+    stringQuote: string
 }
 
 export default class StringTemplate extends LGraphNode {
     override properties: StringTemplateProperties = {
-        template: "$1, $2, $3"
+        template: "$1, $2, $3",
+        stringQuote: ""
     }
 
     static slotLayout: SlotLayout = {
@@ -20,7 +22,8 @@ export default class StringTemplate extends LGraphNode {
     }
 
     static propertyLayout: PropertyLayout = [
-        { name: "template", defaultValue: "$1, $2, $3", options: { multiline: true } }
+        { name: "template", defaultValue: "$1, $2, $3", options: { multiline: true } },
+        { name: "stringQuote", defaultValue: "" }
     ]
 
     private _value: string = null;
@@ -32,14 +35,20 @@ export default class StringTemplate extends LGraphNode {
         this.templateWidget = this.addWidget("text", "Template", this.properties.template, "template", { multiline: true })
     }
 
-    static substituteTemplate(templateString: string, arr: any[]): string {
-        return templateString.replace(/\$(\d+)/g, (_, index) => arr[index - 1]);
+    private formatTemplateValue(val: any): string {
+        if (typeof val === "string") {
+            const quote = this.properties.stringQuote
+            return `${quote}${val}${quote}`
+        }
+        return `${val}`
+    }
+
+    private substituteTemplate(templateString: string, arr: any[]): string {
+        return templateString.replace(/\$(\d+)/g, (_, index) => this.formatTemplateValue(arr[index - 1]));
     }
 
     override onPropertyChanged(property: any, value: any) {
-        if (property === "template") {
-            this._value = null;
-        }
+        this._value = null;
     }
 
     override onExecute() {
@@ -57,7 +66,7 @@ export default class StringTemplate extends LGraphNode {
                     args.push(data)
                 }
             }
-            this._value = StringTemplate.substituteTemplate(template, args)
+            this._value = this.substituteTemplate(template, args)
         }
         this.setOutputData(0, this._value)
     };
