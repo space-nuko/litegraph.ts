@@ -159,6 +159,7 @@ export default class GraphInput extends LGraphNode {
         var name = this.properties.name;
         //read from global input
         var data = this.graph.inputs[name];
+        console.warn("GETDATA name", name, "DATA", data)
         if (!data) {
             this.setOutputData(0, this.properties.value);
             return;

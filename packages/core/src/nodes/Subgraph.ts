@@ -118,40 +118,41 @@ export default class Subgraph extends LGraphNode {
     };
 
     override onDrawBackground(ctx: CanvasRenderingContext2D, graphcanvas: LGraphCanvas, canvas: HTMLCanvasElement, pos: Vector2) {
-        if (this.flags.collapsed)
-            return;
-        var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5;
-        const can_interact = graphcanvas.allow_interaction && !graphcanvas.read_only;
+        // if (this.flags.collapsed)
+        //     return;
+        // var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5;
+        // const can_interact = graphcanvas.allow_interaction && !graphcanvas.read_only;
+        // // button
+        // var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT) && can_interact;
+        // let overleft = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0] / 2, LiteGraph.NODE_TITLE_HEIGHT)
+        // ctx.fillStyle = over ? "#555" : "#222";
+        // ctx.beginPath();
+        // if (this.shape == BuiltInSlotShape.BOX_SHAPE) {
+        //     if (overleft) {
+        //         ctx.rect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT);
+        //     } else {
+        //         ctx.rect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT);
+        //     }
+        // }
+        // else {
+        //     if (overleft) {
+        //         ctx.roundRect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
+        //     } else {
+        //         ctx.roundRect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
+        //     }
+        // }
+        // if (over) {
+        //     ctx.fill();
+        // } else {
+        //     ctx.fillRect(0, y, this.size[0] + 1, LiteGraph.NODE_TITLE_HEIGHT);
+        // }
+
         // button
-        var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT) && can_interact;
-        let overleft = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0] / 2, LiteGraph.NODE_TITLE_HEIGHT)
-        ctx.fillStyle = over ? "#555" : "#222";
-        ctx.beginPath();
-        if (this.shape == BuiltInSlotShape.BOX_SHAPE) {
-            if (overleft) {
-                ctx.rect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT);
-            } else {
-                ctx.rect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT);
-            }
-        }
-        else {
-            if (overleft) {
-                ctx.roundRect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
-            } else {
-                ctx.roundRect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
-            }
-        }
-        if (over) {
-            ctx.fill();
-        } else {
-            ctx.fillRect(0, y, this.size[0] + 1, LiteGraph.NODE_TITLE_HEIGHT);
-        }
-        // button
-        ctx.textAlign = "center";
-        ctx.font = "24px Arial";
-        ctx.fillStyle = over ? "#DDD" : "#999";
-        ctx.fillText("+", this.size[0] * 0.25, y + 24);
-        ctx.fillText("+", this.size[0] * 0.75, y + 24);
+        // ctx.textAlign = "center";
+        // ctx.font = "24px Arial";
+        // ctx.fillStyle = over ? "#DDD" : "#999";
+        // ctx.fillText("+", this.size[0] * 0.25, y + 24);
+        // ctx.fillText("+", this.size[0] * 0.75, y + 24);
     }
 
     // override onMouseDown(e, localpos, graphcanvas)
@@ -163,20 +164,20 @@ export default class Subgraph extends LGraphNode {
     // 	}
     // }
 
-    override onMouseDown(e: MouseEventExt, localpos: Vector2, graphcanvas: LGraphCanvas): boolean | undefined {
-        var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5;
-        console.log(0)
-        if (localpos[1] > y) {
-            if (localpos[0] < this.size[0] / 2) {
-                console.log(1)
-                graphcanvas.showSubgraphPropertiesDialog(this);
-            } else {
-                console.log(2)
-                graphcanvas.showSubgraphPropertiesDialogRight(this);
-            }
-        }
-        return false;
-    }
+    // override onMouseDown(e: MouseEventExt, localpos: Vector2, graphcanvas: LGraphCanvas): boolean | undefined {
+    //     var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5;
+    //     console.log(0)
+    //     if (localpos[1] > y) {
+    //         if (localpos[0] < this.size[0] / 2) {
+    //             console.log(1)
+    //             graphcanvas.showSubgraphPropertiesDialog(this);
+    //         } else {
+    //             console.log(2)
+    //             graphcanvas.showSubgraphPropertiesDialogRight(this);
+    //         }
+    //     }
+    //     return false;
+    // }
 
     override computeSize(): Vector2 {
         var num_inputs = this.inputs ? this.inputs.length : 0;
@@ -297,8 +298,9 @@ export default class Subgraph extends LGraphNode {
 
     buildFromNodes(nodes: LGraphNode[]) {
         // Nodes that connect data between parent graph and subgraph
-        // Since the nodes will be cloned we can't rely on node IDs, so the
-        // new nodes are referred to by index into the nodes array
+        // Since the nodes will reparented to a new graph causing the node ID
+        // to be changed, we can't rely on node IDs to reference the reinserted
+        // nodes. So the new nodes are referred to by index into the nodes array instead
         // { linkID => [fromIndex, toIndex, connectionPos] }
         const linksIn: Record<number, [LLink, number, number, Vector2]> = {}
         const linksOut: Record<number, [LLink, number, number, Vector2]> = {}
@@ -412,8 +414,9 @@ export default class Subgraph extends LGraphNode {
             console.debug("INNER", Object.keys(innerLinks))
         }
 
+        // { nodeId => { slotId => outputSlotOnSubgraphNode } }
+        const inputSlotsCreated: Record<number, Record<number, SubgraphInputPair>> = {}
         // { slotId => outputSlotOnSubgraphNode }
-        const inputSlotsCreated: Record<number, SubgraphInputPair> = {}
         const outputSlotsCreated: Record<number, SubgraphOutputPair> = {}
 
         // Add nodes into the subgraph
@@ -431,7 +434,9 @@ export default class Subgraph extends LGraphNode {
 
         // Reconnect links from outside the subgraph -> inside
         for (const [linkIn, fromIndex, toIndex, _pos] of sortedLinksIn) {
-            let pair = inputSlotsCreated[linkIn.target_slot];
+            let pair = null;
+            if (inputSlotsCreated[linkIn.origin_id])
+                pair = inputSlotsCreated[linkIn.origin_id][linkIn.origin_slot]
             if (!pair) {
                 pair = this.addGraphInput(`${i++}`, linkIn.type, [-200, inputNodeY])
                 inputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
@@ -449,7 +454,8 @@ export default class Subgraph extends LGraphNode {
             fromNode.connect(linkIn.origin_slot, this, pair.outerInputIndex)
             pair.innerNode.connect(0, toNode, linkIn.target_slot)
 
-            inputSlotsCreated[linkIn.target_slot] = pair
+            inputSlotsCreated[linkIn.origin_id] ||= {}
+            inputSlotsCreated[linkIn.origin_id][linkIn.origin_slot] = pair
         }
 
         i = 0;
@@ -494,8 +500,15 @@ export default class Subgraph extends LGraphNode {
         if (pos)
             innerNode.pos = [pos[0] - nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
 
-        const outerInput = this.addInput(name, type);
+        // The following call will add an input slot to this node automatically from onSubgraphNewInput.
+        this.subgraph.addInput(name, "" + type, null);
+
+        // These will also run onPropertyChanged.
+        innerNode.setProperty("name", name)
+        innerNode.setProperty("type", type)
+
         const outerInputIndex = this.inputs.length - 1;
+        const outerInput = this.inputs[outerInputIndex]
 
         return { innerNode, outerInput, outerInputIndex }
     }
@@ -510,8 +523,15 @@ export default class Subgraph extends LGraphNode {
         if (pos)
             innerNode.pos = [pos[0] + nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
 
-        const outerOutput = this.addOutput(name, type);
+        // The following call will add an output slot to this node automatically from onSubgraphNewOutput.
+        this.subgraph.addOutput(name, "" + type, null);
+
+        // These will also run onPropertyChanged.
+        innerNode.setProperty("name", name)
+        innerNode.setProperty("type", type)
+
         const outerOutputIndex = this.outputs.length - 1;
+        const outerOutput = this.outputs[outerOutputIndex]
 
         return { innerNode, outerOutput, outerOutputIndex }
     }

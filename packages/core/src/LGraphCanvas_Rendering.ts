@@ -603,8 +603,9 @@ export default class LGraphCanvas_Rendering {
         //show subgraph stack header
         if (this._graph_stack && this._graph_stack.length) {
             ctx.save();
-            var parent_graph = this._graph_stack[this._graph_stack.length - 1];
-            var subgraph_node = this.graph._subgraph_node;
+            const top_entry = this._graph_stack[this._graph_stack.length - 1];
+            const parent_graph = top_entry.graph
+            const subgraph_node = this.graph._subgraph_node;
             ctx.strokeStyle = subgraph_node.bgColor;
             ctx.lineWidth = 10;
             ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
@@ -612,10 +613,9 @@ export default class LGraphCanvas_Rendering {
             ctx.font = "40px Arial";
             ctx.textAlign = "center";
             ctx.fillStyle = subgraph_node.bgColor || "#AAA";
-            var title = "";
-            for (var i = 1; i < this._graph_stack.length; ++i) {
-                title +=
-                    this._graph_stack[i]._subgraph_node.getTitle() + " >> ";
+            let title = "";
+            for (let i = 1; i < this._graph_stack.length; ++i) {
+                title += parent_graph._subgraph_node.getTitle() + " >> ";
             }
             ctx.fillText(
                 title + subgraph_node.getTitle(),
@@ -1449,7 +1449,8 @@ export default class LGraphCanvas_Rendering {
             if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
                 var w = LiteGraph.NODE_TITLE_HEIGHT;
                 var x = node.size[0] - w;
-                var over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
+                const can_interact = this.allow_interaction && !this.read_only
+                var over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4) && can_interact;
                 ctx.fillStyle = over ? "#888" : "#555";
                 if (shape == BuiltInSlotShape.BOX_SHAPE || low_quality)
                     ctx.fillRect(x + 2, -w + 2, w - 4, w - 4);

@@ -73,6 +73,12 @@ export type NodeColor = {
     groupcolor: string;
 }
 
+export type GraphStackEntry = {
+    graph: LGraph,
+    offset: Vector2,
+    scale: number,
+}
+
 /**
  * This class is in charge of rendering one graph inside a canvas. And provides all the interaction required.
  * Valid callbacks are: onNodeSelected, onNodeDeselected, onShowNodePanel, onNodeDblClicked
@@ -386,7 +392,7 @@ export default class LGraphCanvas
     _highlight_input_slot: INodeSlot | null = null;
     _highlight_output: Vector2 | null = null;
 
-    _graph_stack: LGraph[] | null = null;
+    _graph_stack: GraphStackEntry[] = [];
 
     _bg_img: HTMLImageElement | null = null;
     _pattern: CanvasPattern | null = null;
@@ -476,10 +482,38 @@ export default class LGraphCanvas
             if (!this._graph_stack) {
                 this._graph_stack = [];
             }
-            this._graph_stack.push(this.graph);
+            const offset: Vector2 = [this.ds.offset[0], this.ds.offset[1]]
+            this._graph_stack.push({ graph: this.graph, offset, scale: this.ds.scale });
+        }
+
+        if (LiteGraph.debug) {
+            console.warn("SubGraph opened", graph)
+            console.warn("Graph inputs", graph.inputs)
+            console.warn("Graph outputs", graph.outputs)
         }
 
         graph.attachCanvas(this);
+
+        const offset: Vector2 = [0, 0]
+
+        if (graph._nodes.length > 0) {
+            let min_x = Number.MAX_SAFE_INTEGER;
+            let max_x = 0;
+            let min_y = Number.MAX_SAFE_INTEGER;
+            let max_y = 0;
+            for (const node of graph.iterateNodesInOrder()) {
+                min_x = Math.min(node.pos[0], min_x);
+                max_x = Math.max(node.pos[0] + node.size[0], max_x);
+                min_y = Math.min(node.pos[1], min_y);
+                max_y = Math.max(node.pos[1] + node.size[1], max_y);
+            }
+            offset[0] = (max_x - min_x) / 2;
+            offset[1] = (max_y - min_y) / 2 + this.canvas.height / 4;
+        }
+
+        this.ds.offset = offset;
+        this.ds.scale = 1
+
         this.checkPanels();
         this.setDirty(true, true);
     }
@@ -490,7 +524,7 @@ export default class LGraphCanvas
             return;
         }
         var subgraph_node = (this.graph as any)._subgraph_node;
-        var graph = this._graph_stack.pop();
+        var { graph, offset, scale } = this._graph_stack.pop();
         this.selected_nodes = {};
         this.highlighted_links = {};
         graph.attachCanvas(this);
@@ -499,9 +533,8 @@ export default class LGraphCanvas
             this.centerOnNode(subgraph_node);
             this.selectNodes([subgraph_node]);
         }
-        // when close sub graph back to offset [0, 0] scale 1
-        this.ds.offset = [0, 0]
-        this.ds.scale = 1
+        this.ds.offset = offset
+        this.ds.scale = scale
     }
 
     /** assigns a canvas */

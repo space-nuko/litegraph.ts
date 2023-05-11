@@ -286,9 +286,8 @@ export default class LGraphCanvas_Events {
                         //open subgraph button
                         if (node.subgraph && !node.skip_subgraph_button) {
                             if (!node.flags.collapsed && pos[0] > node.size[0] - LiteGraph.NODE_TITLE_HEIGHT && pos[1] < 0) {
-                                var that = this;
-                                setTimeout(function() {
-                                    that.openSubgraph(node.subgraph);
+                                setTimeout(() => {
+                                    this.openSubgraph(node.subgraph);
                                 }, 10);
                             }
                         }

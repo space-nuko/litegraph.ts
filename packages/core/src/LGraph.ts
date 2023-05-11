@@ -1075,6 +1075,7 @@ export default class LGraph {
     /** Assign a data to the global graph input */
     setInputData(name: string, data: any): void {
         var input = this.inputs[name];
+        console.warn("SETDATA name", name, "data", data, "input", input)
         if (!input) {
             return;
         }
