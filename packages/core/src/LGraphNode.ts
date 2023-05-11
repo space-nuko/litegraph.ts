@@ -656,6 +656,26 @@ export default class LGraphNode {
         return this.properties[name];
     }
 
+    /**
+     * Returns the output slot in another node that an input in this node is connected to.
+     * @param {number} slot
+     * @return {LLink} object or null
+     */
+    getOutputSlotConnectedTo(slot: SlotIndex): INodeOutputSlot | null {
+        if (!this.outputs) {
+            return null;
+        }
+        if (slot >= 0 && slot < this.outputs.length) {
+            var slot_info = this.inputs[slot];
+            if (slot_info.link) {
+                const link = this.graph.links[slot_info.link]
+                const node = this.graph.getNodeById(link.origin_id)
+                return node.outputs[link.origin_slot]
+            }
+        }
+        return null;
+    };
+
     /** tells you the last output data that went in that slot */
     getOutputData<T = any>(slot: SlotIndex): T | null {
         if (!this.outputs) {
@@ -685,6 +705,30 @@ export default class LGraphNode {
                 for (const linkID of slot_info.links)
                     links.push(this.graph.links[linkID]);
                 return links;
+            }
+        }
+        return [];
+    };
+
+    /**
+     * Returns the input slots in other nodes that an output in this node is connected to.
+     * @param {number} slot
+     * @return {LLink} object or null
+     */
+    getInputSlotsConnectedTo(slot: SlotIndex): INodeInputSlot[] {
+        if (!this.outputs) {
+            return [];
+        }
+        if (slot >= 0 && slot < this.outputs.length) {
+            var slot_info = this.outputs[slot];
+            if (slot_info.links) {
+                var inputs: INodeInputSlot[] = [];
+                for (const linkID of slot_info.links) {
+                    const link = this.graph.links[linkID]
+                    const node = this.graph.getNodeById(link.target_id)
+                    inputs.push(node.inputs[link.target_slot])
+                }
+                return inputs;
             }
         }
         return [];
