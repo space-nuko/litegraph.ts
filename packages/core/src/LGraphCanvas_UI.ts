@@ -2,7 +2,7 @@ import { ContextMenuEventListener, ContextMenuItem, ContextMenuSpecialItem, ICon
 import ContextMenu from "./ContextMenu";
 import type { EventExt, MouseEventExt } from "./DragAndScale";
 import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
-import type { IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
+import type { GraphDialogOptions, IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
 import LGraphNode, { InputSlotLayout, OutputSlotLayout } from "./LGraphNode";
@@ -1623,6 +1623,12 @@ export default class LGraphCanvas_UI {
         panel.node = node;
         panel.classList.add("subgraph_dialog");
 
+        var subgraph = (node as Subgraph).subgraph;
+        if (!subgraph) {
+            console.warn("subnode without subgraph!");
+            return;
+        }
+
         function inner_refresh() {
             panel.clear();
 
@@ -1662,21 +1668,26 @@ export default class LGraphCanvas_UI {
         const typeInput = elem.querySelector<HTMLInputElement>(".type");
         const addButton = elem.querySelector<HTMLButtonElement>("button");
 
-        const addInput = (e) => {
+        const addInput = () => {
             var name = nameInput.value;
             var type = typeInput.value;
             if (!name || node.findInputSlotIndexByName(name) != -1)
                 return;
-            node.addInput(name, type);
+            this.addGraphInputNode((node as Subgraph), name, type)
             nameInput.value = "";
             typeInput.value = "";
             inner_refresh();
             nameInput.focus();
         }
 
-        const checkSubmit = (e: KeyEvent) => {
+        const checkSubmit = (e: KeyboardEvent) => {
             if (e.keyCode == 13) {
                 addInput()
+                e.preventDefault();
+            }
+            else if (e.keyCode == 27) {
+                panel.close();
+                e.preventDefault();
             }
         }
 
@@ -1701,6 +1712,12 @@ export default class LGraphCanvas_UI {
         var panel = this.createPanel("Subgraph Outputs", { closable: true, width: 500 }) as ISubgraphPropertiesPanel;
         panel.node = node;
         panel.classList.add("subgraph_dialog");
+
+        var subgraph = (node as Subgraph).subgraph;
+        if (!subgraph) {
+            console.warn("subnode without subgraph!");
+            return;
+        }
 
         function inner_refresh() {
             panel.clear();
@@ -1745,16 +1762,21 @@ export default class LGraphCanvas_UI {
             var type = typeInput.value;
             if (!name || node.findOutputSlotIndexByName(name) != -1)
                 return;
-            node.addOutput(name, type);
+            this.addGraphOutputNode((node as Subgraph), name, type)
             nameInput.value = "";
             typeInput.value = "";
             inner_refresh();
             nameInput.focus();
         }
 
-        const checkSubmit = (e: KeyEvent) => {
+        const checkSubmit = (e: KeyboardEvent) => {
             if (e.keyCode == 13) {
                 addOutput()
+                e.preventDefault();
+            }
+            else if (e.keyCode == 27) {
+                panel.close();
+                e.preventDefault();
             }
         }
 
@@ -1764,6 +1786,7 @@ export default class LGraphCanvas_UI {
 
         inner_refresh();
         this.canvas.parentNode.appendChild(panel);
+        nameInput.focus();
         return panel;
     }
 
@@ -1938,12 +1961,11 @@ export default class LGraphCanvas_UI {
     /*
      * Shows a popup for editing one of the LGraphNode.properties.
      */
-    showEditPropertyValue(this: LGraphCanvas, node: LGraphNode, property: any, options: any): IGraphDialog {
+    showEditPropertyValue(this: LGraphCanvas, node: LGraphNode, property: any, options: GraphDialogOptions = {}): IGraphDialog {
         if (!node || node.properties[property] === undefined || LiteGraph.ignore_all_widget_events) {
             return;
         }
 
-        options = options || {};
         var that = this;
 
         var info = node.getPropertyInfo(property);
@@ -2109,11 +2131,8 @@ export default class LGraphCanvas_UI {
     createDialog(
         this: LGraphCanvas,
         html: string,
-        options?: { position?: Vector2; event?: MouseEvent, checkForInput?: boolean, closeOnLeave?: boolean, closeOnLeave_checkModified?: boolean }
+        options: GraphDialogOptions = { checkForInput: false, closeOnLeave: true, closeOnLeave_checkModified: true }
     ): IGraphDialog {
-        var def_options = { checkForInput: false, closeOnLeave: true, closeOnLeave_checkModified: true };
-        options = Object.assign(def_options, options || {});
-
         var dialog = document.createElement("div") as IGraphDialog;
         dialog.className = "graphdialog";
         dialog.innerHTML = html;
@@ -2128,11 +2147,11 @@ export default class LGraphCanvas_UI {
         }
 
         if (options.position) {
-            offsetx += options.position[0];
-            offsety += options.position[1];
+            offsetx = options.position[0];
+            offsety = options.position[1];
         } else if (options.event) {
-            offsetx += options.event.clientX;
-            offsety += options.event.clientY;
+            offsetx = options.event.clientX;
+            offsety = options.event.clientY;
         } //centered
         else {
             offsetx += this.canvas.width * 0.5;
@@ -2141,6 +2160,7 @@ export default class LGraphCanvas_UI {
 
         dialog.style.left = offsetx + "px";
         dialog.style.top = offsety + "px";
+
 
         this.canvas.parentNode.appendChild(dialog);
 

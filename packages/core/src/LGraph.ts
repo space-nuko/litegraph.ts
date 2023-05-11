@@ -15,7 +15,12 @@ export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
-    addedByDeserialize?: "configure" | "clone" | "paste" | null
+    addedByDeserialize?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | null,
+    prevNodeId?: number
+}
+
+export type LGraphRemoveNodeOptions = {
+    removedBy?: "moveIntoSubgraph" | null
 }
 
 export interface LGraphConfig {
@@ -764,7 +769,7 @@ export default class LGraph {
      * Called when a node is removed
      * @param node the instance of the node
      */
-    onNodeRemoved?(node: LGraphNode): void;
+    onNodeRemoved?(node: LGraphNode, options: LGraphRemoveNodeOptions): void;
 
     onPlayEvent?(): void;
     onStopEvent?(): void;
@@ -791,7 +796,7 @@ export default class LGraph {
     onNodeTrace?(node: LGraphNode, message: string)
 
     /** Removes a node from the graph */
-    remove(node: LGraphNode): void {
+    remove(node: LGraphNode, options: LGraphRemoveNodeOptions = {}): void {
         if (node instanceof LGraphGroup) {
             var index = this._groups.indexOf(node);
             if (index != -1) {
@@ -838,7 +843,7 @@ export default class LGraph {
 
         //callback
         if (node.onRemoved) {
-            node.onRemoved();
+            node.onRemoved(options);
         }
 
         node.graph = null;
@@ -865,7 +870,7 @@ export default class LGraph {
         delete this._nodes_by_id[node.id];
 
         if (this.onNodeRemoved) {
-            this.onNodeRemoved(node);
+            this.onNodeRemoved(node, options);
         }
 
         //close panels

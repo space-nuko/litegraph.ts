@@ -1,14 +1,30 @@
 import type { ContextMenuItem } from "../ContextMenu";
 import type { MouseEventExt } from "../DragAndScale";
+import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
 import LGraph from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
 import type { OptionalSlots, PropertyLayout, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
+import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
-import { BuiltInSlotShape, type NodeMode, type Vector2 } from "../types";
+import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2 } from "../types";
+import GraphInput from "./GraphInput";
+import GraphOutput from "./GraphOutput";
 
 export interface SubgraphProperties extends Record<string, any> {
     enabled: boolean
+}
+
+export type SubgraphInputPair = {
+    innerNode: GraphInput,
+    outerInput: INodeInputSlot,
+    outerInputIndex: number
+}
+
+export type SubgraphOutputPair = {
+    innerNode: GraphOutput,
+    outerOutput: INodeOutputSlot,
+    outerOutputIndex: number
 }
 
 export default class Subgraph extends LGraphNode {
@@ -279,87 +295,225 @@ export default class Subgraph extends LGraphNode {
         return node;
     };
 
-    buildFromNodes(nodes) {
-        //clear all?
-        //TODO
+    buildFromNodes(nodes: LGraphNode[]) {
+        // Nodes that connect data between parent graph and subgraph
+        // Since the nodes will be cloned we can't rely on node IDs, so the
+        // new nodes are referred to by index into the nodes array
+        // { linkID => [fromIndex, toIndex, connectionPos] }
+        const linksIn: Record<number, [LLink, number, number, Vector2]> = {}
+        const linksOut: Record<number, [LLink, number, number, Vector2]> = {}
 
-        //nodes that connect data between parent graph and subgraph
-        var subgraph_inputs = [];
-        var subgraph_outputs = [];
+        // Links internal to the subgraph
+        // { linkID => [LLink, fromIndex, toIndex, connectionPos] }
+        const innerLinks: Record<number, [LLink, number, number, Vector2]> = {}
 
-        //mark inner nodes
-        var ids = {};
-        var min_x = 0;
-        var max_x = 0;
-        for (var i = 0; i < nodes.length; ++i) {
-            var node = nodes[i];
-            ids[node.id] = node;
+        const containedNodes = nodes.reduce((result, node) => { result[node.id] = node; return result }, {})
+
+        let min_x = Number.MAX_SAFE_INTEGER;
+        let max_x = 0;
+        let min_y = Number.MAX_SAFE_INTEGER;
+        let max_y = 0;
+
+        for (const node of Object.values(nodes)) {
             min_x = Math.min(node.pos[0], min_x);
-            max_x = Math.max(node.pos[0], min_x);
+            max_x = Math.max(node.pos[0] + node.size[0], max_x);
+            min_y = Math.min(node.pos[1], min_y);
+            max_y = Math.max(node.pos[1] + node.size[1], max_y);
         }
 
-        var last_input_y = 0;
-        var last_output_y = 0;
+        const indexToNode: Record<number, LGraphNode> = {}
+        const nodeIdToIndex: Record<number, number> = {}
+        for (const [index, node] of nodes.entries()) {
+            indexToNode[index] = node;
+            nodeIdToIndex[node.id] = index;
+        }
 
-        for (var i = 0; i < nodes.length; ++i) {
-            var node = nodes[i];
-            //check inputs
-            if (node.inputs)
-                for (var j = 0; j < node.inputs.length; ++j) {
-                    var input = node.inputs[j];
-                    if (!input || !input.link)
-                        continue;
-                    var link = node.graph.links[input.link];
-                    if (!link)
-                        continue;
-                    if (ids[link.origin_id])
-                        continue;
-                    //this.addInput(input.name,link.type);
-                    this.subgraph.addInput(input.name, link.type);
-                    /*
-                    var input_node = LiteGraph.createNode("graph/input");
-                    this.subgraph.add( input_node );
-                    input_node.pos = [min_x - 200, last_input_y ];
-                    last_input_y += 100;
-                    */
-                }
+        let nextIndex = nodes.length;
 
-            //check outputs
-            if (node.outputs)
-                for (var j = 0; j < node.outputs.length; ++j) {
-                    var output = node.outputs[j];
-                    if (!output || !output.links || !output.links.length)
-                        continue;
-                    var is_external = false;
-                    for (var k = 0; k < output.links.length; ++k) {
-                        var link = node.graph.links[output.links[k]];
-                        if (!link)
-                            continue;
-                        if (ids[link.target_id])
-                            continue;
-                        is_external = true;
-                        break;
+        // detect inputs and outputs
+        for (const node of nodes) {
+            for (let index = 0; index < node.inputs.length; index++) {
+                const link = node.getInputLink(index)
+
+                if (link) {
+                    const pos = node.getConnectionPos(true, index);
+
+                    let indexFrom = nodeIdToIndex[link.origin_id]
+                    if (indexFrom == null) {
+                        // Found a node outside the selected nodes
+                        indexFrom = nextIndex;
+                        nextIndex += 1;
+                        nodeIdToIndex[link.origin_id] = indexFrom
+                        indexToNode[indexFrom] = node.graph.getNodeById(link.origin_id)
                     }
-                    if (!is_external)
-                        continue;
-                    //this.addOutput(output.name,output.type);
-                    /*
-                    var output_node = LiteGraph.createNode("graph/output");
-                    this.subgraph.add( output_node );
-                    output_node.pos = [max_x + 50, last_output_y ];
-                    last_output_y += 100;
-                    */
+
+                    let indexTo = nodeIdToIndex[link.target_id]
+                    if (indexTo == null) {
+                        indexTo = nextIndex;
+                        nextIndex += 1;
+                        nodeIdToIndex[link.target_id] = indexTo
+                        indexToNode[indexTo] = node.graph.getNodeById(link.target_id)
+                    }
+
+                    console.warn("S", link.origin_id, containedNodes[link.origin_id])
+                    const isSelected = containedNodes[link.origin_id] != null;
+                    if (isSelected) {
+                        innerLinks[link.id] = [link, indexFrom, indexTo, pos];
+                    }
+                    else {
+                        linksIn[link.id] = [link, indexFrom, indexTo, pos];
+                    }
                 }
+            }
+
+            for (let index = 0; index < node.outputs.length; index++) {
+                const links = node.getOutputLinks(index)
+
+                for (const link of links) {
+                    const pos = node.getConnectionPos(false, index);
+                    let indexFrom = nodeIdToIndex[link.origin_id]
+                    if (indexFrom == null) {
+                        // Found a node outside the selected nodes
+                        indexFrom = nextIndex;
+                        nextIndex += 1;
+                        nodeIdToIndex[link.origin_id] = indexFrom
+                        indexToNode[indexFrom] = node.graph.getNodeById(link.origin_id)
+                    }
+
+                    let indexTo = nodeIdToIndex[link.target_id]
+                    if (indexTo == null) {
+                        indexTo = nextIndex;
+                        nextIndex += 1;
+                        nodeIdToIndex[link.target_id] = indexTo
+                        indexToNode[indexTo] = node.graph.getNodeById(link.target_id)
+                    }
+
+                    const isSelected = containedNodes[link.target_id] != null;
+                    if (isSelected) {
+                        innerLinks[link.id] = [link, indexFrom, indexTo, pos];
+                    }
+                    else {
+                        linksOut[link.id] = [link, indexFrom, indexTo, pos];
+                    }
+                }
+            }
         }
 
-        //detect inputs and outputs
-        //split every connection in two data_connection nodes
-        //keep track of internal connections
-        //connect external connections
+        // Sort links in order from highest to lowest
+        const sortedLinksIn = Object.values(linksIn);
+        const sortedLinksOut = Object.values(linksOut);
+        sortedLinksIn.sort((a, b) => a[3][1] - b[3][1])
+        sortedLinksOut.sort((a, b) => a[3][1] - b[3][1])
 
-        //clone nodes inside subgraph and try to reconnect them
+        if (LiteGraph.debug) {
+            console.debug("NODES", Object.keys(nodes))
+            console.debug("IN", Object.keys(linksIn))
+            console.debug("OUT", Object.keys(linksOut))
+            console.debug("INNER", Object.keys(innerLinks))
+        }
 
-        //connect edge subgraph nodes to extarnal connections nodes
+        // { slotId => outputSlotOnSubgraphNode }
+        const inputSlotsCreated: Record<number, SubgraphInputPair> = {}
+        const outputSlotsCreated: Record<number, SubgraphOutputPair> = {}
+
+        // Add nodes into the subgraph
+        for (const [index, node] of nodes.entries()) {
+            const newPos: Vector2 = [node.pos[0] - min_x, node.pos[1] - min_y]
+            const prevNodeId = node.id;
+            node.graph.remove(node, { removedBy: "moveIntoSubgraph" })
+            this.subgraph.add(node, { addedByDeserialize: "moveIntoSubgraph", prevNodeId });
+            node.pos = newPos
+        }
+
+        let i = 0;
+        let inputNodeY = 0
+        let outputNodeY = 0
+
+        // Reconnect links from outside the subgraph -> inside
+        for (const [linkIn, fromIndex, toIndex, _pos] of sortedLinksIn) {
+            let pair = inputSlotsCreated[linkIn.target_slot];
+            if (!pair) {
+                pair = this.addGraphInput(`${i++}`, linkIn.type, [-200, inputNodeY])
+                inputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
+                if (!pair) {
+                    console.error("Failed creating subgraph output pair!", linkIn);
+                    continue
+                }
+            }
+
+            const fromNode = indexToNode[fromIndex]
+            const toNode = indexToNode[toIndex]
+
+            console.warn("CONNECT", fromNode, linkIn.origin_slot, this, pair.outerInputIndex)
+
+            fromNode.connect(linkIn.origin_slot, this, pair.outerInputIndex)
+            pair.innerNode.connect(0, toNode, linkIn.target_slot)
+
+            inputSlotsCreated[linkIn.target_slot] = pair
+        }
+
+        i = 0;
+
+        // Reconnect links from inside the subgraph -> outside
+        for (const [linkOut, fromIndex, toIndex, _pos] of sortedLinksOut) {
+            let pair = outputSlotsCreated[linkOut.target_slot];
+            if (!pair) {
+                pair = this.addGraphOutput(`${i++}`, linkOut.type, [max_x - min_x, outputNodeY])
+                outputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
+                if (!pair) {
+                    console.error("Failed creating subgraph output pair!", linkOut);
+                    continue
+                }
+            }
+
+            const fromNode = indexToNode[fromIndex]
+            const toNode = indexToNode[toIndex]
+
+            fromNode.connect(linkOut.origin_slot, pair.innerNode, 0)
+            this.connect(pair.outerOutputIndex, toNode, linkOut.target_slot)
+
+            outputSlotsCreated[linkOut.target_slot] = pair
+        }
+
+        // Reconnect internal links
+        for (const [innerLink, fromIndex, toIndex, _pos] of Object.values(innerLinks)) {
+            const fromNode = indexToNode[fromIndex]
+            const toNode = indexToNode[toIndex]
+
+            fromNode.connect(innerLink.origin_slot, toNode, innerLink.target_slot)
+        }
+    }
+
+    addGraphInput(name: string, type: SlotType, pos?: Vector2): SubgraphInputPair | null {
+        const innerNode = LiteGraph.createNode(GraphInput);
+        if (innerNode == null)
+            return null;
+
+        this.subgraph.add(innerNode);
+        const nodeSize = innerNode.computeSize();
+        if (pos)
+            innerNode.pos = [pos[0] - nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
+
+        const outerInput = this.addInput(name, type);
+        const outerInputIndex = this.inputs.length - 1;
+
+        return { innerNode, outerInput, outerInputIndex }
+    }
+
+    addGraphOutput(name: string, type: SlotType, pos?: Vector2): SubgraphOutputPair | null {
+        const innerNode = LiteGraph.createNode(GraphOutput);
+        if (innerNode == null)
+            return null;
+
+        this.subgraph.add(innerNode);
+        const nodeSize = innerNode.computeSize();
+        if (pos)
+            innerNode.pos = [pos[0] + nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
+
+        const outerOutput = this.addOutput(name, type);
+        const outerOutputIndex = this.outputs.length - 1;
+
+        return { innerNode, outerOutput, outerOutputIndex }
     }
 }
 

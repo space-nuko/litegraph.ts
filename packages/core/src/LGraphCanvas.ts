@@ -51,6 +51,14 @@ export interface IGraphWidgetUI extends HTMLDivElement {
     value: any
 }
 
+export type GraphDialogOptions = {
+    position?: Vector2,
+    event?: MouseEvent,
+    checkForInput?: boolean,
+    closeOnLeave?: boolean,
+    closeOnLeave_checkModified?: boolean
+}
+
 export interface IGraphDialog extends HTMLDivElement {
     close: () => void;
     modified: () => void;
@@ -1913,7 +1921,7 @@ export default class LGraphCanvas
         ]);
     }
 
-    addGraphInputNode(this: LGraphCanvas, subgraph: LGraph, name: string, type: SlotType) {
+    addGraphInputNode(this: LGraphCanvas, subgraphNode: Subgraph, name: string, type: SlotType) {
         // Check if there's already an input
         const existing = this.graph.findNodesByType("graph/input")
             .find(node => node.properties.name === name)
@@ -1927,20 +1935,16 @@ export default class LGraphCanvas
         if (!type || type === "")
             type = "*"
 
+        const pos: Vector2 = [
+            (this.canvas.width * 0.25) / this.ds.scale - this.ds.offset[0],
+            (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
+        ]
+
         this.graph.beforeChange();
-        var newnode = LiteGraph.createNode(GraphInput);
-        if (newnode) {
-            subgraph.add(newnode);
+        const pair = subgraphNode.addGraphInput(name, type, pos);
+        if (pair) {
+            const newnode = pair.innerNode;
             this.selectNodes([newnode]);
-            newnode.setProperty("name", name);
-            newnode.setProperty("type", type);
-            const nodeSize = newnode.computeSize();
-            const pos = [
-                -nodeSize[0] * 0.5 + (this.canvas.width * 0.5) / this.ds.scale - this.ds.offset[0],
-                -nodeSize[1] * 0.5 + (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
-            ]
-            newnode.pos[0] = pos[0] - 5;
-            newnode.pos[1] = pos[1] - 5;
             this.graph.afterChange();
         }
         else {
@@ -1948,7 +1952,7 @@ export default class LGraphCanvas
         }
     }
 
-    addGraphOutputNode(this: LGraphCanvas, subgraph: LGraph, name: string, type: SlotType) {
+    addGraphOutputNode(this: LGraphCanvas, subgraphNode: Subgraph, name: string, type: SlotType) {
         // Check if there's already an output
         const existing = this.graph.findNodesByType("graph/output")
             .find(node => node.properties.name === name)
@@ -1962,20 +1966,16 @@ export default class LGraphCanvas
         if (!type || type === "")
             type = "*"
 
+        const pos: Vector2 = [
+            (this.canvas.width * 0.75) / this.ds.scale - this.ds.offset[0],
+            (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
+        ]
+
         this.graph.beforeChange();
-        var newnode = LiteGraph.createNode(GraphOutput);
-        if (newnode) {
-            subgraph.add(newnode);
+        const pair = subgraphNode.addGraphOutput(name, type, pos);
+        if (pair) {
+            const newnode = pair.innerNode;
             this.selectNodes([newnode]);
-            newnode.setProperty("name", name);
-            newnode.setProperty("type", type);
-            const nodeSize = newnode.computeSize();
-            const pos = [
-                -nodeSize[0] + (this.canvas.width * 0.5) / this.ds.scale - this.ds.offset[0],
-                -nodeSize[1] + (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
-            ]
-            newnode.pos[0] = pos[0] - 5;
-            newnode.pos[1] = pos[1] - 5;
             this.graph.afterChange();
         }
         else {
@@ -2030,7 +2030,7 @@ export default class LGraphCanvas
     createDialog(
         this: LGraphCanvas,
         html: string,
-        options?: { position?: Vector2; event?: MouseEvent, checkForInput?: boolean, closeOnLeave?: boolean, closeOnLeave_checkModified?: boolean }
+        options?: GraphDialogOptions
     ): IGraphDialog {
         return LGraphCanvas_UI.prototype.createDialog.apply(this, arguments);
     }
@@ -2081,7 +2081,7 @@ export default class LGraphCanvas
         return LGraphCanvas_UI.prototype.showLinkMenu.apply(this, arguments);
     }
 
-    showEditPropertyValue(node: LGraphNode, property: any, options: any): IGraphDialog {
+    showEditPropertyValue(node: LGraphNode, property: any, options: GraphDialogOptions): IGraphDialog {
         return LGraphCanvas_UI.prototype.showEditPropertyValue.apply(this, arguments);
     }
 

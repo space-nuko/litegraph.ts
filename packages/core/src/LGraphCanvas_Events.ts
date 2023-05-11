@@ -65,7 +65,6 @@ export default class LGraphCanvas_Events {
         }
         this.pointer_is_down = true;
 
-
         this.canvas.focus();
 
         ContextMenu.closeAllContextMenus(ref_window);

@@ -406,14 +406,9 @@ export default class LGraphCanvas_Rendering {
                 if (input.not_subgraph_input)
                     continue;
 
-                //input button clicked
-                if (this.drawButton(20, y + 2, w - 20, h - 2)) {
-                    this.addGraphInputNode(subgraph, input.name, input.type)
-                    this.block_click = false;
-                }
                 ctx.fillStyle = "#9C9";
                 ctx.beginPath();
-                ctx.arc(w - 16, y + h * 0.5, 5, 0, 2 * Math.PI);
+                ctx.arc(w - 16, y, 5, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.fillStyle = "#AAA";
                 ctx.fillText(input.name, 30, y + h * 0.75);
@@ -461,14 +456,9 @@ export default class LGraphCanvas_Rendering {
                 if (output.not_subgraph_output)
                     continue;
 
-                //output button clicked
-                if (this.drawButton(canvas_w - w, y + 2, w - 20, h - 2)) {
-                    this.addGraphOutputNode(subgraph, output.name, output.type)
-                    this.block_click = false;
-                }
                 ctx.fillStyle = "#9C9";
                 ctx.beginPath();
-                ctx.arc(canvas_w - w + 16, y + h * 0.5, 5, 0, 2 * Math.PI);
+                ctx.arc(canvas_w - w + 16, y, 5, 0, 2 * Math.PI);
                 ctx.fill();
                 ctx.fillStyle = "#AAA";
                 ctx.fillText(output.name, canvas_w - w + 30, y + h * 0.75);
@@ -492,9 +482,8 @@ export default class LGraphCanvas_Rendering {
         var ctx = this.ctx;
         var pos = this.offset_mouse;
         var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
-        const pos2 = pos;
         pos = this.last_click_position_offset;
-        var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+        var clicked = pos && this.pointer_is_down && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
 
         ctx.fillStyle = hover ? hovercolor : bgcolor;
         if (clicked)

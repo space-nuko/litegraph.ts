@@ -4,7 +4,7 @@ import type INodeConnection from "./INodeConnection";
 import type { INodeInputSlot, INodeOutputSlot, default as INodeSlot, SlotInPosition, SlotIndex, SlotNameOrIndex } from "./INodeSlot";
 import type { default as IProperty, IPropertyInfo } from "./IProperty";
 import type { default as IWidget, WidgetCallback } from "./IWidget";
-import LGraph from "./LGraph";
+import LGraph, { LGraphRemoveNodeOptions } from "./LGraph";
 import LGraphCanvas, { type INodePanel } from "./LGraphCanvas";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
@@ -1852,8 +1852,9 @@ export default class LGraphNode {
 
         if (!this.graph) {
             //could be connected before adding it to a graph
-            console.log(
-                "Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them."
+            console.error(
+                "Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",
+                this
             ); //due to link ids being associated with graphs
             return null;
         }
@@ -1863,13 +1864,13 @@ export default class LGraphNode {
             slot = this.findOutputSlotIndexByName(slot);
             if (slot == -1) {
                 if (LiteGraph.debug) {
-                    console.log("Connect: Error, no slot of name " + slot);
+                    console.error("Connect: Error, no slot of name " + slot);
                 }
                 return null;
             }
         } else if (!this.outputs || slot >= this.outputs.length) {
             if (LiteGraph.debug) {
-                console.log("Connect: Error, slot number not found");
+                console.error("Connect: Error, slot number not found");
             }
             return null;
         }
@@ -1886,12 +1887,20 @@ export default class LGraphNode {
             return null;
         }
 
+        if (!targetNode.graph) {
+            console.error(
+                "Connect: Error, target node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",
+                targetNode
+            );
+            return null;
+        }
+
         //you can specify the slot by name
         if (typeof targetSlot === "string") {
             targetSlot = targetNode.findInputSlotIndexByName(targetSlot);
             if (targetSlot == -1) {
                 if (LiteGraph.debug) {
-                    console.log(
+                    console.error(
                         "Connect: Error, no slot of name " + targetSlot
                     );
                 }
@@ -1912,7 +1921,7 @@ export default class LGraphNode {
             targetSlot >= targetNode.inputs.length
         ) {
             if (LiteGraph.debug) {
-                console.log("Connect: Error, slot number not found");
+                console.error("Connect: Error, slot number not found");
             }
             return null;
         }
@@ -2055,13 +2064,13 @@ export default class LGraphNode {
             slot = this.findOutputSlotIndexByName(slot);
             if (slot == -1) {
                 if (LiteGraph.debug) {
-                    console.log("Connect: Error, no slot of name " + slot);
+                    console.error("Connect: Error, no slot of name " + slot);
                 }
                 return false;
             }
         } else if (!this.outputs || slot >= this.outputs.length) {
             if (LiteGraph.debug) {
-                console.log("Connect: Error, slot number not found");
+                console.error("Connect: Error, slot number not found");
             }
             return false;
         }
@@ -2211,13 +2220,13 @@ export default class LGraphNode {
             slot = this.findInputSlotIndexByName(slot);
             if (slot == -1) {
                 if (LiteGraph.debug) {
-                    console.log("Connect: Error, no slot of name " + slot);
+                    console.error("Connect: Error, no slot of name " + slot);
                 }
                 return false;
             }
         } else if (!this.inputs || slot >= this.inputs.length) {
             if (LiteGraph.debug) {
-                console.log("Connect: Error, slot number not found");
+                console.error("Connect: Error, slot number not found");
             }
             return false;
         }
@@ -2605,7 +2614,7 @@ export default class LGraphNode {
      * when removed from graph
      * Called by `LGraph.remove` `LGraph.clear`
      */
-    onRemoved?(): void;
+    onRemoved?(options: LGraphRemoveNodeOptions): void;
 
     /**
      * if returns false the incoming connection will be canceled
