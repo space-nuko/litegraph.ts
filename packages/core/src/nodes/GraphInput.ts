@@ -19,10 +19,10 @@ export default class GraphInput extends LGraphNode {
     }
 
     static slotLayout: SlotLayout = {
-        inputs: [
+        inputs: [],
+        outputs: [
             { name: "", type: "number" }
-        ],
-        outputs: []
+        ]
     }
 
     nameWidget: ITextWidget;
@@ -114,7 +114,7 @@ export default class GraphInput extends LGraphNode {
             this.graph.changeInputType(this.nameInGraph, type);
         }
         else {
-            console.error("Can't change GraphInput to type", type, this.graph, this.nameInGraph)
+            console.error("[GraphInput] Can't change output to type", type, this.graph, this.nameInGraph)
         }
     }
 

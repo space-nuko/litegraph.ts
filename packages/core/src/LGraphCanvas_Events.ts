@@ -50,9 +50,12 @@ export default class LGraphCanvas_Events {
         var is_double_click = (now - this.last_mouseclick < 300) && is_primary;
         this.mouse[0] = e.clientX;
         this.mouse[1] = e.clientY;
+        this.offset_mouse[0] = e.offsetX;
+        this.offset_mouse[1] = e.offsetY;
         this.graph_mouse[0] = e.canvasX;
         this.graph_mouse[1] = e.canvasY;
         this.last_click_position = [this.mouse[0], this.mouse[1]];
+        this.last_click_position_offset = [this.offset_mouse[0], this.offset_mouse[1]];
 
         if (this.pointer_is_down && is_primary) {
             this.pointer_is_double = true;
@@ -526,6 +529,8 @@ export default class LGraphCanvas_Events {
             mouse[1] - this.last_mouse[1]
         ];
         this.last_mouse = mouse;
+        this.offset_mouse[0] = e.offsetX;
+        this.offset_mouse[1] = e.offsetY;
         this.graph_mouse[0] = e.canvasX;
         this.graph_mouse[1] = e.canvasY;
 

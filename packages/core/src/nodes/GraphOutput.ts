@@ -83,6 +83,9 @@ export default class GraphOutput extends LGraphNode {
                     this.graph.addOutput(value, "" + this.properties.type, null);
                 }
             } //what if not?!
+            else {
+                console.error("[GraphOutput] missing graph!", name, value)
+            }
             this.nameWidget.value = value;
             this.nameInGraph = value;
         }

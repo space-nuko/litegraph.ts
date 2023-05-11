@@ -7,6 +7,7 @@ import type { SerializedLLink } from "./LLink";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import GraphInput from "./nodes/GraphInput";
+import Subgraph from "./nodes/Subgraph";
 import type { LConnectionKind, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 
@@ -648,18 +649,12 @@ export default class LGraph {
         }
 
         for (const node of this.iterateNodesInOrder()) {
-            // TODO subgraph
-            /*
-            if (
-                node instanceof LiteGraph.Subgraph &&
-                eventName != "onExecute"
-            ) {
+            if (node.type === "basic/subgraph" && eventName != "onExecute") {
                 if (node.mode == mode) {
-                    node.sendEventToAllNodes(eventname, params, mode);
+                    (node as Subgraph).sendEventToAllNodes(eventName, params, mode);
                 }
                 continue;
             }
-            */
 
             if (!node[eventName] || node.mode != mode) {
                 continue;

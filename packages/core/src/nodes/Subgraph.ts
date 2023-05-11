@@ -105,8 +105,9 @@ export default class Subgraph extends LGraphNode {
         if (this.flags.collapsed)
             return;
         var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5;
+        const can_interact = graphcanvas.allow_interaction && !graphcanvas.read_only;
         // button
-        var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT);
+        var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT) && can_interact;
         let overleft = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0] / 2, LiteGraph.NODE_TITLE_HEIGHT)
         ctx.fillStyle = over ? "#555" : "#222";
         ctx.beginPath();
@@ -367,5 +368,5 @@ LiteGraph.registerNodeType({
     title: "Subgraph",
     desc: "Graph inside a node",
     title_color: "#334",
-    type: "basic/subgraph"
+    type: "graph/subgraph"
 })

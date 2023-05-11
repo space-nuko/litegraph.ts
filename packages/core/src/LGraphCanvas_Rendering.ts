@@ -3,6 +3,7 @@ import LGraphCanvas from "./LGraphCanvas";
 import LGraphNode from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
+import GraphInput from "./nodes/GraphInput";
 import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleMode, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
 import type { Vector2 } from "./types"
 
@@ -407,24 +408,8 @@ export default class LGraphCanvas_Rendering {
 
                 //input button clicked
                 if (this.drawButton(20, y + 2, w - 20, h - 2)) {
-                    var type = (subnode.constructor as any).input_node_type || "graph/input";
-                    this.graph.beforeChange();
-                    var newnode = LiteGraph.createNode(type);
-                    if (newnode) {
-                        subgraph.add(newnode);
-                        this.block_click = false;
-                        this.last_click_position = null;
-                        this.selectNodes([newnode]);
-                        this.node_dragged = newnode;
-                        this.dragging_canvas = false;
-                        newnode.setProperty("name", input.name);
-                        newnode.setProperty("type", input.type);
-                        this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
-                        this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
-                        this.graph.afterChange();
-                    }
-                    else
-                        console.error("graph input node not found:", type);
+                    this.addGraphInputNode(subgraph, input.name, input.type)
+                    this.block_click = false;
                 }
                 ctx.fillStyle = "#9C9";
                 ctx.beginPath();
@@ -478,24 +463,8 @@ export default class LGraphCanvas_Rendering {
 
                 //output button clicked
                 if (this.drawButton(canvas_w - w, y + 2, w - 20, h - 2)) {
-                    var type = (subnode.constructor as any).output_node_type || "graph/output";
-                    this.graph.beforeChange();
-                    var newnode = LiteGraph.createNode(type);
-                    if (newnode) {
-                        subgraph.add(newnode);
-                        this.block_click = false;
-                        this.last_click_position = null;
-                        this.selectNodes([newnode]);
-                        this.node_dragged = newnode;
-                        this.dragging_canvas = false;
-                        newnode.setProperty("name", output.name);
-                        newnode.setProperty("type", output.type);
-                        this.node_dragged.pos[0] = this.graph_mouse[0] - 5;
-                        this.node_dragged.pos[1] = this.graph_mouse[1] - 5;
-                        this.graph.afterChange();
-                    }
-                    else
-                        console.error("graph input node not found:", type);
+                    this.addGraphOutputNode(subgraph, output.name, output.type)
+                    this.block_click = false;
                 }
                 ctx.fillStyle = "#9C9";
                 ctx.beginPath();
@@ -521,11 +490,11 @@ export default class LGraphCanvas_Rendering {
         hovercolor: string = "#555",
         textcolor: string = LiteGraph.NODE_TEXT_COLOR): boolean {
         var ctx = this.ctx;
-        var yFix = y + LiteGraph.NODE_TITLE_HEIGHT + 2;	// fix the height with the title
-        var pos = this.mouse;
-        var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
-        pos = this.last_click_position;
-        var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, yFix, w, h);
+        var pos = this.offset_mouse;
+        var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+        const pos2 = pos;
+        pos = this.last_click_position_offset;
+        var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
 
         ctx.fillStyle = hover ? hovercolor : bgcolor;
         if (clicked)
@@ -544,7 +513,7 @@ export default class LGraphCanvas_Rendering {
             }
         }
 
-        var was_clicked = clicked && !this.block_click;
+        var was_clicked = clicked && !this.block_click && this.allow_interaction && !this.read_only;
         if (clicked)
             this.blockClick();
         return was_clicked;

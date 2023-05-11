@@ -13,6 +13,9 @@ import LGraphGroup from "./LGraphGroup";
 import LGraphNode, { type NodeTypeOpts } from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
+import GraphInput from "./nodes/GraphInput";
+import GraphOutput from "./nodes/GraphOutput";
+import Subgraph from "./nodes/Subgraph";
 import { BuiltInSlotType, Dir, LinkRenderMode, SlotType, type Vector2, type Vector4 } from "./types";
 import { clamp } from "./utils";
 
@@ -265,6 +268,7 @@ export default class LGraphCanvas
      */
     last_mouse_position: Vector2 = [0, 0];
     last_click_position: Vector2 = [0, 0];
+    last_click_position_offset: Vector2 = [0, 0];
     /** Timestamp of last mouse click, defaults to 0 */
     last_mouseclick: number;
     last_mouse_dragging: boolean = false;
@@ -272,6 +276,8 @@ export default class LGraphCanvas
     live_mode: boolean = false;
     /** mouse in canvas coordinates, where 0,0 is the top-left corner of the blue rectangle */
     mouse: Vector2 = [0, 0];
+    /** mouse in offset coordinates, where 0,0 is the top-left corner of the canvas DOM element */
+    offset_mouse: Vector2 = [0, 0];
     /** mouse in graph coordinates, where 0,0 is the top-left corner of the blue rectangle */
     graph_mouse: Vector2 = [0, 0];
     node_capturing_input: LGraphNode | null;
@@ -1837,7 +1843,7 @@ export default class LGraphCanvas
     }
 
     isAreaClicked(this: LGraphCanvas, x: number, y: number, w: number, h: number, hold_click?: boolean) {
-        var pos = this.mouse;
+        var pos = this.offset_mouse;
         var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
         pos = this.last_click_position;
         var clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
@@ -1905,6 +1911,76 @@ export default class LGraphCanvas
             e.clientX - rect.left,
             e.clientY - rect.top
         ]);
+    }
+
+    addGraphInputNode(this: LGraphCanvas, subgraph: LGraph, name: string, type: SlotType) {
+        // Check if there's already an input
+        const existing = this.graph.findNodesByType("graph/input")
+            .find(node => node.properties.name === name)
+
+        if (existing) {
+            this.selectNodes([existing])
+            return;
+        }
+
+        // graph input node must have a non-empty type
+        if (!type || type === "")
+            type = "*"
+
+        this.graph.beforeChange();
+        var newnode = LiteGraph.createNode(GraphInput);
+        if (newnode) {
+            subgraph.add(newnode);
+            this.selectNodes([newnode]);
+            newnode.setProperty("name", name);
+            newnode.setProperty("type", type);
+            const nodeSize = newnode.computeSize();
+            const pos = [
+                -nodeSize[0] * 0.5 + (this.canvas.width * 0.5) / this.ds.scale - this.ds.offset[0],
+                -nodeSize[1] * 0.5 + (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
+            ]
+            newnode.pos[0] = pos[0] - 5;
+            newnode.pos[1] = pos[1] - 5;
+            this.graph.afterChange();
+        }
+        else {
+            console.error("graph input node not found:", type);
+        }
+    }
+
+    addGraphOutputNode(this: LGraphCanvas, subgraph: LGraph, name: string, type: SlotType) {
+        // Check if there's already an output
+        const existing = this.graph.findNodesByType("graph/output")
+            .find(node => node.properties.name === name)
+
+        if (existing) {
+            this.selectNodes([existing])
+            return;
+        }
+
+        // graph output node must have a non-empty type
+        if (!type || type === "")
+            type = "*"
+
+        this.graph.beforeChange();
+        var newnode = LiteGraph.createNode(GraphOutput);
+        if (newnode) {
+            subgraph.add(newnode);
+            this.selectNodes([newnode]);
+            newnode.setProperty("name", name);
+            newnode.setProperty("type", type);
+            const nodeSize = newnode.computeSize();
+            const pos = [
+                -nodeSize[0] + (this.canvas.width * 0.5) / this.ds.scale - this.ds.offset[0],
+                -nodeSize[1] + (this.canvas.height * 0.5) / this.ds.scale - this.ds.offset[1]
+            ]
+            newnode.pos[0] = pos[0] - 5;
+            newnode.pos[1] = pos[1] - 5;
+            this.graph.afterChange();
+        }
+        else {
+            console.error("graph input node not found:", type);
+        }
     }
 
     /*
@@ -2013,7 +2089,7 @@ export default class LGraphCanvas
         LGraphCanvas_UI.prototype.showShowNodePanel.apply(this, arguments);
     }
 
-    showSubgraphPropertiesDialog(): ISubgraphPropertiesPanel {
+    showSubgraphPropertiesDialog(node: LGraphNode): ISubgraphPropertiesPanel {
         return LGraphCanvas_UI.prototype.showSubgraphPropertiesDialog.apply(this, arguments);
     }
 

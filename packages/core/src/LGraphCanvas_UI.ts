@@ -1658,20 +1658,35 @@ export default class LGraphCanvas_UI {
 <input class='type'></input>
 <button>+</button>`;
         var elem = panel.addHTML(html, "subgraph_property extra", true);
-        elem.querySelector("button").addEventListener("click", function(e) {
-            var elem = this.parentNode;
-            var name = elem.querySelector<HTMLInputElement>(".name").value;
-            var type = elem.querySelector<HTMLInputElement>(".type").value;
+        const nameInput = elem.querySelector<HTMLInputElement>(".name");
+        const typeInput = elem.querySelector<HTMLInputElement>(".type");
+        const addButton = elem.querySelector<HTMLButtonElement>("button");
+
+        const addInput = (e) => {
+            var name = nameInput.value;
+            var type = typeInput.value;
             if (!name || node.findInputSlotIndexByName(name) != -1)
                 return;
             node.addInput(name, type);
-            elem.querySelector<HTMLInputElement>(".name").value = "";
-            elem.querySelector<HTMLInputElement>(".type").value = "";
+            nameInput.value = "";
+            typeInput.value = "";
             inner_refresh();
-        });
+            nameInput.focus();
+        }
+
+        const checkSubmit = (e: KeyEvent) => {
+            if (e.keyCode == 13) {
+                addInput()
+            }
+        }
+
+        addButton.addEventListener("click", addInput);
+        nameInput.addEventListener("keydown", checkSubmit);
+        typeInput.addEventListener("keydown", checkSubmit);
 
         inner_refresh();
         this.canvas.parentNode.appendChild(panel);
+        nameInput.focus();
         return panel;
     }
 
@@ -1721,25 +1736,31 @@ export default class LGraphCanvas_UI {
 <input class='type'></input>
 <button>+</button>`;
         var elem = panel.addHTML(html, "subgraph_property extra", true);
-        elem.querySelector<HTMLInputElement>(".name").addEventListener("keydown", function(e) {
-            if (e.keyCode == 13) {
-                addOutput.apply(this)
-            }
-        })
-        elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
-            addOutput.apply(this)
-        });
-        function addOutput() {
-            var elem = this.parentNode;
-            var name = elem.querySelector(".name").value;
-            var type = elem.querySelector(".type").value;
+        const nameInput = elem.querySelector<HTMLInputElement>(".name");
+        const typeInput = elem.querySelector<HTMLInputElement>(".type");
+        const addButton = elem.querySelector<HTMLButtonElement>("button");
+
+        const addOutput = () => {
+            var name = nameInput.value;
+            var type = typeInput.value;
             if (!name || node.findOutputSlotIndexByName(name) != -1)
                 return;
             node.addOutput(name, type);
-            elem.querySelector(".name").value = "";
-            elem.querySelector(".type").value = "";
+            nameInput.value = "";
+            typeInput.value = "";
             inner_refresh();
+            nameInput.focus();
         }
+
+        const checkSubmit = (e: KeyEvent) => {
+            if (e.keyCode == 13) {
+                addOutput()
+            }
+        }
+
+        addButton.addEventListener("click", addOutput);
+        nameInput.addEventListener("keydown", checkSubmit);
+        typeInput.addEventListener("keydown", checkSubmit);
 
         inner_refresh();
         this.canvas.parentNode.appendChild(panel);
@@ -2313,11 +2334,10 @@ export default class LGraphCanvas_UI {
             });
         }
 
-        if (0) //TODO
-            options.push({
-                content: "To Subgraph",
-                callback: LGraphCanvas.onMenuNodeToSubgraph
-            });
+        options.push({
+            content: "To Subgraph",
+            callback: LGraphCanvas.onMenuNodeToSubgraph
+        });
 
         options.push(ContextMenuSpecialItem.SEPARATOR, {
             content: "Remove",
