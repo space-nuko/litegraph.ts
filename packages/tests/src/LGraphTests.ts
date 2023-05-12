@@ -1,8 +1,9 @@
 import { LGraph, LiteGraph, Subgraph } from "@litegraph-ts/core"
 import { Watch } from "@litegraph-ts/nodes-basic"
 import { expect } from 'vitest'
+import UnitTest from "./UnitTest"
 
-export default class LGraphTests {
+export default class LGraphTests extends UnitTest {
     test__iterateNodesInOrder__shouldIterateNodes() {
         const graph = new LGraph();
 

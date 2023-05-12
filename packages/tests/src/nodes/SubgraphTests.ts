@@ -1,8 +1,37 @@
-import { LGraph, LiteGraph, Subgraph } from "@litegraph-ts/core"
+import { LGraph, LGraphNode, LiteGraph, Subgraph } from "@litegraph-ts/core"
 import { Watch } from "@litegraph-ts/nodes-basic"
-import { expect } from 'vitest'
+import { expect, vi } from 'vitest'
+import UnitTest from "../UnitTest"
 
-export default class SubgraphTests {
+class CustomGraph extends LGraph {
+    calls: number = 0;
+
+    override onNodeAdded(node: LGraphNode) {
+        expect(this.constructor.name).toEqual("CustomGraph")
+        expect(node).toBeTruthy();
+        this.calls += 1
+    }
+}
+
+export default class SubgraphTests extends UnitTest {
+    test__hooksCustomGraphClass() {
+        const customGraph = new CustomGraph();
+
+        const spy = vi.spyOn(customGraph, "onNodeAdded")
+
+        const factory = () => customGraph;
+        const graph = new LGraph();
+        const subgraph = LiteGraph.createNode(Subgraph, null, { constructorArgs: [factory] })
+
+        graph.add(subgraph)
+
+        const node = LiteGraph.createNode(Watch);
+        subgraph.subgraph.add(node)
+
+        expect(spy).toHaveBeenCalledOnce();
+        expect(customGraph.calls).toEqual(1)
+    }
+
     test__onAdded__rejectsDetachedFromParentGraph() {
 
         const subgraphA = LiteGraph.createNode(Subgraph)

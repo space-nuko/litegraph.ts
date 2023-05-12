@@ -62,10 +62,10 @@ export default class Subgraph extends LGraphNode {
         this.subgraph._is_subgraph = true;
 
         const wrap = <T extends Function>(origFn: T, ours: Function): T => {
-            return ((...args) => {
+            return function(this: LGraph, ...args) {
                 origFn?.apply(this, args)
                 ours.apply(this, args)
-            }) as any
+            } as any
         }
 
         this.subgraph.onTrigger = wrap(this.subgraph.onTrigger, this.onSubgraphTrigger);
