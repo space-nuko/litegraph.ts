@@ -153,6 +153,8 @@ export default class LGraph {
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
         }
+        if (rootGraph._is_subgraph)
+            throw "Top level graph was subgraph!"
         return rootGraph.last_node_id
     }
 
@@ -162,6 +164,9 @@ export default class LGraph {
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
         }
+        if (rootGraph._is_subgraph)
+            throw "Top level graph was subgraph!"
+
         const nextId = rootGraph.last_node_id
         rootGraph.last_node_id += 1
         this.last_node_id = rootGraph.last_node_id;
@@ -173,6 +178,8 @@ export default class LGraph {
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
         }
+        if (rootGraph._is_subgraph)
+            throw "Top level graph was subgraph!"
         return rootGraph.last_link_id
     }
 
@@ -181,6 +188,8 @@ export default class LGraph {
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
         }
+        if (rootGraph._is_subgraph)
+            throw "Top level graph was subgraph!"
         const nextId = rootGraph.last_link_id
         rootGraph.last_link_id += 1
         this.last_link_id = rootGraph.last_link_id;
