@@ -1,4 +1,5 @@
-import type { LGraphNodeConstructor, NodeTypeSpec, PropertyLayout, SearchboxExtra, SerializedLGraphNode, SlotLayout } from "./LGraphNode";
+import type LGraph from "./LGraph";
+import type { LGraphNodeConstructor, LGraphNodeConstructorFactory, NodeTypeSpec, PropertyLayout, SearchboxExtra, SerializedLGraphNode, SlotLayout } from "./LGraphNode";
 import { default as LGraphNode } from "./LGraphNode";
 import type { PointerEventsMethod, SlotType, Vector2, Vector4 } from "./types";
 import { NodeMode } from "./types";
@@ -6,6 +7,11 @@ import { BuiltInSlotType } from "./types";
 import { getStaticProperty } from "./utils";
 
 type TypeID = number;
+
+export type LiteGraphCreateNodeOptions = {
+    constructorArgs?: any[],
+    instanceProps?: Record<any, any>
+}
 
 export default class LiteGraph {
     static VERSION: number = 10.0;
@@ -126,6 +132,9 @@ export default class LiteGraph {
 
     // use mouse for retrocompatibility issues? (none found @ now)
     static pointerevents_method: PointerEventsMethod = "mouse";
+
+    // default constructor to use for new subgraphs created from the right-click context menu
+    static default_subgraph_lgraph_factory: () => LGraph = () => new LGraph;
 
     /** Register a node class so it can be listed when the user wants to create a new one */
     static registerNodeType<T extends LGraphNode>(config: LGraphNodeConstructor): void {
@@ -345,7 +354,7 @@ export default class LiteGraph {
      * @param name a name to distinguish from other nodes
      * @param options to set options
      */
-    static createNode<T extends LGraphNode>(type: string | (new () => T), title?: string, options?: object): T {
+    static createNode<T extends LGraphNode>(type: string | LGraphNodeConstructorFactory<T>, title?: string, options: LiteGraphCreateNodeOptions = {}): T {
         let regConfig: LGraphNodeConstructor | null = null;
         let typeID: string; // serialization ID like "basic/const"
 
@@ -372,16 +381,17 @@ export default class LiteGraph {
         title = title || regConfig.title || typeID;
 
         var node: T = null;
+        const args = options.constructorArgs || []
 
         if (LiteGraph.catch_exceptions) {
             try {
-                node = new regConfig.class(title) as T;
+                node = new regConfig.class(title, ...args) as T;
             } catch (err) {
                 console.error(err);
                 return null;
             }
         } else {
-            node = new regConfig.class(title) as T;
+            node = new regConfig.class(title, ...args) as T;
         }
 
         node.class = regConfig.class
@@ -411,9 +421,9 @@ export default class LiteGraph {
         }
 
         //extra options
-        if (options) {
-            for (var i in options) {
-                node[i] = options[i];
+        if (options.instanceProps) {
+            for (var i in options.instanceProps) {
+                node[i] = options.instanceProps[i];
             }
         }
 

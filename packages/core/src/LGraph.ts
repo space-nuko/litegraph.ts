@@ -2,7 +2,7 @@ import type { ContextMenuItem, IContextMenuItem } from "./ContextMenu";
 import type { SlotIndex } from "./INodeSlot";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode from "./LGraphNode";
+import LGraphNode, { LGraphNodeConstructor } from "./LGraphNode";
 import type { SerializedLLink } from "./LLink";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
@@ -15,12 +15,12 @@ export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
-    addedByDeserialize?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | null,
+    addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | null,
     prevNodeId?: number
 }
 
 export type LGraphRemoveNodeOptions = {
-    removedBy?: "moveIntoSubgraph" | null
+    removedBy?: "moveIntoSubgraph" | "moveOutOfSubgraph" | null
 }
 
 export interface LGraphConfig {
@@ -127,6 +127,64 @@ export default class LGraph {
 
     getSupportedTypes(): string[] {
         return this.supported_types || LGraph.DEFAULT_SUPPORTED_TYPES;
+    }
+
+    /*
+     * Gets the root graph above any subgraphs.
+     */
+    getRootGraph(): LGraph | null {
+        const graphs = Array.from(this.iterateParentGraphs());
+        const graph = graphs[graphs.length - 1]
+        if (graph._is_subgraph)
+            return null;
+        return graph;
+    }
+
+    *iterateParentGraphs(): Iterable<LGraph> {
+        let graph = this;
+        while (graph) {
+            yield graph;
+            graph = graph._subgraph_node?.graph;
+        }
+    }
+
+    private getLastNodeID() {
+        let rootGraph: LGraph = this;
+        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
+            rootGraph = rootGraph._subgraph_node.graph;
+        }
+        return rootGraph.last_node_id
+    }
+
+    // This is necessary to ensure node ID is unique across all subgraphs.
+    private incrementLastNodeID() {
+        let rootGraph: LGraph = this;
+        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
+            rootGraph = rootGraph._subgraph_node.graph;
+        }
+        const nextId = rootGraph.last_node_id
+        rootGraph.last_node_id += 1
+        this.last_node_id = rootGraph.last_node_id;
+        return nextId
+    }
+
+    private getLastLinkID() {
+        let rootGraph: LGraph = this;
+        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
+            rootGraph = rootGraph._subgraph_node.graph;
+        }
+        return rootGraph.last_link_id
+    }
+
+    private incrementLastLinkID() {
+        let rootGraph: LGraph = this;
+        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
+            rootGraph = rootGraph._subgraph_node.graph;
+        }
+        const nextId = rootGraph.last_link_id
+        rootGraph.last_link_id += 1
+        this.last_link_id = rootGraph.last_link_id;
+        return nextId
     }
 
     /** Removes all nodes from this graph */
@@ -638,8 +696,29 @@ export default class LGraph {
         return this.elapsed_time;
     }
 
-    iterateNodesInOrder(): Iterable<LGraphNode> {
-        return (this._nodes_in_order ? this._nodes_in_order : this._nodes) || [];
+    /**
+     * Iterates all nodes in this graph *excluding* subgraphs.
+     */
+    *iterateNodesInOrder(): Iterable<LGraphNode> {
+        const nodes = this._nodes_in_order ? this._nodes_in_order : this._nodes || [];
+        for (const node of nodes) {
+            yield node;
+        }
+    }
+
+    /**
+     * Iterates all nodes in this graph and subgraphs.
+     */
+    *iterateNodesInOrderRecursive(): Iterable<LGraphNode> {
+        const nodes = this._nodes_in_order ? this._nodes_in_order : this._nodes || [];
+        for (const node of nodes) {
+            yield node;
+            if (node.subgraph != null) {
+                for (const childNode of node.subgraph.iterateNodesInOrderRecursive()) {
+                    yield childNode;
+                }
+            }
+        }
     }
 
     /**
@@ -707,7 +786,7 @@ export default class LGraph {
             console.warn(
                 "LiteGraph: there is already a node with this ID, changing it"
             );
-            node.id = ++this.last_node_id;
+            node.id = this.incrementLastNodeID();
         }
 
         if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
@@ -716,8 +795,9 @@ export default class LGraph {
 
         //give him an id
         if (node.id == null || node.id == -1) {
-            node.id = ++this.last_node_id;
-        } else if (this.last_node_id < node.id) {
+            node.id = this.incrementLastNodeID();
+        }
+        if (this.last_node_id < node.id) {
             this.last_node_id = node.id;
         }
 
@@ -884,7 +964,7 @@ export default class LGraph {
     }
 
     /** Returns a node by its id. */
-    getNodeById(id: number): LGraphNode | null {
+    getNodeById<T extends LGraphNode = LGraphNode>(id: number): T | null {
         if (id == null) {
             return null;
         }
@@ -896,7 +976,7 @@ export default class LGraph {
      * @param classObject the class itself (not an string)
      * @return a list with all the nodes of this type
      */
-    findNodesByClass<T extends LGraphNode>(type: new () => T, result: T[] = []): T[] {
+    findNodesByClass<T extends LGraphNode>(type: LGraphNodeConstructorFactory<T>, result: T[] = []): T[] {
         result.length = 0;
         for (var i = 0, l = this._nodes.length; i < l; ++i) {
             if (this._nodes[i] instanceof type) {
@@ -1494,7 +1574,7 @@ export default class LGraph {
                 }
 
                 node.id = n_info.id; //id it or it will create a new id
-                this.add(node, { addedByDeserialize: "configure", skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
+                this.add(node, { addedBy: "configure", skipComputeOrder: true }); //add before configure, otherwise configure cannot create links
             }
 
             //configure nodes afterwards so they can reach each other

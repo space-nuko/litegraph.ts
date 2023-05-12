@@ -46,8 +46,10 @@ export type PropertyLayout = {
     options?: Partial<IPropertyInfo>
 }[];
 
+export type LGraphNodeConstructorFactory<T> = new (title?: string, ...restArgs: any[]) => T;
+
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
-    class: new (title?: string) => T,
+    class: LGraphNodeConstructorFactory<T>,
     title: string,
     title_color?: string,
     desc: string,
@@ -225,6 +227,7 @@ export default class LGraphNode {
                 continue;
             } else if (typeof info[j] == "object") {
                 //object
+                //also detects node.subgraph
                 if (this[j] && this[j].configure) {
                     this[j].configure(info[j]);
                 } else {

@@ -10,7 +10,6 @@ import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { NODE_MODE_NAMES, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
 import { BuiltInSlotType } from "./types";
-import Subgraph from "./nodes/Subgraph"
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import { IPropertyInfo } from "./IProperty";
@@ -728,7 +727,7 @@ export default class LGraphCanvas_UI {
         if (!nodes_list.length)
             nodes_list = [node];
 
-        var subgraph_node = LiteGraph.createNode<Subgraph>("graph/subgraph");
+        var subgraph_node = LiteGraph.createNode<Subgraph>("graph/subgraph", null, { constructorArgs: [LiteGraph.default_subgraph_lgraph_factory] });
         subgraph_node.pos = node.pos.concat() as Vector2;
         graph.add(subgraph_node);
 

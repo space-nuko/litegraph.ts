@@ -1,0 +1,22 @@
+{
+  "name": "@litegraph-ts/tests",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./src/main.ts",
+  "types": "./src/main.ts",
+  "private": true,
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@litegraph-ts/core": "workspace:*",
+    "@litegraph-ts/nodes-basic": "workspace:*",
+    "vitest": "^0.31.0"
+  },
+  "devDependencies": {
+    "@litegraph-ts/tsconfig": "workspace:*",
+    "typescript": "^5.0.3",
+    "vite": "^4.2.1"
+  }
+}

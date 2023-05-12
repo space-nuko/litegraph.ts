@@ -1297,7 +1297,7 @@ export default class LGraphCanvas
                 node.pos[0] += this.graph_mouse[0] - posMin[0]; //+= 5;
                 node.pos[1] += this.graph_mouse[1] - posMin[1]; //+= 5;
 
-                this.graph.add(node, { doProcessChange: false, addedByDeserialize: "paste" });
+                this.graph.add(node, { doProcessChange: false, addedBy: "paste" });
 
                 nodes.push(node);
             }
@@ -1336,7 +1336,7 @@ export default class LGraphCanvas
                 return;
             }
             newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
-            node.graph.add(newnode, { addedByDeserialize: "clone" });
+            node.graph.add(newnode, { addedBy: "clone" });
             newSelected[newnode.id] = newnode;
         }
 

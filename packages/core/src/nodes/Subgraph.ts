@@ -3,7 +3,7 @@ import type { MouseEventExt } from "../DragAndScale";
 import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
 import LGraph from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
-import type { OptionalSlots, PropertyLayout, SlotLayout } from "../LGraphNode";
+import type { OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
@@ -52,24 +52,75 @@ export default class Subgraph extends LGraphNode {
     enabled: boolean = true;
     subgraph: LGraph;
 
-    constructor(title?: string) {
+    constructor(title?: string, graphFactory?: () => LGraph) {
         super(title)
-        this.subgraph = new LGraph();
+        if (graphFactory)
+            this.subgraph = graphFactory();
+        else
+            this.subgraph = new LGraph();
         this.subgraph._subgraph_node = this;
         this.subgraph._is_subgraph = true;
 
-        this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this);
+        const wrap = <T extends Function>(origFn: T, ours: Function): T => {
+            return ((...args) => {
+                origFn?.apply(this, args)
+                ours.apply(this, args)
+            }) as any
+        }
+
+        this.subgraph.onTrigger = wrap(this.subgraph.onTrigger, this.onSubgraphTrigger);
+
+        this.subgraph.onNodeAdded = wrap(this.subgraph.onNodeAdded, this.onSubgraphNodeAdded);
 
         //nodes input node added inside
-        this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this);
-        this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this);
-        this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this);
-        this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this);
+        this.subgraph.onInputAdded = wrap(this.subgraph.onInputAdded, this.onSubgraphNewInput);
+        this.subgraph.onInputRenamed = wrap(this.subgraph.onInputRenamed, this.onSubgraphRenamedInput);
+        this.subgraph.onInputTypeChanged = wrap(this.subgraph.onInputTypeChanged, this.onSubgraphTypeChangeInput);
+        this.subgraph.onInputRemoved = wrap(this.subgraph.onInputRemoved, this.onSubgraphRemovedInput);
 
-        this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this);
-        this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this);
-        this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this);
-        this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this);
+        this.subgraph.onOutputAdded = wrap(this.subgraph.onOutputAdded, this.onSubgraphNewOutput);
+        this.subgraph.onOutputRenamed = wrap(this.subgraph.onOutputRenamed, this.onSubgraphRenamedOutput);
+        this.subgraph.onOutputTypeChanged = wrap(this.subgraph.onOutputTypeChanged, this.onSubgraphTypeChangeOutput);
+        this.subgraph.onOutputRemoved = wrap(this.subgraph.onOutputRemoved, this.onSubgraphRemovedOutput);
+    }
+
+    getRootGraph(): LGraph | null {
+        const graphs = Array.from(this.iterateParentGraphs());
+        const graph = graphs[graphs.length - 1]
+        console.warn(graph._is_subgraph)
+        if (graph._is_subgraph)
+            return null;
+        return graph;
+    }
+
+    *iterateParentGraphs(): Iterable<LGraph> {
+        let graph = this.graph;
+        while (graph) {
+            yield graph;
+            graph = graph._subgraph_node?.graph;
+        }
+    }
+
+    // This fork matinains unique node IDs across all subgraphs, so there are no
+    // ID collisions if you try to store nodes across different graphs/subgraphs
+    // in a list or record. To enusre this is the case the subgraph node has to
+    // be connected to a root node, which will be referred to for calculating
+    // the "global" next node ID across all subgraphs. This invariant doesn't
+    // work if the top level graph is itself a subgraph, so we have to check
+    // that first.
+
+    override onAdded(graph: LGraph) {
+        const root = graph.getRootGraph();
+        if (root === null) {
+            throw "Can't add nodes to this subgraph until it's been added into the root graph!"
+        }
+    }
+
+    onSubgraphNodeAdded(node: LGraphNode) {
+        const root = node.graph.getRootGraph();
+        if (root === null) {
+            throw "Can't add nodes to this subgraph until it's been added into the root graph!"
+        }
     }
 
     override onDblClick(e: MouseEventExt, pos: Vector2, graphCanvas: LGraphCanvas) {
@@ -286,6 +337,13 @@ export default class Subgraph extends LGraphNode {
     };
     //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
 
+    override onConfigure(o: SerializedLGraphNode) {
+        if (super.onConfigure)
+            super.onConfigure(o);
+        this.subgraph._is_subgraph = true
+        this.subgraph._subgraph_node = this;
+    }
+
     override clone() {
         var node = LiteGraph.createNode(this.type);
         var data = this.serialize();
@@ -424,7 +482,7 @@ export default class Subgraph extends LGraphNode {
             const newPos: Vector2 = [node.pos[0] - min_x, node.pos[1] - min_y]
             const prevNodeId = node.id;
             node.graph.remove(node, { removedBy: "moveIntoSubgraph" })
-            this.subgraph.add(node, { addedByDeserialize: "moveIntoSubgraph", prevNodeId });
+            this.subgraph.add(node, { addedBy: "moveIntoSubgraph", prevNodeId });
             node.pos = newPos
         }
 
