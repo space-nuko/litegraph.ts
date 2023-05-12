@@ -37,7 +37,7 @@ export default class SubgraphTests extends UnitTest {
         const subgraphA = LiteGraph.createNode(Subgraph)
         const subgraphB = LiteGraph.createNode(Subgraph)
 
-        expect(() => subgraphA.subgraph.add(subgraphB)).toThrowError("Can't add nodes to this subgraph until it's been added into the root graph!")
+        expect(() => subgraphA.subgraph.add(subgraphB)).toThrowError("Top level graph was subgraph!")
     }
 
     test__onAddNode__rejectsDetachedFromParentGraph() {
@@ -45,7 +45,7 @@ export default class SubgraphTests extends UnitTest {
         const subgraph = LiteGraph.createNode(Subgraph)
         const node = LiteGraph.createNode(Watch)
 
-        expect(() => subgraph.subgraph.add(node)).toThrowError("Can't add nodes to this subgraph until it's been added into the root graph!")
+        expect(() => subgraph.subgraph.add(node)).toThrowError("Top level graph was subgraph!")
     }
 
     test__serialize__serializesCorrectly() {
