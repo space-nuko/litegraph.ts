@@ -14,6 +14,8 @@ import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import { IPropertyInfo } from "./IProperty";
 import { clamp, makeDraggable } from "./utils";
+import GraphInput from "./nodes/GraphInput";
+import GraphOutput from "./nodes/GraphOutput";
 
 export default class LGraphCanvas_UI {
 
@@ -732,6 +734,57 @@ export default class LGraphCanvas_UI {
         graph.add(subgraph_node);
 
         subgraph_node.buildFromNodes(nodes_list);
+
+        graphcanvas.deselectAllNodes();
+        node.setDirtyCanvas(true, true);
+    };
+
+    static onMenuNodeToParentGraph: ContextMenuEventListener = function(value, options, e, menu, node: LGraphNode) {
+        var graphcanvas = LGraphCanvas.active_canvas;
+        if (!graphcanvas) //??
+            return;
+
+        const subgraphNode = node.graph._subgraph_node
+        if (!node.graph._is_subgraph || !subgraphNode) {
+            console.error("[To Parent Graph] Current graph is not a subgraph!", node.graph)
+            return;
+        }
+
+        const parentGraph = subgraphNode.graph;
+
+        let nodes = Object.values(graphcanvas.selected_nodes || {});
+        if (!nodes.length)
+            nodes = [node];
+
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+        if (nodes.length === 0)
+            return;
+
+        let min_x = Number.MAX_SAFE_INTEGER;
+        let max_x = 0;
+        let min_y = Number.MAX_SAFE_INTEGER;
+        let max_y = 0;
+
+        for (const node of Object.values(nodes)) {
+            min_x = Math.min(node.pos[0], min_x);
+            max_x = Math.max(node.pos[0] + node.size[0], max_x);
+            min_y = Math.min(node.pos[1], min_y);
+            max_y = Math.max(node.pos[1] + node.size[1], max_y);
+        }
+
+        const width = max_x - min_x
+        const height = max_y - min_y
+
+        const place_x = (subgraphNode.pos[0] + subgraphNode.size[0] / 2) - (width / 2)
+        const place_y = (subgraphNode.pos[1] + subgraphNode.size[1] / 2) - (height / 2)
+
+        for (const [index, node] of nodes.entries()) {
+            const newPos: Vector2 = [node.pos[0] - min_x + place_x, node.pos[1] - min_y + place_y]
+            const prevNodeId = node.id;
+            node.graph.remove(node, { removedBy: "moveOutOfSubgraph" })
+            parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeId });
+            node.pos = newPos
+        }
 
         graphcanvas.deselectAllNodes();
         node.setDirtyCanvas(true, true);
@@ -2356,6 +2409,17 @@ export default class LGraphCanvas_UI {
         options.push({
             content: "To Subgraph",
             callback: LGraphCanvas.onMenuNodeToSubgraph
+        });
+
+        let nodes = Object.values(this.selected_nodes || {});
+        if (!nodes.length)
+            nodes = [node];
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+
+        options.push({
+            content: "To Parent Graph",
+            disabled: !node.graph._is_subgraph || nodes.length === 0,
+            callback: LGraphCanvas.onMenuNodeToParentGraph
         });
 
         options.push(ContextMenuSpecialItem.SEPARATOR, {

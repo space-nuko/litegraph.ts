@@ -1547,6 +1547,11 @@ export default class LGraphNode {
         return null;
     }
 
+    is<T extends LGraphNode>(ctor: new () => T): boolean {
+        const lgType: string | null = (ctor as any).__LITEGRAPH_TYPE__
+        return lgType != null && this.type === lgType;
+    }
+
     /**
      * returns the input slot with a given name (used for dynamic slots), -1 if not found
      * @param name the name of the slot
@@ -1993,7 +1998,7 @@ export default class LGraphNode {
 
         //create link class
         linkInfo = new LLink(
-            ++this.graph.last_link_id,
+            this.graph.incrementLastLinkID(),
             input.type || output.type,
             this.id,
             slot,

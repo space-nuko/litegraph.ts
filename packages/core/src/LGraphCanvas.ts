@@ -2039,6 +2039,7 @@ export default class LGraphCanvas
     static onMenuNodeRemove = LGraphCanvas_UI.onMenuNodeRemove;
     static onMenuNodeClone = LGraphCanvas_UI.onMenuNodeClone;
     static onMenuNodeToSubgraph = LGraphCanvas_UI.onMenuNodeToSubgraph;
+    static onMenuNodeToParentGraph = LGraphCanvas_UI.onMenuNodeToParentGraph;
 
     getCanvasMenuOptions(): ContextMenuItem[] {
         return LGraphCanvas_UI.prototype.getCanvasMenuOptions.apply(this, arguments);

@@ -15,7 +15,7 @@ export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
-    addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | null,
+    addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
     prevNodeId?: number
 }
 
@@ -148,7 +148,7 @@ export default class LGraph {
         }
     }
 
-    private getLastNodeID() {
+    getLastNodeID() {
         let rootGraph: LGraph = this;
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
@@ -168,7 +168,7 @@ export default class LGraph {
         return nextId
     }
 
-    private getLastLinkID() {
+    getLastLinkID() {
         let rootGraph: LGraph = this;
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;
@@ -176,7 +176,7 @@ export default class LGraph {
         return rootGraph.last_link_id
     }
 
-    private incrementLastLinkID() {
+    incrementLastLinkID() {
         let rootGraph: LGraph = this;
         while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
             rootGraph = rootGraph._subgraph_node.graph;

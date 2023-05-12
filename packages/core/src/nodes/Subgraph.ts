@@ -62,9 +62,10 @@ export default class Subgraph extends LGraphNode {
         this.subgraph._is_subgraph = true;
 
         const wrap = <T extends Function>(origFn: T, ours: Function): T => {
+            const oursBound = ours.bind(this);
             return function(this: LGraph, ...args) {
                 origFn?.apply(this, args)
-                ours.apply(this, args)
+                oursBound(...args)
             } as any
         }
 
