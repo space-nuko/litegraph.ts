@@ -57,9 +57,9 @@ export default class LGraphTests extends UnitTest {
         graph.add(nodeB)
         graph.add(nodeC)
 
-        expect(nodeA.id).toEqual(0)
-        expect(nodeB.id).toEqual(1)
-        expect(nodeC.id).toEqual(2)
+        expect(nodeA.id).toEqual(1)
+        expect(nodeB.id).toEqual(2)
+        expect(nodeC.id).toEqual(3)
     }
 
     test__add__shouldReassignUniqueIds() {
@@ -69,11 +69,11 @@ export default class LGraphTests extends UnitTest {
         const nodeB = LiteGraph.createNode(Watch)
 
         graph.add(nodeA)
-        nodeB.id = 0
+        nodeB.id = 1
         graph.add(nodeB)
 
-        expect(nodeA.id).toEqual(0)
-        expect(nodeB.id).toEqual(1)
+        expect(nodeA.id).toEqual(1)
+        expect(nodeB.id).toEqual(2)
     }
 
     test__add__shouldAssignUniqueIdsRecursively() {
@@ -100,13 +100,13 @@ export default class LGraphTests extends UnitTest {
         subgraphB.subgraph.add(subSubNodeB)
         graph.add(nodeB)
 
-        expect(subgraphA.id).toEqual(0)
-        expect(subgraphB.id).toEqual(1)
-        expect(nodeA.id).toEqual(2)
-        expect(subNodeA.id).toEqual(3)
-        expect(subSubNodeA.id).toEqual(4)
-        expect(subNodeB.id).toEqual(5)
-        expect(subSubNodeB.id).toEqual(6)
-        expect(nodeB.id).toEqual(7)
+        expect(subgraphA.id).toEqual(1)
+        expect(subgraphB.id).toEqual(2)
+        expect(nodeA.id).toEqual(3)
+        expect(subNodeA.id).toEqual(4)
+        expect(subSubNodeA.id).toEqual(5)
+        expect(subNodeB.id).toEqual(6)
+        expect(subSubNodeB.id).toEqual(7)
+        expect(nodeB.id).toEqual(8)
     }
 }
