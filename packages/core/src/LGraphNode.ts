@@ -10,7 +10,8 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { SlotShape, SlotType, TitleMode, Vector2 } from "./types";
 import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./types";
-import { getStaticPropertyOnInstance } from "./utils";
+import { UUID, getStaticPropertyOnInstance } from "./utils";
+import { v4 as uuidv4 } from "uuid";
 
 export type NodeTypeOpts = {
     node: string,
@@ -104,7 +105,10 @@ export default class LGraphNode {
 
         this.pos = [10, 10];
 
-        this.id = -1; //not know till not added
+        if (LiteGraph.use_uuids)
+            this.id = uuidv4();
+        else
+            this.id = -1; //not know till not added
         this.type = null;
 
         //inputs available: array of inputs
@@ -141,7 +145,7 @@ export default class LGraphNode {
     titleMode: TitleMode = TitleMode.NORMAL_TITLE;
     class: new () => LGraphNode;
 
-    id: number;
+    id: number | UUID;
 
     widgets: IWidget[] | null | undefined;
     widgets_values?: IWidget["value"][];
@@ -173,7 +177,7 @@ export default class LGraphNode {
 
     last_serialization?: SerializedLGraphNode = null;
 
-    _relative_id: number | null = null;
+    _relative_id: number | UUID | null = null;
     _level: number;
 
     /** Used in `LGraphCanvas.onMenuNodeMode` */
@@ -933,7 +937,7 @@ export default class LGraphNode {
      * @param param
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    triggerSlot(slot: SlotIndex, param?: any, link_id?: number, options: object = {}): void {
+    triggerSlot(slot: SlotIndex, param?: any, link_id?: number | UUID, options: object = {}): void {
         if (!this.outputs) {
             return;
         }
@@ -1006,7 +1010,7 @@ export default class LGraphNode {
      * @param slot the index of the output slot
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    clearTriggeredSlot(slot: number, link_id?: number): void {
+    clearTriggeredSlot(slot: number, link_id?: number | UUID): void {
         if (!this.outputs) {
             return;
         }

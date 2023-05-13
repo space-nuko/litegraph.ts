@@ -47,6 +47,9 @@ export default class LGraphTests extends UnitTest {
     }
 
     test__add__shouldAssignUniqueIds() {
+        if (LiteGraph.use_uuids)
+            return;
+
         const graph = new LGraph();
 
         const nodeA = LiteGraph.createNode(Watch)
@@ -63,6 +66,9 @@ export default class LGraphTests extends UnitTest {
     }
 
     test__add__shouldReassignUniqueIds() {
+        if (LiteGraph.use_uuids)
+            return;
+
         const graph = new LGraph();
 
         const nodeA = LiteGraph.createNode(Watch)
@@ -74,39 +80,5 @@ export default class LGraphTests extends UnitTest {
 
         expect(nodeA.id).toEqual(1)
         expect(nodeB.id).toEqual(2)
-    }
-
-    test__add__shouldAssignUniqueIdsRecursively() {
-        const graph = new LGraph();
-
-        const nodeA = LiteGraph.createNode(Watch)
-        const nodeB = LiteGraph.createNode(Watch)
-
-        const subgraphA = LiteGraph.createNode(Subgraph)
-        const subgraphB = LiteGraph.createNode(Subgraph)
-
-        graph.add(subgraphA)
-        subgraphA.subgraph.add(subgraphB)
-
-        const subNodeA = LiteGraph.createNode(Watch)
-        const subNodeB = LiteGraph.createNode(Watch)
-        const subSubNodeA = LiteGraph.createNode(Watch)
-        const subSubNodeB = LiteGraph.createNode(Watch)
-
-        graph.add(nodeA)
-        subgraphA.subgraph.add(subNodeA)
-        subgraphB.subgraph.add(subSubNodeA)
-        subgraphA.subgraph.add(subNodeB)
-        subgraphB.subgraph.add(subSubNodeB)
-        graph.add(nodeB)
-
-        expect(subgraphA.id).toEqual(1)
-        expect(subgraphB.id).toEqual(2)
-        expect(nodeA.id).toEqual(3)
-        expect(subNodeA.id).toEqual(4)
-        expect(subSubNodeA.id).toEqual(5)
-        expect(subNodeB.id).toEqual(6)
-        expect(subSubNodeB.id).toEqual(7)
-        expect(nodeB.id).toEqual(8)
     }
 }

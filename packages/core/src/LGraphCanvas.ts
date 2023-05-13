@@ -10,14 +10,14 @@ import LGraphCanvas_Events from "./LGraphCanvas_Events";
 import LGraphCanvas_Rendering from "./LGraphCanvas_Rendering";
 import LGraphCanvas_UI from "./LGraphCanvas_UI";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { type NodeTypeOpts } from "./LGraphNode";
+import LGraphNode, { SerializedLGraphNode, type NodeTypeOpts } from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
 import GraphInput from "./nodes/GraphInput";
 import GraphOutput from "./nodes/GraphOutput";
 import Subgraph from "./nodes/Subgraph";
 import { BuiltInSlotType, Dir, LinkRenderMode, SlotType, type Vector2, type Vector4 } from "./types";
-import { clamp } from "./utils";
+import { clamp, UUID } from "./utils";
 
 export interface IGraphPanel extends HTMLDivElement {
     header: HTMLDivElement;
@@ -77,6 +77,11 @@ export type GraphStackEntry = {
     graph: LGraph,
     offset: Vector2,
     scale: number,
+}
+
+export type ClipboardInfo = {
+    nodes: SerializedLGraphNode[],
+    links: [number | UUID, number, number | UUID, number][]
 }
 
 /**
@@ -1204,7 +1209,7 @@ export default class LGraphCanvas
     }
 
     copyToClipboard(): void {
-        var clipboard_info = {
+        var clipboard_info: ClipboardInfo = {
             nodes: [],
             links: []
         };
@@ -1266,7 +1271,7 @@ export default class LGraphCanvas
         this.graph.beforeChange();
 
         //create nodes
-        var clipboard_info = JSON.parse(data);
+        var clipboard_info = JSON.parse(data) as ClipboardInfo;
         // calculate top-left node, could work without this processing but using diff with last node pos :: clipboard_info.nodes[clipboard_info.nodes.length-1].pos
         var posMin: Vector2 | null = null;
         var posMinIndexes: [number, number] | null = null;

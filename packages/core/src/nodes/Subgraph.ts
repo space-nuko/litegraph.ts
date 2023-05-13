@@ -8,6 +8,7 @@ import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
 import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2 } from "../types";
+import { UUID } from "../utils";
 import GraphInput from "./GraphInput";
 import GraphOutput from "./GraphOutput";
 
@@ -61,6 +62,7 @@ export default class Subgraph extends LGraphNode {
         this.subgraph._subgraph_node = this;
         this.subgraph._is_subgraph = true;
 
+        // Support hooking into subclasses of LGraph with the subgraph lifecycle methods
         const wrap = <T extends Function>(origFn: T, ours: Function): T => {
             const oursBound = ours.bind(this);
             return function(this: LGraph, ...args) {
@@ -70,8 +72,6 @@ export default class Subgraph extends LGraphNode {
         }
 
         this.subgraph.onTrigger = wrap(this.subgraph.onTrigger, this.onSubgraphTrigger);
-
-        this.subgraph.onNodeAdded = wrap(this.subgraph.onNodeAdded, this.onSubgraphNodeAdded);
 
         //nodes input node added inside
         this.subgraph.onInputAdded = wrap(this.subgraph.onInputAdded, this.onSubgraphNewInput);
@@ -99,28 +99,6 @@ export default class Subgraph extends LGraphNode {
         while (graph) {
             yield graph;
             graph = graph._subgraph_node?.graph;
-        }
-    }
-
-    // This fork matinains unique node IDs across all subgraphs, so there are no
-    // ID collisions if you try to store nodes across different graphs/subgraphs
-    // in a list or record. To enusre this is the case the subgraph node has to
-    // be connected to a root node, which will be referred to for calculating
-    // the "global" next node ID across all subgraphs. This invariant doesn't
-    // work if the top level graph is itself a subgraph, so we have to check
-    // that first.
-
-    override onAdded(graph: LGraph) {
-        const root = graph.getRootGraph();
-        if (root === null) {
-            throw "Can't add nodes to this subgraph until it's been added into the root graph!"
-        }
-    }
-
-    onSubgraphNodeAdded(node: LGraphNode) {
-        const root = node.graph.getRootGraph();
-        if (root === null) {
-            throw "Can't add nodes to this subgraph until it's been added into the root graph!"
         }
     }
 
@@ -363,12 +341,12 @@ export default class Subgraph extends LGraphNode {
         // to be changed, we can't rely on node IDs to reference the reinserted
         // nodes. So the new nodes are referred to by index into the nodes array instead
         // { linkID => [fromIndex, toIndex, connectionPos] }
-        const linksIn: Record<number, [LLink, number, number, Vector2]> = {}
-        const linksOut: Record<number, [LLink, number, number, Vector2]> = {}
+        const linksIn: Record<number | UUID, [LLink, number, number, Vector2]> = {}
+        const linksOut: Record<number | UUID, [LLink, number, number, Vector2]> = {}
 
         // Links internal to the subgraph
         // { linkID => [LLink, fromIndex, toIndex, connectionPos] }
-        const innerLinks: Record<number, [LLink, number, number, Vector2]> = {}
+        const innerLinks: Record<number | UUID, [LLink, number, number, Vector2]> = {}
 
         const containedNodes = nodes.reduce((result, node) => { result[node.id] = node; return result }, {})
 
@@ -385,7 +363,7 @@ export default class Subgraph extends LGraphNode {
         }
 
         const indexToNode: Record<number, LGraphNode> = {}
-        const nodeIdToIndex: Record<number, number> = {}
+        const nodeIdToIndex: Record<number | UUID, number> = {}
         for (const [index, node] of nodes.entries()) {
             indexToNode[index] = node;
             nodeIdToIndex[node.id] = index;

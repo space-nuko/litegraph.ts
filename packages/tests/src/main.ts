@@ -4,6 +4,7 @@ import "@litegraph-ts/nodes-basic"
 import { describe, it } from "vitest"
 import UnitTest from "./UnitTest"
 import * as testSuite from "./testSuite"
+import { LiteGraph } from "@litegraph-ts/core"
 
 // I don't like BDD syntax...
 // Emulate minitest instead...
@@ -66,6 +67,12 @@ function runTests<T extends UnitTest>(ctor: new () => T) {
     })
 }
 
-for (const ctor of Object.values(testSuite)) {
-    runTests(ctor as any)
+function runTestSuite(use_uuids: boolean) {
+    LiteGraph.use_uuids = use_uuids
+    for (const ctor of Object.values(testSuite)) {
+        runTests(ctor as any)
+    }
 }
+
+describe("integer IDs", () => runTestSuite(false))
+describe("string UUIDs", () => runTestSuite(true))

@@ -10,13 +10,14 @@ import GraphInput from "./nodes/GraphInput";
 import Subgraph from "./nodes/Subgraph";
 import type { LConnectionKind, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
     addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
-    prevNodeId?: number
+    prevNodeId?: number | UUID
 }
 
 export type LGraphRemoveNodeOptions = {
@@ -104,7 +105,7 @@ export default class LGraph {
 
     _nodes: LGraphNode[] = [];
     _groups: LGraphGroup[] = [];
-    _nodes_by_id: Record<number, LGraphNode> = {};
+    _nodes_by_id: Record<number | UUID, LGraphNode> = {};
     /** nodes that are executable sorted in execution order */
     _nodes_executable:
         | LGraphNodeExecutable[]
@@ -745,9 +746,14 @@ export default class LGraph {
         //nodes
         if (node.id != -1 && this._nodes_by_id[node.id] != null) {
             console.warn(
-                "LiteGraph: there is already a node with this ID, changing it"
+                "LiteGraph: there is already a node with this ID, changing it", node.id,
             );
-            node.id = ++this.last_node_id;
+            if (LiteGraph.use_uuids) {
+                node.id = uuidv4();
+            }
+            else {
+                node.id = ++this.last_node_id;
+            }
         }
 
         if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
@@ -755,10 +761,16 @@ export default class LGraph {
         }
 
         //give him an id
-        if (node.id == null || node.id == -1) {
-            node.id = ++this.last_node_id;
-        } else if (this.last_node_id < node.id) {
-            this.last_node_id = node.id;
+        if (LiteGraph.use_uuids) {
+            if (!node.id)
+                node.id = uuidv4();
+        }
+        else {
+            if (node.id == null || node.id == -1) {
+                node.id = ++this.last_node_id;
+            } else if (this.last_node_id < node.id) {
+                this.last_node_id = node.id;
+            }
         }
 
         node.graph = this;
@@ -924,7 +936,7 @@ export default class LGraph {
     }
 
     /** Returns a node by its id. */
-    getNodeById<T extends LGraphNode = LGraphNode>(id: number): T | null {
+    getNodeById<T extends LGraphNode = LGraphNode>(id: number | UUID): T | null {
         if (id == null) {
             return null;
         }
@@ -1406,7 +1418,7 @@ export default class LGraph {
     }
 
     /** Destroys a link */
-    removeLink(linkId: number): void {
+    removeLink(linkId: number | UUID): void {
         var link = this.links[linkId];
         if (!link) {
             return;

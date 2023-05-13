@@ -32,22 +32,6 @@ export default class SubgraphTests extends UnitTest {
         expect(customGraph.calls).toEqual(1)
     }
 
-    test__onAdded__rejectsDetachedFromParentGraph() {
-
-        const subgraphA = LiteGraph.createNode(Subgraph)
-        const subgraphB = LiteGraph.createNode(Subgraph)
-
-        expect(() => subgraphA.subgraph.add(subgraphB)).toThrowError("Top level graph was subgraph!")
-    }
-
-    test__onAddNode__rejectsDetachedFromParentGraph() {
-
-        const subgraph = LiteGraph.createNode(Subgraph)
-        const node = LiteGraph.createNode(Watch)
-
-        expect(() => subgraph.subgraph.add(node)).toThrowError("Top level graph was subgraph!")
-    }
-
     test__serialize__serializesCorrectly() {
         const graph = new LGraph();
 
