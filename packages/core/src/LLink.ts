@@ -1,7 +1,7 @@
 import type { SlotType, Vector2 } from "./types";
 import { UUID } from "./utils";
 
-export type SerializedLLink = [number | UUID, number, number, number, number, SlotType];
+export type SerializedLLink = [number | UUID, number | UUID, number, number | UUID, number, SlotType];
 
 export default class LLink {
     id: number | UUID;
