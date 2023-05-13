@@ -167,9 +167,9 @@ export default class LGraph {
         if (rootGraph._is_subgraph)
             throw "Top level graph was subgraph!"
 
-        const nextId = rootGraph.last_node_id
-        rootGraph.last_node_id += 1
-        this.last_node_id = rootGraph.last_node_id;
+        const nextId = rootGraph.last_node_id + 1
+        rootGraph.last_node_id = nextId
+        this.last_node_id = nextId
         return nextId
     }
 
@@ -190,9 +190,9 @@ export default class LGraph {
         }
         if (rootGraph._is_subgraph)
             throw "Top level graph was subgraph!"
-        const nextId = rootGraph.last_link_id
-        rootGraph.last_link_id += 1
-        this.last_link_id = rootGraph.last_link_id;
+        const nextId = rootGraph.last_link_id + 1
+        rootGraph.last_link_id = nextId
+        this.last_link_id = nextId
         return nextId
     }
 

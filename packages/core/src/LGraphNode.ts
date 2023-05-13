@@ -2006,6 +2006,10 @@ export default class LGraphNode {
             targetSlot
         );
 
+        if (this.graph.links[linkInfo.id]) {
+            console.error("Link already exists in graph!", linkInfo.id, linkInfo, this.graph.links[linkInfo.id])
+        }
+
         //add to graph links list
         this.graph.links[linkInfo.id] = linkInfo;
 
