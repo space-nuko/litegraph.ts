@@ -93,8 +93,8 @@ export default class LGraph {
     inputs: Record<string, LGraphInput> = {}
     outputs: Record<string, LGraphOutput> = {}
     iteration: number;
-    last_link_id: number;
-    last_node_id: number;
+    last_link_id: number | UUID;
+    last_node_id: number | UUID;
     last_update_time: number;
     links: Record<number, LLink>;
     list_of_graphcanvas: LGraphCanvas[];
@@ -146,54 +146,6 @@ export default class LGraph {
             yield graph;
             graph = graph._subgraph_node?.graph;
         }
-    }
-
-    getLastNodeID() {
-        let rootGraph: LGraph = this;
-        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
-            rootGraph = rootGraph._subgraph_node.graph;
-        }
-        if (rootGraph._is_subgraph)
-            throw "Top level graph was subgraph!"
-        return rootGraph.last_node_id
-    }
-
-    // This is necessary to ensure node ID is unique across all subgraphs.
-    private incrementLastNodeID() {
-        let rootGraph: LGraph = this;
-        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
-            rootGraph = rootGraph._subgraph_node.graph;
-        }
-        if (rootGraph._is_subgraph)
-            throw "Top level graph was subgraph!"
-
-        const nextId = rootGraph.last_node_id + 1
-        rootGraph.last_node_id = nextId
-        this.last_node_id = nextId
-        return nextId
-    }
-
-    getLastLinkID() {
-        let rootGraph: LGraph = this;
-        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
-            rootGraph = rootGraph._subgraph_node.graph;
-        }
-        if (rootGraph._is_subgraph)
-            throw "Top level graph was subgraph!"
-        return rootGraph.last_link_id
-    }
-
-    incrementLastLinkID() {
-        let rootGraph: LGraph = this;
-        while (rootGraph._is_subgraph && rootGraph._subgraph_node.graph) {
-            rootGraph = rootGraph._subgraph_node.graph;
-        }
-        if (rootGraph._is_subgraph)
-            throw "Top level graph was subgraph!"
-        const nextId = rootGraph.last_link_id + 1
-        rootGraph.last_link_id = nextId
-        this.last_link_id = nextId
-        return nextId
     }
 
     /** Removes all nodes from this graph */
@@ -795,7 +747,7 @@ export default class LGraph {
             console.warn(
                 "LiteGraph: there is already a node with this ID, changing it"
             );
-            node.id = this.incrementLastNodeID();
+            node.id = ++this.last_node_id;
         }
 
         if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
@@ -804,9 +756,8 @@ export default class LGraph {
 
         //give him an id
         if (node.id == null || node.id == -1) {
-            node.id = this.incrementLastNodeID();
-        }
-        if (this.last_node_id < node.id) {
+            node.id = ++this.last_node_id;
+        } else if (this.last_node_id < node.id) {
             this.last_node_id = node.id;
         }
 

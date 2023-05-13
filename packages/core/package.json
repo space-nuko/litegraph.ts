@@ -37,7 +37,9 @@
     "vite-plugin-checker": "^0.5.6"
   },
   "dependencies": {
-    "vite-plugin-dts": "^2.2.0",
-    "@litegraph-ts/tsconfig": "workspace:*"
+    "@litegraph-ts/tsconfig": "workspace:*",
+    "@types/uuid": "^9.0.1",
+    "uuid": "^9.0.0",
+    "vite-plugin-dts": "^2.2.0"
   }
 }

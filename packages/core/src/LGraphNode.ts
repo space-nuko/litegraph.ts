@@ -1998,7 +1998,7 @@ export default class LGraphNode {
 
         //create link class
         linkInfo = new LLink(
-            this.graph.incrementLastLinkID(),
+            ++this.graph.last_link_id,
             input.type || output.type,
             this.id,
             slot,
