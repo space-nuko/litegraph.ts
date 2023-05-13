@@ -1,5 +1,6 @@
 import { LGraph, LiteGraph } from "@litegraph-ts/core";
 import { ConstantNumber, Watch } from "@litegraph-ts/nodes-basic"
+import { MathOperation } from "@litegraph-ts/nodes-math"
 
 export function demo(graph: LGraph) {
     multiConnection(graph);
@@ -25,22 +26,22 @@ function multiConnection(graph: LGraph) {
     graph.add(node_const_B);
     node_const_B.setValue(10);
 
-    // var node_math = LiteGraph.createNode("math/operation");
-    // node_math.pos = [400, 200];
-    // graph.add(node_math);
+    var node_math = LiteGraph.createNode(MathOperation);
+    node_math.pos = [400, 200];
+    graph.add(node_math);
 
     var node_watch = LiteGraph.createNode(Watch);
     node_watch.pos = [700, 200];
     graph.add(node_watch);
 
-    // var node_watch2 = LiteGraph.createNode("basic/watch");
-    // node_watch2.pos = [700, 300];
-    // graph.add(node_watch2);
+    var node_watch2 = LiteGraph.createNode(Watch);
+    node_watch2.pos = [700, 300];
+    graph.add(node_watch2);
 
-    // node_const_A.connect(0, node_math, 0);
-    // node_const_B.connect(0, node_math, 1);
-    // node_math.connect(0, node_watch, 0);
-    // node_math.connect(0, node_watch2, 0);
+    node_const_A.connect(0, node_math, 0);
+    node_const_B.connect(0, node_math, 1);
+    node_math.connect(0, node_watch, 0);
+    node_math.connect(0, node_watch2, 0);
 }
 
 function sortTest(graph: LGraph) {

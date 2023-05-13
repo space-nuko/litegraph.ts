@@ -5,6 +5,7 @@ export default function(isMobile: boolean) {
     LiteGraph.catch_exceptions = true;
     LiteGraph.throw_errors = true;
     LiteGraph.allow_scripts = false; //if set to true some nodes like Formula would be allowed to evaluate code that comes from unsafe sources (like node configuration); which could lead to exploits
+    LiteGraph.use_uuids = true;
 
     LiteGraph.searchbox_extras = {}; //used to add extra features to the search box
     LiteGraph.auto_sort_node_types = true; // [true!] If set to true; will automatically sort node types / categories in the context menus

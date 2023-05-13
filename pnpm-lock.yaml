@@ -12,6 +12,9 @@ importers:
       '@litegraph-ts/nodes-basic':
         specifier: workspace:*
         version: link:../../packages/nodes-basic
+      '@litegraph-ts/nodes-math':
+        specifier: workspace:*
+        version: link:../../packages/nodes-math
       typescript:
         specifier: ^5.0.3
         version: 5.0.3

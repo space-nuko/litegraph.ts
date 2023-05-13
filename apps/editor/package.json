@@ -8,6 +8,7 @@
   "dependencies": {
     "@litegraph-ts/core": "workspace:*",
     "@litegraph-ts/nodes-basic": "workspace:*",
+    "@litegraph-ts/nodes-math": "workspace:*",
     "typescript": "^5.0.3",
     "vite": "^4.2.1"
   },
