@@ -325,6 +325,11 @@ export default class Subgraph extends LGraphNode {
             super.onConfigure(o);
         this.subgraph._is_subgraph = true
         this.subgraph._subgraph_node = this;
+
+        for (const node of this.subgraph.iterateNodesInOrder()) {
+            if (node.is(GraphInput) || node.is(GraphOutput))
+                node.properties.subgraphID = this.id;
+        }
     }
 
     override clone() {
@@ -542,6 +547,8 @@ export default class Subgraph extends LGraphNode {
         innerNode.setProperty("name", name)
         innerNode.setProperty("type", type)
 
+        innerNode.properties.subgraphID = this.id
+
         this.subgraph.add(innerNode);
         const nodeSize = innerNode.computeSize();
         if (pos)
@@ -567,6 +574,8 @@ export default class Subgraph extends LGraphNode {
         innerNode.setProperty("name", name)
         innerNode.setProperty("type", type)
 
+        innerNode.properties.subgraphID = this.id
+
         this.subgraph.add(innerNode);
         const nodeSize = innerNode.computeSize();
         if (pos)
@@ -579,6 +588,38 @@ export default class Subgraph extends LGraphNode {
         const outerOutput = this.outputs[outerOutputIndex]
 
         return { innerNode, outerOutput, outerOutputIndex }
+    }
+
+    getInnerGraphOutput(outerOutputName: string): GraphOutput | null {
+        const graphOutput = this.subgraph._nodes.find(n => {
+            return n.is(GraphOutput)
+                && n.properties.name === outerOutputName
+        }) as GraphOutput
+
+        return graphOutput || null;
+    }
+
+    getInnerGraphInput(outerInputName: string): GraphInput | null {
+        const graphInput = this.subgraph._nodes.find(n => {
+            return n.is(GraphInput)
+                && n.properties.name === outerInputName
+        }) as GraphInput
+
+        return graphInput || null;
+    }
+
+    getInnerGraphOutputByIndex(outerOutputIndex: number): GraphOutput | null {
+        const outputSlot = this.getOutputInfo(outerOutputIndex)
+        if (!outputSlot)
+            return null;
+        return this.getInnerGraphOutput(outputSlot.name);
+    }
+
+    getInnerGraphInputByIndex(outerInputIndex: number): GraphInput | null {
+        const inputSlot = this.getInputInfo(outerInputIndex)
+        if (!inputSlot)
+            return null;
+        return this.getInnerGraphInput(inputSlot.name);
     }
 }
 

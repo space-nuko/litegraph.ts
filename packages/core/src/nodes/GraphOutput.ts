@@ -4,16 +4,20 @@ import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
 import type { SlotType, Vector2 } from "../types";
 import { BuiltInSlotType } from "../types";
+import { UUID } from "../utils";
+import Subgraph from "./Subgraph";
 
 export interface GraphOutputProperties extends Record<string, any> {
     name: string,
     type: SlotType,
+    subgraphID: number | UUID | null
 }
 
 export default class GraphOutput extends LGraphNode {
     override properties: GraphOutputProperties = {
         name: "",
         type: "number",
+        subgraphID: null
     }
 
     static slotLayout: SlotLayout = {
@@ -44,6 +48,10 @@ export default class GraphOutput extends LGraphNode {
 
     override onConfigure() {
         this.updateType();
+    }
+
+    getParentSubgraph(): Subgraph | null {
+        return this.graph._subgraph_node?.graph?.getNodeById(this.properties.subgraphID);
     }
 
     updateType() {

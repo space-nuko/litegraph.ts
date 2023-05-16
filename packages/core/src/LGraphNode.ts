@@ -1590,7 +1590,7 @@ export default class LGraphNode {
         return null;
     }
 
-    is<T extends LGraphNode>(ctor: new () => T): boolean {
+    is<T extends LGraphNode>(ctor: new () => T): this is T {
         const lgType: string | null = (ctor as any).__LITEGRAPH_TYPE__
         return lgType != null && this.type === lgType;
     }

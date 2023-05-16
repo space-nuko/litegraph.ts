@@ -418,6 +418,17 @@ export default class LGraph {
         }
     }
 
+    *computeExecutionOrderRecursive<T extends LGraphNode>(only_onExecute: boolean = false, set_level?: any): Iterable<T> {
+        for (const node of this.computeExecutionOrder<T>(only_onExecute, set_level)) {
+            yield node;
+            if (node.is(Subgraph)) {
+                for (const innerNode of node.subgraph.computeExecutionOrderRecursive<T>(only_onExecute, set_level)) {
+                    yield innerNode;
+                }
+            }
+        }
+    }
+
     /** This is more internal, it computes the executable nodes in order and returns it */
     computeExecutionOrder<T extends LGraphNode>(only_onExecute: boolean = false, set_level?: any): T[] {
         var L: T[] = [];

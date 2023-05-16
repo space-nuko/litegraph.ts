@@ -77,6 +77,7 @@ export default class SubgraphTests extends UnitTest {
 
     test__onSubgraphTypeChange_detectsInputTypeChanges() {
         const graph = new LGraph();
+
         const subgraph = LiteGraph.createNode(Subgraph)
         graph.add(subgraph)
 
@@ -102,6 +103,7 @@ export default class SubgraphTests extends UnitTest {
 
     test__onSubgraphTypeChange_detectsOutputTypeChanges() {
         const graph = new LGraph();
+
         const subgraph = LiteGraph.createNode(Subgraph)
         graph.add(subgraph)
 
@@ -123,5 +125,41 @@ export default class SubgraphTests extends UnitTest {
         expect(subgraph.subgraph.outputs["test1"].name).toEqual("test1")
         expect(subgraph.subgraph.outputs["test1"].type).toEqual("boolean")
         expect(subgraph.subgraph.outputs["test1"].value).toEqual("foo") // XXX data not changed
+    }
+
+    test__getInnerGraphInput() {
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const inputPair = subgraph.addGraphInput("test1", "string");
+        subgraph.addGraphInput("test2", "string");
+
+        expect(inputPair.innerNode.properties.subgraphID).toEqual(subgraph.id)
+        expect(inputPair.innerNode.getParentSubgraph()).toEqual(subgraph)
+
+        expect(subgraph.getInnerGraphInput("test3")).toEqual(null);
+        expect(subgraph.getInnerGraphInputByIndex(2)).toEqual(null);
+        expect(subgraph.getInnerGraphInput("test1")).toEqual(inputPair.innerNode);
+        expect(subgraph.getInnerGraphInputByIndex(0)).toEqual(inputPair.innerNode);
+    }
+
+    test__getInnerGraphOutput() {
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const outputPair = subgraph.addGraphOutput("test1", "string");
+        subgraph.addGraphOutput("test2", "string");
+
+        expect(outputPair.innerNode.properties.subgraphID).toEqual(subgraph.id)
+        expect(outputPair.innerNode.getParentSubgraph()).toEqual(subgraph)
+
+        expect(subgraph.getInnerGraphOutput("test3")).toEqual(null);
+        expect(subgraph.getInnerGraphOutputByIndex(2)).toEqual(null);
+        expect(subgraph.getInnerGraphOutput("test1")).toEqual(outputPair.innerNode);
+        expect(subgraph.getInnerGraphOutputByIndex(0)).toEqual(outputPair.innerNode);
     }
 }
