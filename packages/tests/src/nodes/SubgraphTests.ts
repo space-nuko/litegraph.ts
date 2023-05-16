@@ -74,4 +74,54 @@ export default class SubgraphTests extends UnitTest {
         expect(restoredNodeA).toBeDefined()
         expect(restoredNodeA.subgraph).toBeNull()
     }
+
+    test__onSubgraphTypeChange_detectsInputTypeChanges() {
+        const graph = new LGraph();
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const inputPair = subgraph.addGraphInput("test1", "string");
+        subgraph.subgraph.setInputData("test1", "foo")
+
+        expect(subgraph.inputs[0]).toBeDefined();
+        expect(subgraph.inputs[0].name).toEqual("test1");
+        expect(subgraph.inputs[0].type).toEqual("string");
+        expect(subgraph.subgraph.inputs["test1"]).toBeDefined()
+        expect(subgraph.subgraph.inputs["test1"].name).toEqual("test1")
+        expect(subgraph.subgraph.inputs["test1"].type).toEqual("string")
+        expect(subgraph.subgraph.inputs["test1"].value).toEqual("foo")
+
+        inputPair.innerNode.setProperty("type", "boolean")
+
+        expect(subgraph.inputs[0].name).toEqual("test1");
+        expect(subgraph.inputs[0].type).toEqual("boolean");
+        expect(subgraph.subgraph.inputs["test1"].name).toEqual("test1")
+        expect(subgraph.subgraph.inputs["test1"].type).toEqual("boolean")
+        expect(subgraph.subgraph.inputs["test1"].value).toEqual("foo") // XXX data not changed
+    }
+
+    test__onSubgraphTypeChange_detectsOutputTypeChanges() {
+        const graph = new LGraph();
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const outputPair = subgraph.addGraphOutput("test1", "string");
+        subgraph.subgraph.setOutputData("test1", "foo")
+
+        expect(subgraph.outputs[0]).toBeDefined();
+        expect(subgraph.outputs[0].name).toEqual("test1");
+        expect(subgraph.outputs[0].type).toEqual("string");
+        expect(subgraph.subgraph.outputs["test1"]).toBeDefined()
+        expect(subgraph.subgraph.outputs["test1"].name).toEqual("test1")
+        expect(subgraph.subgraph.outputs["test1"].type).toEqual("string")
+        expect(subgraph.subgraph.outputs["test1"].value).toEqual("foo")
+
+        outputPair.innerNode.setProperty("type", "boolean")
+
+        expect(subgraph.outputs[0].name).toEqual("test1");
+        expect(subgraph.outputs[0].type).toEqual("boolean");
+        expect(subgraph.subgraph.outputs["test1"].name).toEqual("test1")
+        expect(subgraph.subgraph.outputs["test1"].type).toEqual("boolean")
+        expect(subgraph.subgraph.outputs["test1"].value).toEqual("foo") // XXX data not changed
+    }
 }

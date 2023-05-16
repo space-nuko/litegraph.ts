@@ -495,9 +495,19 @@ export default class LGraphNode {
 
         //if there are connections, pass the data to the connections
         if (this.outputs[slot].links) {
-            for (var i = 0; i < this.outputs[slot].links.length; i++) {
-                var link_id = this.outputs[slot].links[i];
-                this.graph.links[link_id].type = type;
+            for (let i = this.outputs[slot].links.length - 1; i >= 0; i--) {
+                const link_id = this.outputs[slot].links[i];
+                const link = this.graph.links[link_id]
+                if (link) {
+                    link.type = type;
+                    const outputNode = this.graph.getNodeById(link.target_id);
+                    if (outputNode) {
+                        const inputSlot = outputNode.getInputInfo(link.target_slot);
+                        if (inputSlot && !LiteGraph.isValidConnection(type, inputSlot.type)) {
+                            outputNode.disconnectInput(link.target_slot)
+                        }
+                    }
+                }
             }
         }
     }
@@ -661,6 +671,35 @@ export default class LGraphNode {
             }
         }
         return this.properties[name];
+    }
+
+    /** sets the input data type */
+    setInputDataType(slot: number, type: string): void {
+        if (!this.inputs) {
+            return;
+        }
+        if (slot == -1 || slot >= this.inputs.length) {
+            return;
+        }
+        var input_info = this.inputs[slot];
+        if (!input_info) {
+            return;
+        }
+        //store data in the output itself in case we want to debug
+        input_info.type = type;
+
+        //if there are connections, pass the data to the connections
+        if (input_info.link) {
+            const link_id = input_info.link;
+            const link = this.graph.links[link_id]
+            link.type = type;
+            const inputNode = this.graph.getNodeById(link.origin_id);
+            if (inputNode) {
+                const slot = inputNode.getOutputInfo(link.origin_slot);
+                if (slot && !LiteGraph.isValidConnection(slot.type, type))
+                    inputNode.disconnectOutput(link.origin_slot);
+            }
+        }
     }
 
     /**

@@ -241,12 +241,13 @@ export default class Subgraph extends LGraphNode {
         info.name = name;
     };
 
-    private onSubgraphTypeChangeInput(name: string, type: string) {
+    private onSubgraphTypeChangeInput(name: string, oldType: string, type: string) {
         var slot = this.findInputSlotIndexByName(name);
         if (slot == -1) {
             return;
         }
         var info = this.getInputInfo(slot);
+        console.warn("CHANGEINPUT!", info.type, oldType, "=>", type)
         info.type = type;
     };
 
@@ -276,12 +277,13 @@ export default class Subgraph extends LGraphNode {
         info.name = name;
     };
 
-    private onSubgraphTypeChangeOutput(name: string, type: string) {
+    private onSubgraphTypeChangeOutput(name: string, oldType: string, type: string) {
         var slot = this.findOutputSlotIndexByName(name);
         if (slot == -1) {
             return;
         }
         var info = this.getOutputInfo(slot);
+        console.warn("CHANGEOUTPUT!", info.type, oldType, "=>", type)
         info.type = type;
     };
 

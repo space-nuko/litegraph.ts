@@ -1182,6 +1182,8 @@ export default class LGraph {
             return false;
         }
 
+        console.warn("CHANGEINPUTTYPE", name, this.inputs[name].type, "=>", type)
+
         if (
             this.inputs[name].type &&
             String(this.inputs[name].type).toLowerCase() ==
@@ -1196,6 +1198,7 @@ export default class LGraph {
         if (this.onInputTypeChanged) {
             this.onInputTypeChanged(name, oldType, type);
         }
+        console.info("CHANGEDINPUTTYPE", name, this.inputs[name].type, "=>", type)
 
         return true;
     }

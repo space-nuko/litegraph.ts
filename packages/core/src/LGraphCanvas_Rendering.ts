@@ -480,7 +480,7 @@ export default class LGraphCanvas_Rendering {
         hovercolor: string = "#555",
         textcolor: string = LiteGraph.NODE_TEXT_COLOR,
         ignore_readonly: boolean = false): boolean {
-        const can_interact = (ignore_readonly || (!this.block_click && this.allow_interaction && !this.read_only))
+        const can_interact = !this.block_click && (ignore_readonly || (this.allow_interaction && !this.read_only))
         var ctx = this.ctx;
         var pos = this.offset_mouse;
         var hover = can_interact && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
