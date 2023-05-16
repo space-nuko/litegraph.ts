@@ -1224,6 +1224,8 @@ export default class LGraphCanvas
 
         for (let i = 0; i < selected_nodes_array.length; ++i) {
             let node = selected_nodes_array[i];
+            if (!node.clonable)
+                continue;
             let cloned = node.clone();
             if (!cloned) {
                 console.warn("node type not found: " + node.type);
@@ -1243,7 +1245,7 @@ export default class LGraphCanvas
                     var target_node = this.graph.getNodeById(
                         link_info.origin_id
                     );
-                    if (!target_node || !this.selected_nodes[target_node.id]) {
+                    if (!target_node || !this.selected_nodes[target_node.id] || !this.selected_nodes[target_node.id].clonable) {
                         //improve this by allowing connections to non-selected nodes
                         continue;
                     } //not selected
@@ -2207,7 +2209,8 @@ export default class LGraphCanvas
         text?: string,
         bgcolor: string = LiteGraph.NODE_DEFAULT_COLOR,
         hovercolor: string = "#555",
-        textcolor: string = LiteGraph.NODE_TEXT_COLOR): boolean {
+        textcolor: string = LiteGraph.NODE_TEXT_COLOR,
+        ignore_readonly: boolean = true): boolean {
         return LGraphCanvas_Rendering.prototype.drawButton.apply(this, arguments);
     }
 

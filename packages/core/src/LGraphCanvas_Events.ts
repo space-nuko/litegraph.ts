@@ -313,49 +313,62 @@ export default class LGraphCanvas_Events {
             } //clicked outside of nodes
             else {
                 if (!skip_action) {
-                    //search for link connector
-                    if (this.allow_interaction && !this.read_only) {
-                        for (var i = 0; i < this.visible_links.length; ++i) {
-                            var link = this.visible_links[i];
-                            var center = link._pos;
-                            if (
-                                !center ||
-                                e.canvasX < center[0] - 4 ||
-                                e.canvasX > center[0] + 4 ||
-                                e.canvasY < center[1] - 4 ||
-                                e.canvasY > center[1] + 4
-                            ) {
-                                continue;
+                    // Allow traversing subgraphs even if locked
+                    let clickedSubgraphButton = false;
+                    if (node && node.subgraph && !node.skip_subgraph_button) {
+                        var pos: Vector2 = [e.canvasX - node.pos[0], e.canvasY - node.pos[1]];
+                        if (!node.flags.collapsed && pos[0] > node.size[0] - LiteGraph.NODE_TITLE_HEIGHT && pos[1] < 0) {
+                            clickedSubgraphButton = true;
+                            setTimeout(() => {
+                                this.openSubgraph(node.subgraph);
+                            }, 10);
+                        }
+                    }
+                    if (!clickedSubgraphButton) {
+                        //search for link connector
+                        if (this.allow_interaction && !this.read_only) {
+                            for (var i = 0; i < this.visible_links.length; ++i) {
+                                var link = this.visible_links[i];
+                                var center = link._pos;
+                                if (
+                                    !center ||
+                                    e.canvasX < center[0] - 4 ||
+                                    e.canvasX > center[0] + 4 ||
+                                    e.canvasY < center[1] - 4 ||
+                                    e.canvasY > center[1] + 4
+                                ) {
+                                    continue;
+                                }
+                                //link clicked
+                                this.showLinkMenu(link, e);
+                                this.over_link_center = null; //clear tooltip
+                                break;
                             }
-                            //link clicked
-                            this.showLinkMenu(link, e);
-                            this.over_link_center = null; //clear tooltip
-                            break;
-                        }
-                    }
-
-                    this.selected_group = this.graph.getGroupOnPos(e.canvasX, e.canvasY);
-                    this.selected_group_resizing = false;
-                    if (this.selected_group && !this.read_only && this.allow_interaction) {
-                        if (e.ctrlKey) {
-                            this.dragging_rectangle = null;
                         }
 
-                        var dist = LiteGraph.distance([e.canvasX, e.canvasY], [this.selected_group.pos[0] + this.selected_group.size[0], this.selected_group.pos[1] + this.selected_group.size[1]]);
-                        if (dist * this.ds.scale < 10) {
-                            this.selected_group_resizing = true;
-                        } else {
-                            this.selected_group.recomputeInsideNodes();
+                        this.selected_group = this.graph.getGroupOnPos(e.canvasX, e.canvasY);
+                        this.selected_group_resizing = false;
+                        if (this.selected_group && !this.read_only && this.allow_interaction) {
+                            if (e.ctrlKey) {
+                                this.dragging_rectangle = null;
+                            }
+
+                            var dist = LiteGraph.distance([e.canvasX, e.canvasY], [this.selected_group.pos[0] + this.selected_group.size[0], this.selected_group.pos[1] + this.selected_group.size[1]]);
+                            if (dist * this.ds.scale < 10) {
+                                this.selected_group_resizing = true;
+                            } else {
+                                this.selected_group.recomputeInsideNodes();
+                            }
                         }
-                    }
 
-                    if (is_double_click && !this.read_only && this.allow_searchbox && this.allow_interaction) {
-                        this.showSearchBox(e);
-                        e.preventDefault();
-                        e.stopPropagation();
-                    }
+                        if (is_double_click && !this.read_only && this.allow_searchbox && this.allow_interaction) {
+                            this.showSearchBox(e);
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
 
-                    clicking_canvas_bg = true;
+                        clicking_canvas_bg = true;
+                    }
                 }
             }
 

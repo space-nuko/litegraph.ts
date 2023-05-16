@@ -393,7 +393,7 @@ export default class LGraphCanvas_Rendering {
         ctx.fillText("Graph Inputs", 20, 34);
         // var pos = this.mouse;
 
-        if (this.drawButton(w - 20, 20, 20, 20, "X", "#151515")) {
+        if (this.drawButton(w - 20, 20, 20, 20, "X", "#151515", undefined, undefined, true)) {
             this.closeSubgraph();
             return;
         }
@@ -443,7 +443,7 @@ export default class LGraphCanvas_Rendering {
         var tw = ctx.measureText(title_text).width
         ctx.fillText(title_text, (canvas_w - tw) - 20, 34);
         // var pos = this.mouse;
-        if (this.drawButton(canvas_w - w, 20, 20, 20, "X", "#151515")) {
+        if (this.drawButton(canvas_w - w, 20, 20, 20, "X", "#151515", undefined, undefined, true)) {
             this.closeSubgraph();
             return;
         }
@@ -478,12 +478,14 @@ export default class LGraphCanvas_Rendering {
         text?: string,
         bgcolor: string = LiteGraph.NODE_DEFAULT_COLOR,
         hovercolor: string = "#555",
-        textcolor: string = LiteGraph.NODE_TEXT_COLOR): boolean {
+        textcolor: string = LiteGraph.NODE_TEXT_COLOR,
+        ignore_readonly: boolean = false): boolean {
+        const can_interact = (ignore_readonly || (!this.block_click && this.allow_interaction && !this.read_only))
         var ctx = this.ctx;
         var pos = this.offset_mouse;
-        var hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+        var hover = can_interact && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
         pos = this.last_click_position_offset;
-        var clicked = pos && this.pointer_is_down && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+        var clicked = can_interact && pos && this.pointer_is_down && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
 
         ctx.fillStyle = hover ? hovercolor : bgcolor;
         if (clicked)
@@ -502,7 +504,7 @@ export default class LGraphCanvas_Rendering {
             }
         }
 
-        var was_clicked = clicked && !this.block_click && this.allow_interaction && !this.read_only;
+        var was_clicked = clicked && can_interact;
         if (clicked)
             this.blockClick();
         return was_clicked;
@@ -1449,8 +1451,7 @@ export default class LGraphCanvas_Rendering {
             if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
                 var w = LiteGraph.NODE_TITLE_HEIGHT;
                 var x = node.size[0] - w;
-                const can_interact = this.allow_interaction && !this.read_only
-                var over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4) && can_interact;
+                var over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
                 ctx.fillStyle = over ? "#888" : "#555";
                 if (shape == BuiltInSlotShape.BOX_SHAPE || low_quality)
                     ctx.fillRect(x + 2, -w + 2, w - 4, w - 4);

@@ -28,6 +28,7 @@ export default class GraphOutput extends LGraphNode {
 
     nameInGraph: string = "";
 
+    override clonable = false;
     override size: Vector2 = [180, 60];
 
     constructor(title?: string) {

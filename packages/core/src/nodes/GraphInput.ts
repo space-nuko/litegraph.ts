@@ -31,6 +31,7 @@ export default class GraphInput extends LGraphNode {
 
     nameInGraph: string = "";
 
+    override clonable = false;
     override size: Vector2 = [180, 90];
 
     constructor(title?: string) {
