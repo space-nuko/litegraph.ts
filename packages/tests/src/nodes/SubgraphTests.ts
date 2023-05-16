@@ -1,15 +1,22 @@
-import { LGraph, LGraphNode, LiteGraph, Subgraph } from "@litegraph-ts/core"
+import { LGraph, LGraphAddNodeOptions, LGraphNode, LGraphRemoveNodeOptions, LiteGraph, Subgraph } from "@litegraph-ts/core"
 import { Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
 
 class CustomGraph extends LGraph {
-    calls: number = 0;
+    addedCalls = []
+    removedCalls = []
 
-    override onNodeAdded(node: LGraphNode) {
+    override onNodeAdded(node: LGraphNode, options: LGraphAddNodeOptions) {
         expect(this.constructor.name).toEqual("CustomGraph")
         expect(node).toBeTruthy();
-        this.calls += 1
+        this.addedCalls.push(options)
+    }
+
+    override onNodeRemoved(node: LGraphNode, options: LGraphRemoveNodeOptions) {
+        expect(this.constructor.name).toEqual("CustomGraph")
+        expect(node).toBeTruthy();
+        this.removedCalls.push(options)
     }
 }
 
@@ -29,7 +36,7 @@ export default class SubgraphTests extends UnitTest {
         subgraph.subgraph.add(node)
 
         expect(spy).toHaveBeenCalledOnce();
-        expect(customGraph.calls).toEqual(1)
+        expect(customGraph.addedCalls).toHaveLength(1);
     }
 
     test__serialize__serializesCorrectly() {
@@ -161,5 +168,57 @@ export default class SubgraphTests extends UnitTest {
         expect(subgraph.getInnerGraphOutputByIndex(2)).toEqual(null);
         expect(subgraph.getInnerGraphOutput("test1")).toEqual(outputPair.innerNode);
         expect(subgraph.getInnerGraphOutputByIndex(0)).toEqual(outputPair.innerNode);
+    }
+
+    test__onSubgraphNodeAdded__bubblesUp() {
+        const rootGraph = new CustomGraph();
+        const graphA = new CustomGraph();
+        const graphB = new CustomGraph();
+        const graphC = new CustomGraph();
+
+        const subgraphA = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphA] })
+        const subgraphB = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphB] })
+        const subgraphC = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphC] })
+
+        rootGraph.add(subgraphA)
+        subgraphA.subgraph.add(subgraphB)
+        subgraphB.subgraph.add(subgraphC)
+
+        const watch = LiteGraph.createNode(Watch)
+        subgraphC.subgraph.add(watch)
+
+        expect(rootGraph.addedCalls).toHaveLength(4);
+        expect(graphA.addedCalls).toHaveLength(3);
+        expect(graphB.addedCalls).toHaveLength(2);
+        expect(graphC.addedCalls).toHaveLength(1);
+    }
+
+    test__onSubgraphNodeRemoved__bubblesUp() {
+        const rootGraph = new CustomGraph();
+        const graphA = new CustomGraph();
+        const graphB = new CustomGraph();
+        const graphC = new CustomGraph();
+
+        const subgraphA = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphA] })
+        const subgraphB = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphB] })
+        const subgraphC = LiteGraph.createNode(Subgraph, null, { constructorArgs: [() => graphC] })
+
+        rootGraph.add(subgraphA)
+        subgraphA.subgraph.add(subgraphB)
+        subgraphB.subgraph.add(subgraphC)
+
+        expect(rootGraph.removedCalls).toHaveLength(0);
+        expect(graphA.removedCalls).toHaveLength(0);
+        expect(graphB.removedCalls).toHaveLength(0);
+        expect(graphC.removedCalls).toHaveLength(0);
+
+        const watch = LiteGraph.createNode(Watch)
+        subgraphC.subgraph.add(watch)
+        subgraphC.subgraph.remove(watch)
+
+        expect(rootGraph.removedCalls).toHaveLength(1);
+        expect(graphA.removedCalls).toHaveLength(1);
+        expect(graphB.removedCalls).toHaveLength(1);
+        expect(graphC.removedCalls).toHaveLength(1);
     }
 }

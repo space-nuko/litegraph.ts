@@ -523,6 +523,12 @@ export default class LGraphCanvas
         this.setDirty(true, true);
     }
 
+    closeAllSubgraphs(): void {
+        while (this._graph_stack && this._graph_stack.length > 0) {
+            this.closeSubgraph();
+        }
+    }
+
     /** closes a subgraph contained inside a node */
     closeSubgraph(): void {
         if (!this._graph_stack || this._graph_stack.length == 0) {

@@ -1,7 +1,7 @@
 import type { ContextMenuItem } from "../ContextMenu";
 import type { MouseEventExt } from "../DragAndScale";
 import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
-import LGraph from "../LGraph";
+import LGraph, { LGraphAddNodeOptions, LGraphRemoveNodeOptions } from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
 import type { OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
@@ -72,6 +72,9 @@ export default class Subgraph extends LGraphNode {
         }
 
         this.subgraph.onTrigger = wrap(this.subgraph.onTrigger, this.onSubgraphTrigger);
+
+        this.subgraph.onNodeAdded = wrap(this.subgraph.onNodeAdded, this.onSubgraphNodeAdded);
+        this.subgraph.onNodeRemoved = wrap(this.subgraph.onNodeRemoved, this.onSubgraphNodeRemoved);
 
         //nodes input node added inside
         this.subgraph.onInputAdded = wrap(this.subgraph.onInputAdded, this.onSubgraphNewInput);
@@ -220,6 +223,24 @@ export default class Subgraph extends LGraphNode {
         var slot = this.findOutputSlotIndexByName(event);
         if (slot != -1) {
             this.triggerSlot(slot);
+        }
+    };
+
+    private onSubgraphNodeAdded(node: LGraphNode, options: LGraphAddNodeOptions) {
+        console.debug("onSubgraphNodeAdded", node.id, options.subgraphs?.length)
+        if (this.graph?.onNodeAdded) {
+            options.subgraphs ||= []
+            options.subgraphs.push(this)
+            this.graph?.onNodeAdded(node, options)
+        }
+    };
+
+    private onSubgraphNodeRemoved(node: LGraphNode, options: LGraphRemoveNodeOptions) {
+        console.debug("onSubgraphNodeRemoved", node.id, options.subgraphs?.length)
+        if (this.graph?.onNodeRemoved) {
+            options.subgraphs ||= []
+            options.subgraphs.push(this)
+            this.graph?.onNodeRemoved(node, options)
         }
     };
 

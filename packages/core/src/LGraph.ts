@@ -11,17 +11,20 @@ import Subgraph from "./nodes/Subgraph";
 import type { LConnectionKind, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import { UUID } from "./utils";
 
 export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
     addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
-    prevNodeId?: number | UUID
+    prevNodeId?: number | UUID,
+    subgraphs?: Subgraph[]
 }
 
 export type LGraphRemoveNodeOptions = {
-    removedBy?: "moveIntoSubgraph" | "moveOutOfSubgraph" | null
+    removedBy?: "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
+    subgraphs?: Subgraph[]
 }
 
 export interface LGraphConfig {
