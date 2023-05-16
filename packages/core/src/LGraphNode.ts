@@ -261,18 +261,21 @@ export default class LGraphNode {
             for (let i = 0; i < this.inputs.length; ++i) {
                 let input = this.inputs[i];
                 let linkInfo = this.graph ? this.graph.links[input.link] : null;
+                input.properties ||= {}
+
                 if (this.onConnectionsChange)
                     this.onConnectionsChange(LConnectionKind.INPUT, i, true, linkInfo, input); //linkInfo has been created now, so its updated
 
                 if (this.onInputAdded)
                     this.onInputAdded(input);
-
             }
         }
 
         if (this.outputs) {
             for (var i = 0; i < this.outputs.length; ++i) {
                 let output = this.outputs[i];
+                output.properties ||= {}
+
                 if (!output.links) {
                     continue;
                 }
@@ -375,11 +378,7 @@ export default class LGraphNode {
         }
 
         if (this.onSerialize) {
-            if (this.onSerialize(o)) {
-                console.warn(
-                    "node onSerialize shouldnt return anything, data should be stored in the object pass in the first parameter"
-                );
-            }
+            this.onSerialize(o);
         }
 
         return o;
@@ -1174,7 +1173,7 @@ export default class LGraphNode {
         type: SlotType = BuiltInSlotType.DEFAULT,
         extra_info?: Partial<INodeOutputSlot>
     ): INodeOutputSlot {
-        var output: INodeOutputSlot = { name: name, type: type, links: [] };
+        var output: INodeOutputSlot = { name: name, type: type, links: [], properties: {} };
         if (extra_info) {
             for (var i in extra_info) {
                 output[i] = extra_info[i];
@@ -1248,7 +1247,7 @@ export default class LGraphNode {
         type: SlotType = BuiltInSlotType.DEFAULT,
         extra_info?: Partial<INodeInputSlot>
     ): INodeInputSlot {
-        var input: INodeInputSlot = { name: name, type: type, link: null };
+        var input: INodeInputSlot = { name: name, type: type, link: null, properties: {} };
         if (extra_info) {
             for (var i in extra_info) {
                 input[i] = extra_info[i];

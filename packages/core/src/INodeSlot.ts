@@ -17,6 +17,7 @@ export default interface INodeSlot {
     pos?: Vector2
     slot_index?: number;
     removable?: boolean;
+    properties: Record<string, any>;
 }
 
 export interface INodeInputSlot extends INodeSlot {
