@@ -513,8 +513,8 @@ export default class LGraphCanvas
                 min_y = Math.min(node.pos[1], min_y);
                 max_y = Math.max(node.pos[1] + node.size[1], max_y);
             }
-            offset[0] = (max_x - min_x) / 2;
-            offset[1] = (max_y - min_y) / 2 + this.canvas.height / 4;
+            offset[0] = -(min_x + (max_x - min_x) / 2) + this.canvas.width / 2;
+            offset[1] = -(min_y + (max_y - min_y) / 2) + this.canvas.height / 2;
         }
 
         this.ds.offset = offset;

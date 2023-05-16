@@ -145,7 +145,7 @@ export default class DragAndScale {
                 : e.deltaY
                     ? -e.deltaY / 3
                     : 0;
-            this.changeDeltaScale(1.0 + e.delta * 0.05);
+            this.changeDeltaScale(1.0 + e.delta * 0.05, [e.clientX, e.clientY]);
         }
 
         this.last_mouse[0] = x;
@@ -210,6 +210,8 @@ export default class DragAndScale {
             rect.width * 0.5,
             rect.height * 0.5
         ];
+        zooming_center[0] -= rect.left
+        zooming_center[1] -= rect.top
         var center = this.convertCanvasToOffset(zooming_center);
         this.scale = value;
         if (Math.abs(this.scale - 1) < 0.01) {

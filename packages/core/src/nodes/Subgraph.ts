@@ -368,9 +368,9 @@ export default class Subgraph extends LGraphNode {
         // Since the nodes will reparented to a new graph causing the node ID
         // to be changed, we can't rely on node IDs to reference the reinserted
         // nodes. So the new nodes are referred to by index into the nodes array instead
-        // { linkID => [fromIndex, toIndex, connectionPos] }
-        const linksIn: Record<LinkID, [LLink, number, number, Vector2]> = {}
-        const linksOut: Record<LinkID, [LLink, number, number, Vector2]> = {}
+        // { linkID => [fromIndex, toIndex, connectionPos, slotName] }
+        const linksIn: Record<LinkID, [LLink, number, number, Vector2, string]> = {}
+        const linksOut: Record<LinkID, [LLink, number, number, Vector2, string]> = {}
 
         // Links internal to the subgraph
         // { linkID => [LLink, fromIndex, toIndex, connectionPos] }
@@ -406,6 +406,7 @@ export default class Subgraph extends LGraphNode {
 
                 if (link) {
                     const pos = node.getConnectionPos(true, index);
+                    const input = node.getInputInfo(index);
 
                     let indexFrom = nodeIdToIndex[link.origin_id]
                     if (indexFrom == null) {
@@ -424,13 +425,12 @@ export default class Subgraph extends LGraphNode {
                         indexToNode[indexTo] = node.graph.getNodeById(link.target_id)
                     }
 
-                    console.warn("S", link.origin_id, containedNodes[link.origin_id])
                     const isSelected = containedNodes[link.origin_id] != null;
                     if (isSelected) {
                         innerLinks[link.id] = [link, indexFrom, indexTo, pos];
                     }
                     else {
-                        linksIn[link.id] = [link, indexFrom, indexTo, pos];
+                        linksIn[link.id] = [link, indexFrom, indexTo, pos, input.name];
                     }
                 }
             }
@@ -440,6 +440,8 @@ export default class Subgraph extends LGraphNode {
 
                 for (const link of links) {
                     const pos = node.getConnectionPos(false, index);
+                    const output = node.getOutputInfo(index);
+
                     let indexFrom = nodeIdToIndex[link.origin_id]
                     if (indexFrom == null) {
                         // Found a node outside the selected nodes
@@ -462,7 +464,7 @@ export default class Subgraph extends LGraphNode {
                         innerLinks[link.id] = [link, indexFrom, indexTo, pos];
                     }
                     else {
-                        linksOut[link.id] = [link, indexFrom, indexTo, pos];
+                        linksOut[link.id] = [link, indexFrom, indexTo, pos, output.name];
                     }
                 }
             }
@@ -500,12 +502,13 @@ export default class Subgraph extends LGraphNode {
         let outputNodeY = 0
 
         // Reconnect links from outside the subgraph -> inside
-        for (const [linkIn, fromIndex, toIndex, _pos] of sortedLinksIn) {
+        for (const [linkIn, fromIndex, toIndex, _pos, inputName] of sortedLinksIn) {
             let pair = null;
             if (inputSlotsCreated[linkIn.origin_id])
                 pair = inputSlotsCreated[linkIn.origin_id][linkIn.origin_slot]
             if (!pair) {
-                pair = this.addGraphInput(`${i++}`, linkIn.type, [-200, inputNodeY])
+                const newInputName = this.getValidGraphInputName(inputName);
+                pair = this.addGraphInput(newInputName, linkIn.type, [-200, inputNodeY])
                 inputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
                 if (!pair) {
                     console.error("Failed creating subgraph output pair!", linkIn);
@@ -528,10 +531,11 @@ export default class Subgraph extends LGraphNode {
         i = 0;
 
         // Reconnect links from inside the subgraph -> outside
-        for (const [linkOut, fromIndex, toIndex, _pos] of sortedLinksOut) {
+        for (const [linkOut, fromIndex, toIndex, _pos, outputName] of sortedLinksOut) {
             let pair = outputSlotsCreated[linkOut.target_slot];
             if (!pair) {
-                pair = this.addGraphOutput(`${i++}`, linkOut.type, [max_x - min_x, outputNodeY])
+                const newOutputName = this.getValidGraphOutputName(outputName);
+                pair = this.addGraphOutput(newOutputName, linkOut.type, [max_x - min_x + 200, outputNodeY])
                 outputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
                 if (!pair) {
                     console.error("Failed creating subgraph output pair!", linkOut);
