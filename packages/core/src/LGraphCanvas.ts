@@ -16,8 +16,9 @@ import LLink from "./LLink";
 import GraphInput from "./nodes/GraphInput";
 import GraphOutput from "./nodes/GraphOutput";
 import Subgraph from "./nodes/Subgraph";
-import { BuiltInSlotType, Dir, LinkRenderMode, SlotType, type Vector2, type Vector4 } from "./types";
-import { clamp, UUID } from "./utils";
+import { BuiltInSlotType, Dir, LinkRenderMode, NodeID, SlotType, type Vector2, type Vector4 } from "./types";
+import { clamp } from "./utils";
+import { UUID } from "./types";
 
 export interface IGraphPanel extends HTMLDivElement {
     header: HTMLDivElement;
@@ -81,7 +82,7 @@ export type GraphStackEntry = {
 
 export type ClipboardInfo = {
     nodes: SerializedLGraphNode[],
-    links: [number | UUID, number, number | UUID, number][]
+    links: [NodeID, number, NodeID, number][]
 }
 
 /**

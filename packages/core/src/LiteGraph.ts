@@ -133,9 +133,6 @@ export default class LiteGraph {
     // use mouse for retrocompatibility issues? (none found @ now)
     static pointerevents_method: PointerEventsMethod = "mouse";
 
-    // default constructor to use for new subgraphs created from the right-click context menu
-    static default_subgraph_lgraph_factory: () => LGraph = () => new LGraph;
-
     // if true, all newly created nodes/links will use string UUIDs for their id fields instead of integers.
     // use this if you must have node IDs that are unique across all graphs and subgraphs.
     static use_uuids: boolean = false;

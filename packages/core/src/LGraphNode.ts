@@ -8,9 +8,10 @@ import LGraph, { LGraphRemoveNodeOptions } from "./LGraph";
 import LGraphCanvas, { type INodePanel } from "./LGraphCanvas";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import { SlotShape, SlotType, TitleMode, Vector2 } from "./types";
+import { LinkID, NodeID, SlotShape, SlotType, TitleMode, Vector2 } from "./types";
 import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./types";
-import { UUID, getStaticPropertyOnInstance } from "./utils";
+import { getStaticPropertyOnInstance } from "./utils";
+import { UUID } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
 export type NodeTypeOpts = {
@@ -145,7 +146,7 @@ export default class LGraphNode {
     titleMode: TitleMode = TitleMode.NORMAL_TITLE;
     class: new () => LGraphNode;
 
-    id: number | UUID;
+    id: NodeID;
 
     widgets: IWidget[] | null | undefined;
     widgets_values?: IWidget["value"][];
@@ -177,7 +178,7 @@ export default class LGraphNode {
 
     last_serialization?: SerializedLGraphNode = null;
 
-    _relative_id: number | UUID | null = null;
+    _relative_id: NodeID | null = null;
     _level: number;
 
     /** Used in `LGraphCanvas.onMenuNodeMode` */
@@ -858,6 +859,25 @@ export default class LGraphNode {
         return r;
     }
 
+    *iterateAllLinks(): Iterable<LLink> {
+        for (const input of this.iterateInputInfo()) {
+            if (input.link) {
+                const link = this.graph.links[input.link]
+                if (link)
+                    yield link
+            }
+        }
+        for (const output of this.iterateOutputInfo()) {
+            if (output.links != null) {
+                for (const linkID of output.links) {
+                    const link = this.graph.links[linkID]
+                    if (link)
+                        yield link
+                }
+            }
+        }
+    }
+
     addOnTriggerInput(): SlotIndex {
         var trigS = this.findInputSlotIndexByName("onTrigger");
         if (trigS == -1) { //!trigS ||
@@ -989,7 +1009,7 @@ export default class LGraphNode {
      * @param param
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    triggerSlot(slot: SlotIndex, param?: any, link_id?: number | UUID, options: object = {}): void {
+    triggerSlot(slot: SlotIndex, param?: any, link_id?: LinkID, options: object = {}): void {
         if (!this.outputs) {
             return;
         }
@@ -1062,7 +1082,7 @@ export default class LGraphNode {
      * @param slot the index of the output slot
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    clearTriggeredSlot(slot: number, link_id?: number | UUID): void {
+    clearTriggeredSlot(slot: number, link_id?: LinkID): void {
         if (!this.outputs) {
             return;
         }
@@ -1145,7 +1165,7 @@ export default class LGraphNode {
         type: SlotType = BuiltInSlotType.DEFAULT,
         extra_info?: Partial<INodeOutputSlot>
     ): INodeOutputSlot {
-        var output: INodeOutputSlot = { name: name, type: type, links: null };
+        var output: INodeOutputSlot = { name: name, type: type, links: [] };
         if (extra_info) {
             for (var i in extra_info) {
                 output[i] = extra_info[i];
@@ -2045,7 +2065,7 @@ export default class LGraphNode {
             }
         }
 
-        let nextId: number | UUID;
+        let nextId: LinkID;
         if (LiteGraph.use_uuids)
             nextId = uuidv4();
         else

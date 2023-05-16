@@ -8,17 +8,17 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import GraphInput from "./nodes/GraphInput";
 import Subgraph from "./nodes/Subgraph";
-import type { LConnectionKind, Version } from "./types";
+import type { LConnectionKind, LinkID, NodeID, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { UUID } from "./utils";
+import { UUID } from "./types";
 
 export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
     addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
-    prevNodeId?: number | UUID,
+    prevNodeId?: NodeID,
     subgraphs?: Subgraph[]
 }
 
@@ -97,10 +97,10 @@ export default class LGraph {
     inputs: Record<string, LGraphInput> = {}
     outputs: Record<string, LGraphOutput> = {}
     iteration: number;
-    last_link_id: number | UUID;
-    last_node_id: number | UUID;
+    last_link_id: number;
+    last_node_id: number;
     last_update_time: number;
-    links: Record<number, LLink>;
+    links: Record<LinkID>;
     list_of_graphcanvas: LGraphCanvas[];
     runningtime: number;
     starttime: number;
@@ -108,7 +108,7 @@ export default class LGraph {
 
     _nodes: LGraphNode[] = [];
     _groups: LGraphGroup[] = [];
-    _nodes_by_id: Record<number | UUID, LGraphNode> = {};
+    _nodes_by_id: Record<NodeID, LGraphNode> = {};
     /** nodes that are executable sorted in execution order */
     _nodes_executable:
         | LGraphNodeExecutable[]
@@ -950,11 +950,11 @@ export default class LGraph {
     }
 
     /** Returns a node by its id. */
-    getNodeById<T extends LGraphNode = LGraphNode>(id: number | UUID): T | null {
+    getNodeById<T extends LGraphNode = LGraphNode>(id: NodeID): T | null {
         if (id == null) {
             return null;
         }
-        return this._nodes_by_id[id];
+        return this._nodes_by_id[id] as T;
     }
 
     /**
@@ -1435,7 +1435,7 @@ export default class LGraph {
     }
 
     /** Destroys a link */
-    removeLink(linkId: number | UUID): void {
+    removeLink(linkId: LinkID): void {
         var link = this.links[linkId];
         if (!link) {
             return;

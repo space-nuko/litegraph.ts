@@ -2,16 +2,16 @@ import type { default as IWidget, ITextWidget } from "../IWidget";
 import type { SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
-import type { SlotType, Vector2 } from "../types";
+import type { NodeID, SlotType, Vector2 } from "../types";
 import { BuiltInSlotType } from "../types";
-import { UUID } from "../utils";
+import { UUID } from "../types";
 import Subgraph from "./Subgraph";
 
 export interface GraphInputProperties extends Record<string, any> {
     name: string,
     type: SlotType,
     value: any,
-    subgraphID: number | UUID | null
+    subgraphID: NodeID | null
 }
 
 export default class GraphInput extends LGraphNode {

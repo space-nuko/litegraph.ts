@@ -61,5 +61,3 @@ export function makeDraggable(el: HTMLElement): HTMLElement {
     el.classList.add("draggable")
     return el
 }
-
-export type UUID = string;

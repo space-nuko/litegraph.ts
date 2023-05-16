@@ -16,6 +16,10 @@ export enum NodeMode {
 export const NODE_MODE_NAMES = ["Always", "On Event", "Never", "On Trigger"] // helper, will add "On Request" and more in the future
 export const NODE_MODE_COLORS = ["#666", "#422", "#333", "#224", "#626"] // use with node_box_coloured_by_mode
 
+export type UUID = string;
+export type NodeID = number | UUID;
+export type LinkID = number | UUID;
+
 export type Vector2 = [number, number];
 export type Vector4 = [number, number, number, number];
 export type WidgetTypes =

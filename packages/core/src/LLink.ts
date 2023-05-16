@@ -1,14 +1,14 @@
 import type { SlotType, Vector2 } from "./types";
-import { UUID } from "./utils";
+import { LinkID, NodeID } from "./types";
 
-export type SerializedLLink = [number | UUID, number | UUID, number, number | UUID, number, SlotType];
+export type SerializedLLink = [LinkID, NodeID, number, NodeID, number, SlotType];
 
 export default class LLink {
-    id: number | UUID;
+    id: LinkID;
     type: SlotType;
-    origin_id: number | UUID;
+    origin_id: NodeID;
     origin_slot: number;
-    target_id: number | UUID;
+    target_id: NodeID;
     target_slot: number;
     data?: any = null;
     _pos?: Vector2 = [0, 0]; // center
@@ -17,11 +17,11 @@ export default class LLink {
     _last_time: number = 0;
 
     constructor(
-        id: number | UUID,
+        id: LinkID,
         type: SlotType,
-        origin_id: number | UUID,
+        origin_id: NodeID,
         origin_slot: number,
-        target_id: number | UUID,
+        target_id: NodeID,
         target_slot: number
     ) {
         this.id = id;

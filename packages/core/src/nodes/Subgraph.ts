@@ -7,8 +7,8 @@ import type { OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } 
 import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
-import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2 } from "../types";
-import { UUID } from "../utils";
+import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2, LinkID, NodeID } from "../types";
+import { UUID } from "../types";
 import GraphInput from "./GraphInput";
 import GraphOutput from "./GraphOutput";
 
@@ -29,6 +29,9 @@ export type SubgraphOutputPair = {
 }
 
 export default class Subgraph extends LGraphNode {
+    // default constructor to use for new subgraphs created from the right-click context menu
+    static default_lgraph_factory: () => LGraph = () => new LGraph;
+
     override properties: SubgraphProperties = {
         enabled: true
     }
@@ -55,10 +58,7 @@ export default class Subgraph extends LGraphNode {
 
     constructor(title?: string, graphFactory?: () => LGraph) {
         super(title)
-        if (graphFactory)
-            this.subgraph = graphFactory();
-        else
-            this.subgraph = new LGraph();
+        this.subgraph = (graphFactory || Subgraph.default_lgraph_factory)();
         this.subgraph._subgraph_node = this;
         this.subgraph._is_subgraph = true;
 
@@ -369,12 +369,12 @@ export default class Subgraph extends LGraphNode {
         // to be changed, we can't rely on node IDs to reference the reinserted
         // nodes. So the new nodes are referred to by index into the nodes array instead
         // { linkID => [fromIndex, toIndex, connectionPos] }
-        const linksIn: Record<number | UUID, [LLink, number, number, Vector2]> = {}
-        const linksOut: Record<number | UUID, [LLink, number, number, Vector2]> = {}
+        const linksIn: Record<LinkID, [LLink, number, number, Vector2]> = {}
+        const linksOut: Record<LinkID, [LLink, number, number, Vector2]> = {}
 
         // Links internal to the subgraph
         // { linkID => [LLink, fromIndex, toIndex, connectionPos] }
-        const innerLinks: Record<number | UUID, [LLink, number, number, Vector2]> = {}
+        const innerLinks: Record<LinkID, [LLink, number, number, Vector2]> = {}
 
         const containedNodes = nodes.reduce((result, node) => { result[node.id] = node; return result }, {})
 
@@ -391,7 +391,7 @@ export default class Subgraph extends LGraphNode {
         }
 
         const indexToNode: Record<number, LGraphNode> = {}
-        const nodeIdToIndex: Record<number | UUID, number> = {}
+        const nodeIdToIndex: Record<NodeID, number> = {}
         for (const [index, node] of nodes.entries()) {
             indexToNode[index] = node;
             nodeIdToIndex[node.id] = index;

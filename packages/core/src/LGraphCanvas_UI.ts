@@ -8,7 +8,7 @@ import LGraphGroup from "./LGraphGroup";
 import LGraphNode, { InputSlotLayout, OutputSlotLayout } from "./LGraphNode";
 import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import { NODE_MODE_NAMES, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
+import { LinkID, NODE_MODE_NAMES, NodeID, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
 import { BuiltInSlotType } from "./types";
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
@@ -16,6 +16,7 @@ import { IPropertyInfo } from "./IProperty";
 import { clamp, makeDraggable } from "./utils";
 import GraphInput from "./nodes/GraphInput";
 import GraphOutput from "./nodes/GraphOutput";
+import Subgraph from "./nodes/Subgraph";
 
 export default class LGraphCanvas_UI {
 
@@ -729,7 +730,7 @@ export default class LGraphCanvas_UI {
         if (!nodes_list.length)
             nodes_list = [node];
 
-        var subgraph_node = LiteGraph.createNode<Subgraph>("graph/subgraph", null, { constructorArgs: [LiteGraph.default_subgraph_lgraph_factory] });
+        var subgraph_node = LiteGraph.createNode<Subgraph>("graph/subgraph", null, { constructorArgs: [null] });
         subgraph_node.pos = node.pos.concat() as Vector2;
         graph.add(subgraph_node);
 
@@ -778,12 +779,35 @@ export default class LGraphCanvas_UI {
         const place_x = (subgraphNode.pos[0] + subgraphNode.size[0] / 2) - (width / 2)
         const place_y = (subgraphNode.pos[1] + subgraphNode.size[1] / 2) - (height / 2)
 
+        const innerLinks: Record<LinkID, [LLink, Vector2]> = {}
+
+        const nodeIdToNode: Record<NodeID, LGraphNode> = {}
+        for (const [index, node] of nodes.entries()) {
+            nodeIdToNode[node.id] = node;
+        }
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                const isInputLink = link.target_id === node.id;
+                const pos = node.getConnectionPos(isInputLink, isInputLink ? link.target_slot : link.origin_slot);
+                if (nodeIdToNode[link.origin_id] != null && nodeIdToNode[link.target_id] != null) {
+                    innerLinks[link.id] = [link, pos];
+                }
+            }
+        }
+
         for (const [index, node] of nodes.entries()) {
             const newPos: Vector2 = [node.pos[0] - min_x + place_x, node.pos[1] - min_y + place_y]
             const prevNodeId = node.id;
             node.graph.remove(node, { removedBy: "moveOutOfSubgraph" })
             parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeId });
             node.pos = newPos
+        }
+
+        for (const [link, pos] of Object.values(innerLinks)) {
+            const originNode = nodeIdToNode[link.origin_id]
+            const targetNode = nodeIdToNode[link.target_id]
+            originNode.connect(link.origin_slot, targetNode, link.target_slot)
         }
 
         graphcanvas.deselectAllNodes();
