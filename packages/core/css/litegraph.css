@@ -581,6 +581,7 @@
 }
 
 .graphdialog .name {
+    color: #888;
     display: inline-block;
     min-width: 60px;
     min-height: 1.5em;

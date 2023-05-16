@@ -5,7 +5,7 @@ import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSl
 import type { GraphDialogOptions, IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { InputSlotLayout, OutputSlotLayout } from "./LGraphNode";
+import LGraphNode, { InputSlotLayout, NodeTypeSpec, OutputSlotLayout } from "./LGraphNode";
 import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import { LinkID, NODE_MODE_NAMES, NodeID, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
@@ -13,10 +13,10 @@ import { BuiltInSlotType } from "./types";
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import { IPropertyInfo } from "./IProperty";
-import { clamp, makeDraggable } from "./utils";
+import { clamp, makeDraggable, toHashMap } from "./utils";
 import GraphInput from "./nodes/GraphInput";
 import GraphOutput from "./nodes/GraphOutput";
-import Subgraph from "./nodes/Subgraph";
+import Subgraph, { SubgraphInputPair } from "./nodes/Subgraph";
 
 export default class LGraphCanvas_UI {
 
@@ -740,22 +740,138 @@ export default class LGraphCanvas_UI {
         node.setDirtyCanvas(true, true);
     };
 
-    static onMenuNodeToParentGraph: ContextMenuEventListener = function(value, options, e, menu, node: LGraphNode) {
+    static onMenuNodeToSubgraphInputs: ContextMenuEventListener = function(value, options, e, menu, node: LGraphNode) {
+        var graphcanvas = LGraphCanvas.active_canvas;
+        if (!graphcanvas) //??
+            return;
+
+        const subgraphNode = node.graph._subgraph_node;
+        if (!node.graph._is_subgraph || !subgraphNode) {
+            console.error("[To Subgraph Inputs] Current graph is not a subgraph!", node.graph)
+            return;
+        }
+
+        let nodes = Object.values(graphcanvas.selected_nodes || {});
+        if (!nodes.length)
+            nodes = [node];
+
+        const containedIds = toHashMap(nodes, (node) => node.id);
+        const parentIntoSubgraphLinks: LLink[] = [];
+        const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
+
+        const innerGraph = subgraphNode.subgraph;
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                if (containedIds[link.origin_id] == null) {
+                    throw new Error("Can't convert to input with an origin link outward")
+                }
+                else if (containedIds[link.target_id] == null) {
+                    parentIntoSubgraphLinks.push(link);
+                    prevPositions[node.id] = [node.pos, node.getConnectionPos(false, link.origin_slot)]
+                }
+            }
+        }
+
+        const oldIdsToNodes = LGraphCanvas_UI.moveToParentGraph(subgraphNode, nodes);
+
+        const innerNodeSlotToGraphInput: Record<NodeID, Record<number, SubgraphInputPair>> = {}
+
+        for (const link of parentIntoSubgraphLinks) {
+            const innerNode = innerGraph.getNodeById(link.target_id);
+            const innerInput = innerNode.getInputInfo(link.target_slot)
+
+            innerNodeSlotToGraphInput[link.target_id] ||= {}
+            let pair = innerNodeSlotToGraphInput[link.target_id][link.target_slot]
+            if (pair == null) {
+                const name = subgraphNode.getValidGraphInputName(innerInput.name)
+                pair = subgraphNode.addGraphInput(name, innerInput.type)
+                innerNodeSlotToGraphInput[link.target_id][link.target_slot] = pair
+
+                // Align graph input's slot over previous slot position
+                const [pos, connPos] = prevPositions[link.origin_id];
+                const newConnPos = pair.innerNode.getConnectionPos(false, 0);
+                const offset = [pair.innerNode.pos[0] - newConnPos[0], pair.innerNode.pos[1] - newConnPos[1]]
+                const placePos: Vector2 = [connPos[0] + offset[0], connPos[1] + offset[1]]
+                pair.innerNode.pos = placePos;
+            }
+
+            const outerNode = oldIdsToNodes[link.origin_id];
+            outerNode.connect(link.origin_slot, subgraphNode, pair.outerInputIndex)
+            pair.innerNode.connect(0, innerNode, link.target_slot)
+        }
+
+        graphcanvas.deselectAllNodes();
+        node.setDirtyCanvas(true, true);
+    };
+
+    static onMenuNodeToSubgraphOutputs: ContextMenuEventListener = function(value, options, e, menu, node) {
         var graphcanvas = LGraphCanvas.active_canvas;
         if (!graphcanvas) //??
             return;
 
         const subgraphNode = node.graph._subgraph_node
         if (!node.graph._is_subgraph || !subgraphNode) {
-            console.error("[To Parent Graph] Current graph is not a subgraph!", node.graph)
+            console.error("[To Subgraph Outputs] Current graph is not a subgraph!", node.graph)
             return;
         }
-
-        const parentGraph = subgraphNode.graph;
 
         let nodes = Object.values(graphcanvas.selected_nodes || {});
         if (!nodes.length)
             nodes = [node];
+
+        const containedIds = toHashMap(nodes, (node) => node.id);
+        const parentIntoSubgraphLinks: LLink[] = [];
+        const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
+
+        const innerGraph = subgraphNode.subgraph;
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                if (containedIds[link.origin_id] == null) {
+                    parentIntoSubgraphLinks.push(link);
+                    prevPositions[node.id] = [node.pos, node.getConnectionPos(true, link.origin_slot)]
+                }
+                else if (containedIds[link.target_id] == null) {
+                    throw new Error("Can't convert to input with an origin link outward")
+                }
+            }
+        }
+
+        const oldIdsToNodes = LGraphCanvas_UI.moveToParentGraph(subgraphNode, nodes);
+
+        const innerNodeSlotToGraphOutput: Record<NodeID, Record<number, SubgraphOutputPair>> = {}
+
+        for (const link of parentIntoSubgraphLinks) {
+            const innerNode = innerGraph.getNodeById(link.origin_id);
+            const innerOutput = innerNode.getOutputInfo(link.origin_slot)
+
+            innerNodeSlotToGraphOutput[link.origin_id] ||= {}
+            let pair = innerNodeSlotToGraphOutput[link.origin_id][link.origin_slot]
+            if (pair == null) {
+                const name = subgraphNode.getValidGraphOutputName(innerOutput.name)
+                pair = subgraphNode.addGraphOutput(name, innerOutput.type)
+                innerNodeSlotToGraphOutput[link.origin_id][link.origin_slot] = pair
+
+                // Align graph output's slot over previous slot position
+                const [pos, connPos] = prevPositions[link.target_id];
+                const newConnPos = pair.innerNode.getConnectionPos(true, 0);
+                const offset = [pair.innerNode.pos[0] - newConnPos[0], pair.innerNode.pos[1] - newConnPos[1]]
+                const placePos: Vector2 = [connPos[0] + offset[0], connPos[1] + offset[1]]
+                pair.innerNode.pos = placePos;
+            }
+
+            const outerNode = oldIdsToNodes[link.target_id];
+            innerNode.connect(link.origin_slot, pair.innerNode, 0)
+            subgraphNode.connect(pair.outerOutputIndex, outerNode, link.target_slot)
+        }
+
+        graphcanvas.deselectAllNodes();
+        node.setDirtyCanvas(true, true);
+    };
+
+    static moveToParentGraph(subgraphNode: Subgraph, nodes: LGraphNode[]): Record<NodeID, LGraphNode> {
+        const parentGraph = subgraphNode.graph;
 
         nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
         if (nodes.length === 0)
@@ -796,12 +912,15 @@ export default class LGraphCanvas_UI {
             }
         }
 
+        const prevNodeIDtoNewNode = {}
+
         for (const [index, node] of nodes.entries()) {
             const newPos: Vector2 = [node.pos[0] - min_x + place_x, node.pos[1] - min_y + place_y]
             const prevNodeId = node.id;
             node.graph.remove(node, { removedBy: "moveOutOfSubgraph" })
             parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeId });
             node.pos = newPos
+            prevNodeIDtoNewNode[prevNodeId] = node
         }
 
         for (const [link, pos] of Object.values(innerLinks)) {
@@ -809,6 +928,26 @@ export default class LGraphCanvas_UI {
             const targetNode = nodeIdToNode[link.target_id]
             originNode.connect(link.origin_slot, targetNode, link.target_slot)
         }
+
+        return prevNodeIDtoNewNode;
+    }
+
+    static onMenuNodeToParentGraph: ContextMenuEventListener = function(value, options, e, menu, node: LGraphNode) {
+        var graphcanvas = LGraphCanvas.active_canvas;
+        if (!graphcanvas) //??
+            return;
+
+        const subgraphNode = node.graph._subgraph_node
+        if (!node.graph._is_subgraph || !subgraphNode) {
+            console.error("[To Parent Graph] Current graph is not a subgraph!", node.graph)
+            return;
+        }
+
+        let nodes = Object.values(graphcanvas.selected_nodes || {});
+        if (!nodes.length)
+            nodes = [node];
+
+        LGraphCanvas_UI.moveToParentGraph(subgraphNode, nodes);
 
         graphcanvas.deselectAllNodes();
         node.setDirtyCanvas(true, true);
@@ -947,12 +1086,14 @@ export default class LGraphCanvas_UI {
         }
 
         if (event) {
-            dialog.style.left = event.clientX + offsetx + "px";
-            dialog.style.top = event.clientY + offsety + "px";
+            dialog.style.left = event.clientX + "px";
+            dialog.style.top = event.clientY + "px";
         } else {
             dialog.style.left = canvas.width * 0.5 + offsetx + "px";
             dialog.style.top = canvas.height * 0.5 + offsety + "px";
         }
+        console.warn(dialog.style.left, dialog.style.top)
+        console.warn(event)
 
         setTimeout(function() {
             input.focus();
@@ -1873,8 +2014,6 @@ export default class LGraphCanvas_UI {
         slotTo?: SlotNameOrIndex | INodeSlot,
         e?: MouseEventExt
     } = {}) { // addNodeMenu for connection
-        var that = this;
-
         var isFrom = opts.nodeFrom && opts.slotFrom;
         var isTo = !isFrom && opts.nodeTo && opts.slotTo;
 
@@ -1884,34 +2023,44 @@ export default class LGraphCanvas_UI {
         }
 
         var nodeX: LGraphNode = isFrom ? opts.nodeFrom : opts.nodeTo;
-        var slotX: SlotNameOrIndex | INodeSlot = isFrom ? opts.slotFrom : opts.slotTo;
+        const _slotX: SlotNameOrIndex | INodeSlot = isFrom ? opts.slotFrom : opts.slotTo;
+        let slotX: INodeSlot;
 
         var iSlotConn: SlotIndex | null = null;
-        switch (typeof slotX) {
+        switch (typeof _slotX) {
             case "string":
-                iSlotConn = isFrom ? nodeX.findOutputSlotIndexByName(slotX) : nodeX.findInputSlotIndexByName(slotX);
-                slotX = isFrom ? nodeX.outputs[slotX] : nodeX.inputs[slotX];
+                iSlotConn = isFrom ? nodeX.findOutputSlotIndexByName(_slotX as string) : nodeX.findInputSlotIndexByName(_slotX as string);
+                slotX = isFrom ? nodeX.outputs[_slotX as string] : nodeX.inputs[_slotX as string];
                 break;
             case "object":
                 // ok slotX
+                slotX = _slotX as INodeSlot;
                 iSlotConn = isFrom ? nodeX.findOutputSlotIndexByName(slotX.name) : nodeX.findInputSlotIndexByName(slotX.name);
                 break;
             case "number":
-                iSlotConn = slotX;
-                slotX = isFrom ? nodeX.outputs[slotX] : nodeX.inputs[slotX];
+                iSlotConn = _slotX as number;
+                slotX = isFrom ? nodeX.outputs[iSlotConn] : nodeX.inputs[iSlotConn];
                 break;
             default:
                 // bad ?
                 //iSlotConn = 0;
-                console.warn("Cant get slot information " + slotX);
+                console.error("Can't get slot information", _slotX);
                 return false;
         }
 
-        slotX = slotX as INodeSlot;
-
         var options: ContextMenuItem[] = [{ content: "Add Node" }, ContextMenuSpecialItem.SEPARATOR];
 
-        if (that.allow_searchbox) {
+        if (nodeX.graph._is_subgraph) {
+            if (isFrom) {
+                options.push({ content: "Add Subgraph Output" });
+            }
+            else {
+                options.push({ content: "Add Subgraph Input" });
+            }
+            options.push(ContextMenuSpecialItem.SEPARATOR);
+        }
+
+        if (this.allow_searchbox) {
             options.push({ content: "Search" });
             options.push(ContextMenuSpecialItem.SEPARATOR);
         }
@@ -1920,28 +2069,52 @@ export default class LGraphCanvas_UI {
         var fromSlotType = slotX.type == BuiltInSlotType.EVENT ? "_event_" : slotX.type;
         var slotTypesDefault = isFrom ? LiteGraph.slot_types_default_out : LiteGraph.slot_types_default_in;
         const fromSlotSpec = slotTypesDefault[fromSlotType];
+        console.warn("FROMSL", slotTypesDefault, fromSlotSpec)
         if (slotTypesDefault && slotTypesDefault[fromSlotType]) {
             if (Array.isArray(fromSlotSpec)) {
                 for (var typeX of fromSlotSpec) {
-                    options.push({ content: fromSlotSpec[typeX] });
+                    const name = typeof typeX === "string" ? typeX : (typeX?.title || typeX?.node);
+                    options.push({ content: name, value: typeX });
                 }
-            } else if (typeof fromSlotSpec === "object") {
-                options.push({ content: fromSlotSpec.node });
             }
             else {
-                options.push({ content: fromSlotSpec });
+                throw new Error(`Invalid default slot specifier, must be an array: ${fromSlotSpec}`)
             }
         }
 
-        // build menu
-        var menu = new ContextMenu(options, {
-            event: opts.e,
-            title: (slotX && slotX.name != "" ? (slotX.name + (fromSlotType ? " | " : "")) : "") + (slotX && fromSlotType ? fromSlotType : ""),
-            callback: inner_clicked
-        });
+        const addSubgraphInput = (e: MouseEventExt) => {
+            const subgraph = nodeX.graph._subgraph_node;
+            let name = subgraph.getValidGraphInputName(slotX.name)
+            const pos: Vector2 = [e.canvasX, e.canvasY]
+            const pair = subgraph.addGraphInput(name, slotX.type, pos);
+            pair.innerNode.connect(0, nodeX, iSlotConn);
+        }
+
+        const addSubgraphOutput = (e: MouseEventExt) => {
+            const subgraph = nodeX.graph._subgraph_node;
+            let name = subgraph.getValidGraphOutputName(slotX.name)
+            const pos: Vector2 = [e.canvasX, e.canvasY]
+            const pair = subgraph.addGraphOutput(name, slotX.type, pos);
+            nodeX.connect(iSlotConn, pair.innerNode, 0);
+        }
+
+        const addDefaultNode = (v: NodeTypeSpec) => {
+            // check for defaults nodes for this slottype
+            const newOpts = Object.assign(opts, {
+                position: [opts.e.canvasX, opts.e.canvasY] as Vector2
+            })
+            var nodeCreated = this.createDefaultNodeForSlot(v, newOpts);
+            if (nodeCreated) {
+                // new node created
+                console.log("node created", v)
+            } else {
+                // failed or v is not in defaults
+                console.error("node not in defaults", v)
+            }
+        }
 
         // callback
-        function inner_clicked(v: IContextMenuItem, options, e) {
+        const inner_clicked = (v: IContextMenuItem, options, e) => {
             //console.log("Process showConnectionMenu selection");
             switch (v.content) {
                 case "Add Node":
@@ -1953,28 +2126,31 @@ export default class LGraphCanvas_UI {
                         }
                     });
                     break;
+                case "Add Subgraph Input":
+                    addSubgraphInput(this.adjustMouseEvent(e))
+                    break;
+                case "Add Subgraph Output":
+                    addSubgraphOutput(this.adjustMouseEvent(e))
+                    break;
                 case "Search":
                     if (isFrom) {
-                        that.showSearchBox(e, { node_from: opts.nodeFrom, slotFrom: slotX, type_filter_in: fromSlotType });
+                        this.showSearchBox(e, { node_from: opts.nodeFrom, slotFrom: slotX, type_filter_in: fromSlotType });
                     } else {
-                        that.showSearchBox(e, { node_to: opts.nodeTo, slotFrom: slotX, type_filter_out: fromSlotType });
+                        this.showSearchBox(e, { node_to: opts.nodeTo, slotFrom: slotX, type_filter_out: fromSlotType });
                     }
                     break;
                 default:
-                    // check for defaults nodes for this slottype
-                    const newOpts = Object.assign(opts, {
-                        position: [opts.e.canvasX, opts.e.canvasY] as Vector2
-                    })
-                    var nodeCreated = that.createDefaultNodeForSlot(v.content, newOpts);
-                    if (nodeCreated) {
-                        // new node created
-                        //console.log("node "+v+" created")
-                    } else {
-                        // failed or v is not in defaults
-                    }
+                    addDefaultNode(v.value)
                     break;
             }
         }
+
+        // build menu
+        var menu = new ContextMenu(options, {
+            event: opts.e,
+            title: (slotX && slotX.name != "" ? (slotX.name + (fromSlotType ? " | " : "")) : "") + (slotX && fromSlotType ? fromSlotType : ""),
+            callback: inner_clicked
+        });
 
         return false;
     }
@@ -2445,6 +2621,54 @@ export default class LGraphCanvas_UI {
             disabled: !node.graph._is_subgraph || nodes.length === 0,
             callback: LGraphCanvas.onMenuNodeToParentGraph
         });
+
+        if (node.graph._is_subgraph) {
+            const convertedSubgraphInputCount = (nodes: LGraphNode[]): number => {
+                let count = 0;
+                const containedIds = toHashMap(nodes, (node) => node.id);
+
+                for (const node of nodes) {
+                    for (const link of node.iterateAllLinks()) {
+                        // Can't have any input nodes outside the selection
+                        if (containedIds[link.origin_id] == null)
+                            return 0;
+                        else if (containedIds[link.target_id] == null)
+                            count += 1;
+                    }
+                }
+                return count
+            }
+
+            const convertedSubgraphOutputCount = (nodes: LGraphNode[]): number => {
+                let count = 0;
+                const containedIds = toHashMap(nodes, (node) => node.id);
+
+                for (const node of nodes) {
+                    for (const link of node.iterateAllLinks()) {
+                        // Can't have any output nodes outside the selection
+                        if (containedIds[link.origin_id] == null)
+                            count += 1;
+                        else if (containedIds[link.target_id] == null)
+                            return 0;
+                    }
+                }
+                return count
+            }
+
+            const countInput = convertedSubgraphInputCount(nodes)
+            options.push({
+                content: "To Subgraph Input" + (countInput > 1 ? "s" : ""),
+                disabled: countInput === 0,
+                callback: LGraphCanvas.onMenuNodeToSubgraphInputs
+            });
+
+            const countOutput = convertedSubgraphOutputCount(nodes)
+            options.push({
+                content: "To Subgraph Output" + (countOutput > 1 ? "s" : ""),
+                disabled: countOutput === 0,
+                callback: LGraphCanvas.onMenuNodeToSubgraphOutputs
+            });
+        }
 
         options.push(ContextMenuSpecialItem.SEPARATOR, {
             content: "Remove",

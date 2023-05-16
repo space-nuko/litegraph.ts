@@ -22,7 +22,16 @@ export type NodeTypeOpts = {
     outputs?: [string, SlotType][],
     json?: SerializedLGraphNode<LGraphNode>;
 }
-export type NodeTypeSpec = string | string[] | NodeTypeOpts;
+export type NodeTypeSpec = string | NodeTypeOpts | "AUTO";
+export type LCreateDefaultNodeForSlotOptions = {
+    nodeFrom?: LGraphNode, // input
+    slotFrom?: SlotNameOrIndex | INodeSlot, // input
+    nodeTo?: LGraphNode,   // output
+    slotTo?: SlotNameOrIndex | INodeSlot,   // output
+    position?: Vector2,	// pass the event coords
+    posAdd?: Vector2	// adjust x,y
+    posSizeFix?: Vector2 // alpha, adjust the position x,y based on the new node size w,h
+}
 
 export type SearchboxExtra = {
     data: {

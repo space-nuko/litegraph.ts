@@ -10,9 +10,17 @@ interface CanvasRenderingContext2D {
     ): void;
 }
 
-export const clamp = function(v, a, b) {
+export function clamp(v: number, a: number, b: number): number {
     return a > v ? a : b < v ? b : v;
 };
+
+export function toHashMap<T>(arr: T[], toKey: (T) => string): Record<string, T> {
+    return arr.reduce((acc, obj) => {
+        const key = toKey(obj);
+        acc[key] = obj;
+        return acc;
+    }, {});
+}
 
 export function getStaticProperty<T>(type: new (...args: any[]) => any, name: string): T {
     if (name in type) {

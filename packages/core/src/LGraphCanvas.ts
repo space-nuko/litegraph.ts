@@ -10,7 +10,7 @@ import LGraphCanvas_Events from "./LGraphCanvas_Events";
 import LGraphCanvas_Rendering from "./LGraphCanvas_Rendering";
 import LGraphCanvas_UI from "./LGraphCanvas_UI";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { SerializedLGraphNode, type NodeTypeOpts } from "./LGraphNode";
+import LGraphNode, { SerializedLGraphNode, type NodeTypeOpts, NodeTypeSpec, LCreateDefaultNodeForSlotOptions } from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
 import GraphInput from "./nodes/GraphInput";
@@ -847,21 +847,18 @@ export default class LGraphCanvas
 
     resizing_node: LGraphNode | null = null;
 
-    createDefaultNodeForSlot(nodeType: string | "AUTO", opts: {
-        nodeFrom?: LGraphNode, // input
-        slotFrom?: SlotNameOrIndex | INodeSlot, // input
-        nodeTo?: LGraphNode,   // output
-        slotTo?: SlotNameOrIndex | INodeSlot,   // output
-        position?: Vector2,	// pass the event coords
-        posAdd?: Vector2	// adjust x,y
-        posSizeFix?: Vector2 // alpha, adjust the position x,y based on the new node size w,h
-    } = {
-            position: [0, 0], posAdd: [0, 0], posSizeFix: [0, 0]
-        }): boolean { // addNodeMenu for connection
+    createDefaultNodeForSlot(nodeType: NodeTypeSpec, opts: LCreateDefaultNodeForSlotOptions = {}): boolean { // addNodeMenu for connection
         var that = this;
 
         var isFrom = opts.nodeFrom && opts.slotFrom !== null;
         var isTo = !isFrom && opts.nodeTo && opts.slotTo !== null;
+
+        const defaults: Partial<LCreateDefaultNodeForSlotOptions> = {
+            position: [0, 0],
+            posAdd: [0, 0],
+            posSizeFix: [0, 0]
+        }
+        opts = { ...defaults, ...opts };
 
         if (!isFrom && !isTo) {
             console.warn("No data passed to createDefaultNodeForSlot " + opts.nodeFrom + " " + opts.slotFrom + " " + opts.nodeTo + " " + opts.slotTo);
@@ -915,18 +912,17 @@ export default class LGraphCanvas
                 // is not not connected
             }
             let nodeNewType = null;
-            if (typeof fromSlotSpec == "object" && Array.isArray(fromSlotSpec)) {
-                for (var typeX of fromSlotSpec) {
-                    if (nodeType == slotTypesDefault[fromSlotType][typeX] || nodeType == "AUTO") {
-                        nodeNewType = slotTypesDefault[fromSlotType][typeX];
+            if (Array.isArray(fromSlotSpec)) {
+                for (var index in fromSlotSpec) {
+                    if (nodeType == slotTypesDefault[fromSlotType][index] || nodeType == "AUTO") {
+                        nodeNewType = slotTypesDefault[fromSlotType][index];
                         if (LiteGraph.debug)
                             console.log("opts.nodeType == slotTypesDefault[fromSlotType][typeX] :: " + nodeType);
                         break; // --------
                     }
                 }
             } else {
-                if (nodeType == fromSlotSpec || nodeType == "AUTO")
-                    nodeNewType = fromSlotSpec;
+                throw new Error(`Invalid default slot specifier, must be an array: ${fromSlotSpec}`)
             }
             if (nodeNewType) {
                 var nodeNewOpts: NodeTypeOpts | null = null;
@@ -973,10 +969,13 @@ export default class LGraphCanvas
 
                     }
 
+                    console.warn("PLACING", newNode.type, opts)
+
                     // add the node
-                    that.graph.add(newNode);
-                    newNode.pos = [opts.position[0] + opts.posAdd[0] + (opts.posSizeFix[0] ? opts.posSizeFix[0] * newNode.size[0] : 0)
-                        , opts.position[1] + opts.posAdd[1] + (opts.posSizeFix[1] ? opts.posSizeFix[1] * newNode.size[1] : 0)]; //that.last_click_position; //[e.canvasX+30, e.canvasX+5];*/
+                    const posX = opts.position[0] + opts.posAdd[0] + (opts.posSizeFix[0] ? opts.posSizeFix[0] * newNode.size[0] : 0)
+                    const posY = opts.position[1] + opts.posAdd[1] + (opts.posSizeFix[1] ? opts.posSizeFix[1] * newNode.size[1] : 0)
+                    const pos: Vector2 = [posX, posY] //that.last_click_position; //[e.canvasX+30, e.canvasX+5];*/
+                    that.graph.add(newNode, { pos });
 
                     //that.graph.afterChange();
 
@@ -1645,7 +1644,7 @@ export default class LGraphCanvas
      * adds some useful properties to a mouse event, like the position in graph coordinates
      * @method adjustMouseEvent
      **/
-    adjustMouseEvent(_e: MouseEvent): void {
+    adjustMouseEvent(_e: MouseEvent): MouseEventExt {
         let e = _e as MouseEventExt;
 
         var clientX_rel = 0;
@@ -1671,6 +1670,7 @@ export default class LGraphCanvas
 
         // if (LiteGraph.debug)
         //     console.log("pointerevents: adjustMouseEvent " + e.clientX + ":" + e.clientY + " " + clientX_rel + ":" + clientY_rel + " " + e.canvasX + ":" + e.canvasY);
+        return e;
     }
 
     /** process an event on widgets */
@@ -2053,6 +2053,8 @@ export default class LGraphCanvas
     static onMenuNodeRemove = LGraphCanvas_UI.onMenuNodeRemove;
     static onMenuNodeClone = LGraphCanvas_UI.onMenuNodeClone;
     static onMenuNodeToSubgraph = LGraphCanvas_UI.onMenuNodeToSubgraph;
+    static onMenuNodeToSubgraphInputs = LGraphCanvas_UI.onMenuNodeToSubgraphInputs;
+    static onMenuNodeToSubgraphOutputs = LGraphCanvas_UI.onMenuNodeToSubgraphOutputs;
     static onMenuNodeToParentGraph = LGraphCanvas_UI.onMenuNodeToParentGraph;
 
     getCanvasMenuOptions(): ContextMenuItem[] {

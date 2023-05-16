@@ -8,7 +8,7 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import GraphInput from "./nodes/GraphInput";
 import Subgraph from "./nodes/Subgraph";
-import type { LConnectionKind, LinkID, NodeID, Version } from "./types";
+import type { LConnectionKind, LinkID, NodeID, Vector2, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { UUID } from "./types";
@@ -19,7 +19,8 @@ export type LGraphAddNodeOptions = {
     doProcessChange?: boolean,
     addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
     prevNodeId?: NodeID,
-    subgraphs?: Subgraph[]
+    subgraphs?: Subgraph[],
+    pos?: Vector2
 }
 
 export type LGraphRemoveNodeOptions = {
@@ -810,8 +811,8 @@ export default class LGraph {
         else {
             if (node.id == null || node.id == -1) {
                 node.id = ++this.last_node_id;
-            } else if (this.last_node_id < node.id) {
-                this.last_node_id = node.id;
+            } else if (this.last_node_id < (node.id as number)) {
+                this.last_node_id = node.id as number;
             }
         }
 
@@ -820,6 +821,9 @@ export default class LGraph {
 
         this._nodes.push(node);
         this._nodes_by_id[node.id] = node;
+
+        if (options.pos)
+            node.pos = options.pos
 
         if (node.onAdded) {
             node.onAdded(this);

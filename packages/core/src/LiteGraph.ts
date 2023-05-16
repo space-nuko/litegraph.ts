@@ -108,9 +108,9 @@ export default class LiteGraph {
     // slot types OUT
     static slot_types_out: Array<string> = [];
     // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-    static slot_types_default_in: Record<string, NodeTypeSpec> = {}
+    static slot_types_default_in: Record<string, NodeTypeSpec[]> = {}
     // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-    static slot_types_default_out: Record<string, NodeTypeSpec> = {}
+    static slot_types_default_out: Record<string, NodeTypeSpec[]> = {}
 
     // [true!] very handy, ALT click to clone and drag the new node
     static alt_drag_do_clone_nodes: boolean = false;
@@ -600,8 +600,8 @@ export default class LiteGraph {
      * @return {Boolean} true if they can be connected
      */
     static isValidConnection(type_a: SlotType, type_b: SlotType) {
-        if (type_a == "" || type_a === "*") type_a = 0;
-        if (type_b == "" || type_b === "*") type_b = 0;
+        if (type_a == "" || type_a === "*") type_a = BuiltInSlotType.DEFAULT;
+        if (type_b == "" || type_b === "*") type_b = BuiltInSlotType.DEFAULT;
         if (
             !type_a //generic output
             || !type_b // generic input

@@ -600,7 +600,7 @@ export default class Subgraph extends LGraphNode {
         this.subgraph.add(innerNode);
         const nodeSize = innerNode.computeSize();
         if (pos)
-            innerNode.pos = [pos[0] + nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
+            innerNode.pos = [pos[0], pos[1] - nodeSize[1] * 0.5];
 
         // The following call will add an output slot to this node automatically from onSubgraphNewOutput.
         this.subgraph.addOutput(name, "" + type, null);
@@ -609,6 +609,28 @@ export default class Subgraph extends LGraphNode {
         const outerOutput = this.outputs[outerOutputIndex]
 
         return { innerNode, outerOutput, outerOutputIndex }
+    }
+
+    getValidGraphInputName(baseName: string): string {
+        let name = baseName
+        let existing = this.getInnerGraphInput(name)
+        let i = 0;
+        while (existing != null) {
+            name = `${baseName}_${i++}`
+            existing = this.getInnerGraphInput(name)
+        }
+        return name;
+    }
+
+    getValidGraphOutputName(baseName: string): string {
+        let name = baseName
+        let existing = this.getInnerGraphOutput(name)
+        let i = 0;
+        while (existing != null) {
+            name = `${baseName}_${i++}`
+            existing = this.getInnerGraphOutput(name)
+        }
+        return name;
     }
 
     getInnerGraphOutput(outerOutputName: string): GraphOutput | null {
