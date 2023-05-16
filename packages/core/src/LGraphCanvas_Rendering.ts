@@ -879,6 +879,9 @@ export default class LGraphCanvas_Rendering {
                     if (this.connecting_output && !LiteGraph.isValidConnection(slot.type, out_slot.type)) {
                         ctx.globalAlpha = 0.4 * editor_alpha;
                     }
+                    else {
+                        ctx.globalAlpha = editor_alpha;
+                    }
 
                     ctx.fillStyle =
                         slot.link != null
@@ -968,8 +971,11 @@ export default class LGraphCanvas_Rendering {
                     var slot_shape = slot.shape;
 
                     //change opacity of incompatible slots when dragging a connection
-                    if (this.connecting_input && !LiteGraph.isValidConnection(slot_type, in_slot.type)) {
+                    if (this.connecting_input && !LiteGraph.isValidConnection(in_slot.type, slot_type)) {
                         ctx.globalAlpha = 0.4 * editor_alpha;
+                    }
+                    else {
+                        ctx.globalAlpha = editor_alpha;
                     }
 
                     var pos = node.getConnectionPos(false, i, slot_pos);
