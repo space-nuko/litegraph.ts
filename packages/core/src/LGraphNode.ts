@@ -2403,7 +2403,7 @@ export default class LGraphNode {
      * @param out a place to store the output, to free garbage
      * @return the position
      **/
-    getConnectionPos(is_input: boolean, slotNumber: SlotIndex, out: Vector2 = [0, 0]): Vector2 {
+    getConnectionPos(is_input: boolean, slotNumber: SlotIndex, out: Vector2 = [0, 0], ignore_collapsed: boolean = false): Vector2 {
         var num_slots = 0;
         if (is_input && this.inputs) {
             num_slots = this.inputs.length;
@@ -2414,7 +2414,7 @@ export default class LGraphNode {
 
         var offset = LiteGraph.NODE_SLOT_HEIGHT * 0.5;
 
-        if (this.flags.collapsed) {
+        if (this.flags.collapsed && !ignore_collapsed) {
             var w = this._collapsed_width || LiteGraph.NODE_COLLAPSED_WIDTH;
             if (this.horizontal) {
                 out[0] = this.pos[0] + w * 0.5;

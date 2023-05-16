@@ -16,7 +16,7 @@ import { IPropertyInfo } from "./IProperty";
 import { clamp, makeDraggable, toHashMap } from "./utils";
 import GraphInput from "./nodes/GraphInput";
 import GraphOutput from "./nodes/GraphOutput";
-import Subgraph, { SubgraphInputPair } from "./nodes/Subgraph";
+import Subgraph, { SubgraphInputPair, SubgraphOutputPair } from "./nodes/Subgraph";
 
 export default class LGraphCanvas_UI {
 
@@ -768,7 +768,9 @@ export default class LGraphCanvas_UI {
                 }
                 else if (containedIds[link.target_id] == null) {
                     parentIntoSubgraphLinks.push(link);
-                    prevPositions[node.id] = [node.pos, node.getConnectionPos(false, link.origin_slot)]
+                    const connPos: Vector2 = [0, 0]
+                    node.getConnectionPos(false, link.target_slot, connPos)
+                    prevPositions[node.id] = [[node.pos[0], node.pos[1]], connPos]
                 }
             }
         }
@@ -790,9 +792,12 @@ export default class LGraphCanvas_UI {
 
                 // Align graph input's slot over previous slot position
                 const [pos, connPos] = prevPositions[link.origin_id];
-                const newConnPos = pair.innerNode.getConnectionPos(false, 0);
+                const newPos = pair.innerNode.pos;
+                const newSize = pair.innerNode.computeSize();
+                const newConnPos = pair.innerNode.getConnectionPos(true, 0);
                 const offset = [pair.innerNode.pos[0] - newConnPos[0], pair.innerNode.pos[1] - newConnPos[1]]
-                const placePos: Vector2 = [connPos[0] + offset[0], connPos[1] + offset[1]]
+                const placePos: Vector2 = [connPos[0] + offset[0] - newSize[0], connPos[1] + offset[1]]
+                console.warn("newPos", newPos, "size", pair.innerNode.size, "connPos", connPos, "newConPos", newConnPos, "offset", offset);
                 pair.innerNode.pos = placePos;
             }
 
@@ -830,7 +835,9 @@ export default class LGraphCanvas_UI {
             for (const link of node.iterateAllLinks()) {
                 if (containedIds[link.origin_id] == null) {
                     parentIntoSubgraphLinks.push(link);
-                    prevPositions[node.id] = [node.pos, node.getConnectionPos(true, link.origin_slot)]
+                    const connPos: Vector2 = [0, 0]
+                    node.getConnectionPos(true, link.origin_slot, connPos)
+                    prevPositions[node.id] = [[node.pos[0], node.pos[1]], connPos]
                 }
                 else if (containedIds[link.target_id] == null) {
                     throw new Error("Can't convert to input with an origin link outward")

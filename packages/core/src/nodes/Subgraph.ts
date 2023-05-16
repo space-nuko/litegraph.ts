@@ -614,7 +614,7 @@ export default class Subgraph extends LGraphNode {
     getValidGraphInputName(baseName: string): string {
         let name = baseName
         let existing = this.getInnerGraphInput(name)
-        let i = 0;
+        let i = 1;
         while (existing != null) {
             name = `${baseName}_${i++}`
             existing = this.getInnerGraphInput(name)
@@ -625,7 +625,7 @@ export default class Subgraph extends LGraphNode {
     getValidGraphOutputName(baseName: string): string {
         let name = baseName
         let existing = this.getInnerGraphOutput(name)
-        let i = 0;
+        let i = 1;
         while (existing != null) {
             name = `${baseName}_${i++}`
             existing = this.getInnerGraphOutput(name)
