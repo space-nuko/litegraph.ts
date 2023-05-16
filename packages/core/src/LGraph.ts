@@ -116,7 +116,7 @@ export default class LGraph {
     private _version: number = -1;
     _last_trigger_time: number = 0;
     _is_subgraph: boolean = false;
-    _subgraph_node: LGraphNode | null = null;
+    _subgraph_node: Subgraph | null = null;
 
     nodes_executing: boolean[] = [];
     nodes_actioning: boolean[] = [];

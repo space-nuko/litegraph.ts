@@ -512,6 +512,11 @@ export default class LGraphNode {
         }
     }
 
+    *iterateInputInfo(): Iterable<INodeInputSlot> {
+        for (let index = 0; index < this.inputs.length; index++)
+            yield this.inputs[index];
+    }
+
     /**
      * Retrieves the input data (data traveling through the connection) from one slot
      * @param slot
@@ -531,7 +536,8 @@ export default class LGraphNode {
         var link = this.graph.links[link_id];
         if (!link) {
             //bug: weird case but it happens sometimes
-            console.error(`No input node found in slot ${slot}!`, this, this.inputs[slot])
+            if (LiteGraph.debug)
+                console.error(`Link not found in slot ${slot}!`, this, this.inputs[slot], link_id)
             return null;
         }
 
@@ -571,7 +577,8 @@ export default class LGraphNode {
         var link = this.graph.links[link_id];
         if (!link) {
             //bug: weird case but it happens sometimes
-            console.error(`No input node found in slot ${slot}!`, this, this.inputs[slot])
+            if (LiteGraph.debug)
+                console.error(`Link not found in slot ${slot}!`, this, this.inputs[slot], link_id)
             return null;
         }
         var node = this.graph.getNodeById(link.origin_id);
@@ -644,7 +651,8 @@ export default class LGraphNode {
             const link = this.graph.links[link_id];
             if (!link) {
                 //bug: weird case but it happens sometimes
-                console.error(`No input node found in slot ${slot}!`, this, this.inputs[slot])
+                if (LiteGraph.debug)
+                    console.error(`Link not found in slot ${slot}!`, this, this.inputs[slot], link_id)
                 return null;
             }
             var origin_node = this.graph.getNodeById(link.origin_id);
@@ -721,6 +729,11 @@ export default class LGraphNode {
         }
         return null;
     };
+
+    *iterateOutputInfo(): Iterable<INodeOutputSlot> {
+        for (let index = 0; index < this.outputs.length; index++)
+            yield this.outputs[index];
+    }
 
     /** tells you the last output data that went in that slot */
     getOutputData<T = any>(slot: SlotIndex): T | null {
@@ -1903,11 +1916,8 @@ export default class LGraphNode {
 
         if (!this.graph) {
             //could be connected before adding it to a graph
-            console.error(
-                "Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",
-                this
-            ); //due to link ids being associated with graphs
-            return null;
+            throw new Error("Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",)
+            //due to link ids being associated with graphs
         }
 
         //seek for the output slot
@@ -1939,11 +1949,7 @@ export default class LGraphNode {
         }
 
         if (!targetNode.graph) {
-            console.error(
-                "Connect: Error, target node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",
-                targetNode
-            );
-            return null;
+            throw new Error("Connect: Error, target node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.")
         }
 
         //you can specify the slot by name
@@ -2039,9 +2045,15 @@ export default class LGraphNode {
             }
         }
 
+        let nextId: number | UUID;
+        if (LiteGraph.use_uuids)
+            nextId = uuidv4();
+        else
+            nextId = ++this.graph.last_link_id;
+
         //create link class
         linkInfo = new LLink(
-            ++this.graph.last_link_id,
+            nextId,
             input.type || output.type,
             this.id,
             slot,
