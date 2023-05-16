@@ -698,6 +698,34 @@ export default class LGraph {
     }
 
     /**
+     * Iterates all nodes in this graph *excluding* subgraphs.
+     */
+    *iterateNodesOfClass<T extends LGraphNode>(ctor: new () => T): Iterable<T> {
+        const litegraphType = (ctor as any).__LITEGRAPH_TYPE__
+        if (litegraphType == null)
+            return;
+
+        for (const node of this.iterateNodesInOrder()) {
+            if (node.type === litegraphType)
+                yield node as T;
+        }
+    }
+
+    /**
+     * Iterates all nodes in this graph *excluding* subgraphs.
+     */
+    *iterateNodesOfClassRecursive<T extends LGraphNode>(ctor: new () => T): Iterable<T> {
+        const litegraphType = (ctor as any).__LITEGRAPH_TYPE__
+        if (litegraphType == null)
+            return;
+
+        for (const node of this.iterateNodesInOrderRecursive()) {
+            if (node.type === litegraphType)
+                yield node as T;
+        }
+    }
+
+    /**
      * Sends an event to all the nodes, useful to trigger stuff
      * @param eventName the name of the event (function to be called)
      * @param params parameters in array format
@@ -957,17 +985,30 @@ export default class LGraph {
         return this._nodes_by_id[id] as T;
     }
 
+    /** Returns a node by its id. */
+    getNodeByIdRecursive<T extends LGraphNode = LGraphNode>(id: NodeID): T | null {
+        const found = this.getNodeById<T>(id);
+        if (found != null)
+            return found;
+
+        for (const node of this.iterateNodesOfClass(Subgraph)) {
+            const found = node.subgraph.getNodeByIdRecursive<T>(id);
+            if (found)
+                return found;
+        }
+
+        return null;
+    }
+
     /**
      * Returns a list of nodes that matches a class
      * @param classObject the class itself (not an string)
      * @return a list with all the nodes of this type
      */
-    findNodesByClass<T extends LGraphNode>(type: LGraphNodeConstructorFactory<T>, result: T[] = []): T[] {
+    findNodesByClass<T extends LGraphNode>(type: new () => T, result: T[] = []): T[] {
         result.length = 0;
-        for (var i = 0, l = this._nodes.length; i < l; ++i) {
-            if (this._nodes[i] instanceof type) {
-                result.push(this._nodes[i] as T);
-            }
+        for (const node of this.iterateNodesOfClass(type)) {
+            result.push(node);
         }
         return result;
     }
@@ -1090,12 +1131,8 @@ export default class LGraph {
 
     // ********** GLOBALS *****************
 
-    private _input_nodes: LGraphNode[] = [];
-
     onAction(action: any, param: any, options: { action_call?: string } = {}): void {
-        this._input_nodes = this.findNodesByClass(GraphInput, this._input_nodes);
-        for (var i = 0; i < this._input_nodes.length; ++i) {
-            var node = this._input_nodes[i];
+        for (const node of this.iterateNodesOfClass(GraphInput)) {
             if (node.properties.name != action) {
                 continue;
             }

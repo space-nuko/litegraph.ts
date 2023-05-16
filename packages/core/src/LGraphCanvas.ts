@@ -1970,7 +1970,7 @@ export default class LGraphCanvas
 
     addGraphInputNode(this: LGraphCanvas, subgraphNode: Subgraph, name: string, type: SlotType) {
         // Check if there's already an input
-        const existing = this.graph.findNodesByType("graph/input")
+        const existing = this.graph.findNodesByClass(GraphInput)
             .find(node => node.properties.name === name)
 
         if (existing) {
@@ -2001,7 +2001,7 @@ export default class LGraphCanvas
 
     addGraphOutputNode(this: LGraphCanvas, subgraphNode: Subgraph, name: string, type: SlotType) {
         // Check if there's already an output
-        const existing = this.graph.findNodesByType("graph/output")
+        const existing = this.graph.findNodesByClass(GraphOutput)
             .find(node => node.properties.name === name)
 
         if (existing) {
