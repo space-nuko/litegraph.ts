@@ -426,6 +426,13 @@ export default class Subgraph extends LGraphNode {
         }
     }
 
+    override onReassignID() {
+        for (const node of this.subgraph.iterateNodesInOrder()) {
+            if (node.is(GraphInput) || node.is(GraphOutput))
+                node.properties.subgraphID = this.id;
+        }
+    }
+
     override clone() {
         var node = LiteGraph.createNode(this.type);
         var data = this.serialize();
