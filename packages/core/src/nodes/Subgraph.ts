@@ -82,6 +82,20 @@ function reassignGraphIDs(graph: SerializedLGraph): GraphIDMapping {
         link[3] = idMap.nodeIDs[nodeTo]
     }
 
+    // Reconnect links
+    for (const node of graph.nodes) {
+        for (const input of node.inputs) {
+            if (input.link) {
+                input.link = idMap.linkIDs[input.link]
+            }
+        }
+        for (const output of node.outputs) {
+            if (output.links) {
+                output.links = output.links.map(l => idMap.linkIDs[l]);
+            }
+        }
+    }
+
     // Recurse!
     for (const node of graph.nodes) {
         if (node.type === "graph/subgraph") {

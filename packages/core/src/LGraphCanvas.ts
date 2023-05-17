@@ -1352,24 +1352,43 @@ export default class LGraphCanvas
 
         this.graph.beforeChange();
 
-        var newSelected: Record<number, LGraphNode> = {};
+        const newSelected: Record<number, LGraphNode> = {};
+        const links: LLink[] = []
+        const oldIDToNewNode: Record<NodeID, LGraphNode> = {}
 
-        var fApplyMultiNode = function(node: LGraphNode) {
+        for (const node of Object.values(this.selected_nodes)) {
+            for (const link of node.iterateAllLinks()) {
+                if (this.selected_nodes[link.origin_id] && this.selected_nodes[link.target_id]) {
+                    links.push(link)
+                }
+            }
+        }
+
+        const fApplyMultiNode = function(node: LGraphNode) {
             if (node.clonable == false) {
                 return;
             }
-            var newnode = node.clone();
+            const prevID = node.id;
+            const newnode = node.clone();
             if (!newnode) {
                 return;
             }
+            oldIDToNewNode[prevID] = newnode;
             newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
             node.graph.add(newnode, { addedBy: "clone" });
             newSelected[newnode.id] = newnode;
         }
 
-        var graphcanvas = LGraphCanvas.active_canvas;
-        for (var i in graphcanvas.selected_nodes) {
-            fApplyMultiNode(graphcanvas.selected_nodes[i]);
+        for (var i in this.selected_nodes) {
+            fApplyMultiNode(this.selected_nodes[i]);
+        }
+
+        for (const link of links) {
+            const origin = oldIDToNewNode[link.origin_id]
+            const target = oldIDToNewNode[link.target_id]
+            if (origin && target) {
+                origin.connect(link.origin_slot, target, link.target_slot)
+            }
         }
 
         if (Object.keys(newSelected).length) {

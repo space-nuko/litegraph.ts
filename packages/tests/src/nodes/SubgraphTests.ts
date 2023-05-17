@@ -1,5 +1,5 @@
 import { GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphRemoveNodeOptions, LiteGraph, NodeID, Subgraph } from "@litegraph-ts/core"
-import { Watch } from "@litegraph-ts/nodes-basic"
+import { ConstantInteger, Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
 
@@ -304,5 +304,42 @@ export default class SubgraphTests extends UnitTest {
         const clonedSubgraphB = clonedSubgraph.subgraph._nodes[0]
         expect(clonedSubgraphB.subgraph._nodes[0].id).not.toEqual(idNode)
         expect(clonedSubgraphB.subgraph._nodes[0].properties.subgraphID).toEqual(clonedSubgraphB.id)
+    }
+
+    test__clone__reconnectsInnerNodes() {
+        const graph = new LGraph();
+
+        const nodeA = LiteGraph.createNode(ConstantInteger)
+        const nodeB = LiteGraph.createNode(Watch)
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+
+        graph.add(subgraph)
+        subgraph.subgraph.add(nodeA)
+        subgraph.subgraph.add(nodeB)
+
+        expect(nodeA.type).toEqual("basic/integer")
+        expect(nodeA.getOutputLinks(0)).toHaveLength(0)
+        expect(nodeB.type).toEqual("basic/watch")
+        expect(nodeB.getInputLink(0)).toBeFalsy()
+
+        nodeA.connect(0, nodeB, 0)
+
+        expect(nodeA.getOutputLinks(0)).toHaveLength(1)
+        expect(nodeB.getInputLink(0)).toBeTruthy()
+
+        const clonedSubgraph = subgraph.clone();
+
+        expect(clonedSubgraph.subgraph._nodes).toHaveLength(2);
+
+        const [clonedNodeA, clonedNodeB] = clonedSubgraph.subgraph._nodes
+
+        expect(clonedNodeA.type).toEqual("basic/integer")
+        expect(clonedNodeA.outputs[0].links).toHaveLength(1)
+        console.warn(clonedNodeA.outputs)
+        expect(clonedNodeA.getOutputLinks(0)[0]).toBeTruthy()
+        expect(clonedNodeB.type).toEqual("basic/watch")
+        expect(clonedNodeB.inputs[0].link).toBeTruthy()
+        expect(clonedNodeB.getInputLink(0)).toBeTruthy()
     }
 }

@@ -102,8 +102,8 @@ export default class LGraph {
     last_link_id: number;
     last_node_id: number;
     last_update_time: number;
-    links: Record<LinkID>;
-    list_of_graphcanvas: LGraphCanvas[];
+    links: Record<LinkID, LLink> = {};
+    list_of_graphcanvas: LGraphCanvas[] = [];
     runningtime: number;
     starttime: number;
     status: LGraphStatus;
