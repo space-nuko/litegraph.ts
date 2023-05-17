@@ -221,4 +221,27 @@ export default class SubgraphTests extends UnitTest {
         expect(graphB.removedCalls).toHaveLength(1);
         expect(graphC.removedCalls).toHaveLength(1);
     }
+
+    test__clone__reassignsNewIds() {
+        if (!LiteGraph.use_uuids)
+            return;
+
+        const graph = new LGraph();
+
+        const node = LiteGraph.createNode(Watch)
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+
+        graph.add(subgraph)
+        subgraph.subgraph.add(node)
+
+        const idSubgraph = subgraph.id
+        const idNode = node.id
+
+        const clonedSubgraph = subgraph.clone();
+
+        expect(clonedSubgraph.id).not.toEqual(idSubgraph)
+        expect(clonedSubgraph.subgraph._nodes).toHaveLength(1);
+        expect(clonedSubgraph.subgraph._nodes[0].id).not.toEqual(idNode)
+    }
 }

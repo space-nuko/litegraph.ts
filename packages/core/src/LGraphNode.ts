@@ -410,6 +410,11 @@ export default class LGraphNode {
         }
 
         delete data["id"];
+
+        if (LiteGraph.use_uuids) {
+            data["id"] = uuidv4()
+        }
+
         //remove links
         node.configure(data);
 

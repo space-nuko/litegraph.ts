@@ -1,7 +1,7 @@
 import type { ContextMenuItem } from "../ContextMenu";
 import type { MouseEventExt } from "../DragAndScale";
 import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
-import LGraph, { LGraphAddNodeOptions, LGraphRemoveNodeOptions } from "../LGraph";
+import LGraph, { LGraphAddNodeOptions, LGraphRemoveNodeOptions, SerializedLGraph } from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
 import type { OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
@@ -91,7 +91,7 @@ export default class Subgraph extends LGraphNode {
     getRootGraph(): LGraph | null {
         const graphs = Array.from(this.iterateParentGraphs());
         const graph = graphs[graphs.length - 1]
-        console.warn(graph._is_subgraph)
+        // console.warn(graph._is_subgraph)
         if (graph._is_subgraph)
             return null;
         return graph;
@@ -215,7 +215,7 @@ export default class Subgraph extends LGraphNode {
     override computeSize(): Vector2 {
         var num_inputs = this.inputs ? this.inputs.length : 0;
         var num_outputs = this.outputs ? this.outputs.length : 0;
-        return [200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT];
+        return [200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_SLOT_HEIGHT * 0.5];
     }
 
     //**** INPUTS ***********************************
@@ -245,7 +245,7 @@ export default class Subgraph extends LGraphNode {
     };
 
     private onSubgraphNewInput(name: string, type: string) {
-        console.warn("onSubgraphNewInput", name, type)
+        // console.warn("onSubgraphNewInput", name, type)
         var slot = this.findInputSlotIndexByName(name);
         if (slot == -1) {
             //add input to the node
@@ -268,7 +268,7 @@ export default class Subgraph extends LGraphNode {
             return;
         }
         var info = this.getInputInfo(slot);
-        console.warn("CHANGEINPUT!", info.type, oldType, "=>", type)
+        // console.warn("CHANGEINPUT!", info.type, oldType, "=>", type)
         info.type = type;
     };
 
@@ -282,7 +282,7 @@ export default class Subgraph extends LGraphNode {
 
     //**** OUTPUTS ***********************************
     private onSubgraphNewOutput(name: string, type: string) {
-        console.warn("onSubgraphNewOutput", name, type)
+        // console.warn("onSubgraphNewOutput", name, type)
         var slot = this.findOutputSlotIndexByName(name);
         if (slot == -1) {
             this.addOutput(name, type);
@@ -304,7 +304,7 @@ export default class Subgraph extends LGraphNode {
             return;
         }
         var info = this.getOutputInfo(slot);
-        console.warn("CHANGEOUTPUT!", info.type, oldType, "=>", type)
+        // console.warn("CHANGEOUTPUT!", info.type, oldType, "=>", type)
         info.type = type;
     };
 
@@ -331,10 +331,10 @@ export default class Subgraph extends LGraphNode {
 
     override onResize(size: Vector2) {
         console.error("TEST subgraph resize");
-        size[1] += 20;
+        // size[1] += 20;
     };
 
-    override serialize() {
+    override serialize<T extends SerializedLGraphNode>(): T {
         var data = LGraphNode.prototype.serialize.call(this);
         data.subgraph = this.subgraph.serialize();
         return data;
@@ -356,6 +356,11 @@ export default class Subgraph extends LGraphNode {
     override clone() {
         var node = LiteGraph.createNode(this.type);
         var data = this.serialize();
+
+        const subgraph = (data as any).subgraph as SerializedLGraph;
+        for (const node of subgraph.nodes) {
+
+        }
         delete data["id"];
         delete data["inputs"];
         delete data["outputs"];
@@ -519,7 +524,7 @@ export default class Subgraph extends LGraphNode {
             const fromNode = indexToNode[fromIndex]
             const toNode = indexToNode[toIndex]
 
-            console.warn("CONNECT", fromNode, linkIn.origin_slot, this, pair.outerInputIndex)
+            // console.warn("CONNECT", fromNode, linkIn.origin_slot, this, pair.outerInputIndex)
 
             fromNode.connect(linkIn.origin_slot, this, pair.outerInputIndex)
             pair.innerNode.connect(0, toNode, linkIn.target_slot)
