@@ -617,8 +617,11 @@ export default class LGraphCanvas_Events {
                         if (this.node_over && this.node_over.onMouseLeave) {
                             this.node_over.onMouseLeave(e, [e.canvasX - this.node_over.pos[0], e.canvasY - this.node_over.pos[1]], this);
                         }
+                        const prev_node_over = this.node_over
                         this.node_over = null;
                         this.dirty_canvas = true;
+                        if (prev_node_over != this.node_over)
+                            this.onHoverChange(this.node_over, prev_node_over)
                     }
                 }
             }
@@ -634,8 +637,11 @@ export default class LGraphCanvas_Events {
                     if (!node.mouseOver) {
                         //mouse enter
                         node.mouseOver = true;
+                        const prev_node_over = this.node_over;
                         this.node_over = node;
                         this.dirty_canvas = true;
+                        if (prev_node_over != this.node_over)
+                            this.onHoverChange(this.node_over, prev_node_over)
 
                         if (node.onMouseEnter) {
                             node.onMouseEnter(e, [e.canvasX - node.pos[0], e.canvasY - node.pos[1]], this);

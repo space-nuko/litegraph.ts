@@ -353,6 +353,7 @@ export default class LGraphCanvas
     /** Called by `LGraphCanvas.selectNodes` */
     /** called if the selection changes */
     onSelectionChange?(nodes: Record<number, LGraphNode>): void;
+    onHoverChange?(node: LGraphNode | null, prevNode: LGraphNode | null): void;
     /** Called by `LGraphCanvas.showSearchBox` */
     onSearchBox?(helper: Element, value: string, graphCanvas: LGraphCanvas): string[];
     onSearchBoxSelection?(name: string, event: MouseEvent, graphCanvas: LGraphCanvas): void;
@@ -379,7 +380,7 @@ export default class LGraphCanvas
     selected_group: null | LGraphGroup;
     selected_group_resizing: boolean;
     selected_group_moving: boolean;
-    selected_nodes: Record<number, LGraphNode>;
+    selected_nodes: Record<NodeID, LGraphNode>;
     /** forces to redraw the canvas if the mouse does anything */
     set_canvas_dirty_on_mouse_event: boolean = true;
     show_info: boolean = true;

@@ -117,7 +117,7 @@ export default class LGraph {
     /** nodes that contain onExecute */
     _nodes_in_order: LGraphNode[] = [];
     /** used to detect changes */
-    private _version: number = -1;
+    _version: number = -1;
     _last_trigger_time: number = 0;
     _is_subgraph: boolean = false;
     _subgraph_node: Subgraph | null = null;

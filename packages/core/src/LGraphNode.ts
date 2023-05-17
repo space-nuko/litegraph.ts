@@ -436,7 +436,7 @@ export default class LGraphNode {
         var prev_value = this.properties[name];
         this.properties[name] = value;
         if (this.graph) {
-            (this.graph as any)._version++;
+            this.graph._version++;
         }
         if (this.onPropertyChanged) {
             if (this.onPropertyChanged(name, value, prev_value) === false) //abort change
@@ -454,8 +454,106 @@ export default class LGraphNode {
             }
     }
 
+    getInputSlotProperty(slot: SlotIndex, name: string): any {
+        if (!this.inputs) {
+            return;
+        }
+
+        if (slot == -1 || slot >= this.inputs.length) {
+            return;
+        }
+
+        var input_info = this.inputs[slot];
+        if (!input_info) {
+            return;
+        }
+
+        input_info.properties ||= {}
+        return input_info.properties[name]
+    }
+
+    getOutputSlotProperty(slot: SlotIndex, name: string): any {
+        if (!this.outputs) {
+            return;
+        }
+
+        if (slot == -1 || slot >= this.outputs.length) {
+            return;
+        }
+
+        var output_info = this.outputs[slot];
+        if (!output_info) {
+            return;
+        }
+
+        output_info.properties ||= {}
+        return output_info.properties[name]
+    }
+
+    setInputSlotProperty(slot: SlotIndex, name: string, value: any) {
+        if (!this.inputs) {
+            return;
+        }
+
+        if (slot == -1 || slot >= this.inputs.length) {
+            return;
+        }
+
+        var input_info = this.inputs[slot];
+        if (!input_info) {
+            return;
+        }
+
+        input_info.properties ||= {}
+
+        if (value === input_info.properties[name])
+            return;
+
+        var prev_value = input_info.properties[name];
+        input_info.properties[name] = value;
+
+        if (this.graph)
+            this.graph._version++;
+
+        if (this.onSlotPropertyChanged) {
+            if (this.onSlotPropertyChanged(LConnectionKind.INPUT, slot, input_info, name, value, prev_value) === false) //abort change
+                input_info.properties[name] = prev_value;
+        }
+    }
+
+    setOutputSlotProperty(slot: SlotIndex, name: string, value: any) {
+        if (!this.outputs) {
+            return;
+        }
+
+        if (slot == -1 || slot >= this.outputs.length) {
+            return;
+        }
+
+        var output_info = this.outputs[slot];
+        if (!output_info) {
+            return;
+        }
+
+        output_info.properties ||= {}
+
+        if (value === output_info.properties[name])
+            return;
+
+        var prev_value = output_info.properties[name];
+        output_info.properties[name] = value;
+
+        if (this.graph)
+            this.graph._version++;
+
+        if (this.onSlotPropertyChanged) {
+            if (this.onSlotPropertyChanged(LConnectionKind.OUTPUT, slot, output_info, name, value, prev_value) === false) //abort change
+                output_info.properties[name] = prev_value;
+        }
+    }
+
     /** sets the output data */
-    setOutputData(slot: number, data: any): void {
+    setOutputData(slot: SlotIndex, data: any): void {
         if (!this.outputs) {
             return;
         }
@@ -2818,6 +2916,8 @@ export default class LGraphNode {
     getOptionalSlots(): OptionalSlots | null {
         return getStaticPropertyOnInstance<OptionalSlots>(this, "optionalSlots");
     }
+
+    onSlotPropertyChanged?(kind: LConnectionKind, slot: SlotIndex, slotInfo: INodeInputSlot | INodeOutputSlot, name: string, value: any, prev_value?: any): boolean;
 
     /** Called by `LGraphCanvas.processContextMenu` */
     getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];
