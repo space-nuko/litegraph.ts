@@ -1839,8 +1839,8 @@ export default class LGraphCanvas
                                 let newValue: any = v.content;
                                 if (values != values_list)
                                     newValue = text_values.indexOf(newValue);
-                                this.value = v;
-                                inner_value_change(this, v);
+                                this.value = newValue;
+                                inner_value_change(this, newValue);
                                 that.dirty_canvas = true;
                                 return false;
                             }
