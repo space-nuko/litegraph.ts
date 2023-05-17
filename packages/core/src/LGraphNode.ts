@@ -248,8 +248,6 @@ export default class LGraphNode {
                 //object
                 //also detects node.subgraph
                 if (this[j] && this[j].configure) {
-                    if (this[j].type === "graph/subgraph")
-                        debugger
                     this[j].configure(info[j]);
                 } else {
                     this[j] = LiteGraph.cloneObject(info[j], this[j]);

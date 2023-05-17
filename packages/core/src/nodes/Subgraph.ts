@@ -464,7 +464,6 @@ export default class Subgraph extends LGraphNode {
         delete data["inputs"];
         delete data["outputs"];
         node.configure(data);
-        debugger
 
         // At this point the subgraph is instantiated, so notify child nodes of
         // their new IDs.
