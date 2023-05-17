@@ -161,14 +161,14 @@ export default class Subgraph extends LGraphNode {
         this.subgraph.onOutputRemoved = wrap(this.subgraph.onOutputRemoved, this.onSubgraphRemovedOutput);
     }
 
-    getRootGraph(): LGraph | null {
-        const graphs = Array.from(this.iterateParentGraphs());
-        const graph = graphs[graphs.length - 1]
-        // console.warn(graph._is_subgraph)
-        if (graph._is_subgraph)
-            return null;
-        return graph;
-    }
+    // getRootGraph(): LGraph | null {
+    //     const graphs = Array.from(this.iterateParentGraphs());
+    //     const graph = graphs[graphs.length - 1]
+    //     // console.warn(graph._is_subgraph)
+    //     if (graph._is_subgraph)
+    //         return null;
+    //     return graph;
+    // }
 
     *iterateParentGraphs(): Iterable<LGraph> {
         let graph = this.graph;

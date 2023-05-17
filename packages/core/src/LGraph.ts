@@ -13,11 +13,12 @@ import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { UUID } from "./types";
 
+export type LGraphAddNodeMode = "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null
 export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
-    addedBy?: "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
+    addedBy?: LGraphAddNodeMode,
     prevNodeId?: NodeID,
     subgraphs?: Subgraph[],
     pos?: Vector2

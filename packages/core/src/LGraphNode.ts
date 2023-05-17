@@ -432,6 +432,18 @@ export default class LGraphNode {
         return this.title || (this.constructor as any).title;
     }
 
+    getRootGraph(): LGraph | null {
+        let graph = this.graph;
+
+        while (graph && graph._is_subgraph)
+            graph = graph._subgraph_node?.graph
+
+        if (graph == null || graph._is_subgraph)
+            return null;
+
+        return graph
+    }
+
     /** sets the value of a property */
     setProperty(name: string, value: any): void {
         if (!this.properties) {

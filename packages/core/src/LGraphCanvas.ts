@@ -1146,6 +1146,14 @@ export default class LGraphCanvas
                     block_default = true;
                 }
 
+                if (e.code == "KeyX" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+                    //copy
+                    if (this.selected_nodes) {
+                        this.cutToClipboard();
+                        block_default = true;
+                    }
+                }
+
                 if (e.code == "KeyC" && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
                     //copy
                     if (this.selected_nodes) {
@@ -1213,6 +1221,11 @@ export default class LGraphCanvas
             e.stopImmediatePropagation();
             return false;
         }
+    }
+
+    cutToClipboard(): void {
+        this.copyToClipboard();
+        this.deleteSelectedNodes();
     }
 
     copyToClipboard(): void {
