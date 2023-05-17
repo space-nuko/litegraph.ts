@@ -69,6 +69,10 @@ export default class LGraphCanvas_Events {
 
         ContextMenu.closeAllContextMenus(ref_window);
 
+        if (this.search_box) {
+            this.search_box.close();
+        }
+
         if (this.onMouse) {
             if (this.onMouse(e) === true)
                 return;
