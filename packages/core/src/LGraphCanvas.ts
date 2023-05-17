@@ -10,7 +10,7 @@ import LGraphCanvas_Events from "./LGraphCanvas_Events";
 import LGraphCanvas_Rendering from "./LGraphCanvas_Rendering";
 import LGraphCanvas_UI from "./LGraphCanvas_UI";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { SerializedLGraphNode, type NodeTypeOpts, NodeTypeSpec, LCreateDefaultNodeForSlotOptions } from "./LGraphNode";
+import LGraphNode, { SerializedLGraphNode, type NodeTypeOpts, NodeTypeSpec, LCreateDefaultNodeForSlotOptions, LGraphNodeCloneData } from "./LGraphNode";
 import LiteGraph from "./LiteGraph";
 import LLink from "./LLink";
 import GraphInput from "./nodes/GraphInput";
@@ -80,8 +80,14 @@ export type GraphStackEntry = {
     scale: number,
 }
 
+export type ClipboardClonedNodeInfo = {
+    prevNodeID: NodeID,
+    cloneData: LGraphNodeCloneData,
+}
+
 export type ClipboardInfo = {
     nodes: SerializedLGraphNode[],
+    nodeCloneData: Record<NodeID, ClipboardClonedNodeInfo>,
     links: [NodeID, number, NodeID, number][]
 }
 
@@ -1231,7 +1237,8 @@ export default class LGraphCanvas
     copyToClipboard(): void {
         var clipboard_info: ClipboardInfo = {
             nodes: [],
-            links: []
+            nodeCloneData: {},
+            links: [],
         };
         var index = 0;
         var selected_nodes_array = [];
@@ -1246,12 +1253,17 @@ export default class LGraphCanvas
             let node = selected_nodes_array[i];
             if (!node.clonable)
                 continue;
-            let cloned = node.clone();
+            const cloneData: LGraphNodeCloneData = { forNode: {} }
+            let cloned = node.clone(cloneData);
             if (!cloned) {
                 console.warn("node type not found: " + node.type);
                 continue;
             }
             clipboard_info.nodes.push(cloned.serialize());
+            clipboard_info.nodeCloneData[cloned.id] = {
+                prevNodeID: node.id,
+                cloneData
+            }
             if (node.inputs && node.inputs.length) {
                 for (var j = 0; j < node.inputs.length; ++j) {
                     var input = node.inputs[j];
@@ -1324,7 +1336,9 @@ export default class LGraphCanvas
                 node.pos[0] += this.graph_mouse[0] - posMin[0]; //+= 5;
                 node.pos[1] += this.graph_mouse[1] - posMin[1]; //+= 5;
 
-                this.graph.add(node, { doProcessChange: false, addedBy: "paste" });
+                const { cloneData, prevNodeID } = clipboard_info.nodeCloneData[node.id]
+
+                this.graph.add(node, { doProcessChange: false, addedBy: "paste", prevNodeID: prevNodeID, cloneData });
 
                 nodes.push(node);
             }
@@ -1369,13 +1383,14 @@ export default class LGraphCanvas
                 return;
             }
             const prevID = node.id;
-            const newnode = node.clone();
+            const cloneData: LGraphNodeCloneData = { forNode: {} }
+            const newnode = node.clone(cloneData);
             if (!newnode) {
                 return;
             }
             oldIDToNewNode[prevID] = newnode;
             newnode.pos = [node.pos[0] + 5, node.pos[1] + 5];
-            node.graph.add(newnode, { addedBy: "clone" });
+            node.graph.add(newnode, { addedBy: "cloneSelection", prevNodeID: prevID, prevNode: node, cloneData });
             newSelected[newnode.id] = newnode;
         }
 

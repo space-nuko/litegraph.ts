@@ -3,7 +3,7 @@ import type { MouseEventExt } from "../DragAndScale";
 import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
 import LGraph, { LGraphAddNodeOptions, LGraphRemoveNodeOptions, SerializedLGraph } from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
-import type { OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
+import type { LGraphNodeCloneData, OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
@@ -447,24 +447,34 @@ export default class Subgraph extends LGraphNode {
         }
     }
 
-    override clone() {
+    override clone(cloneData: LGraphNodeCloneData = { forNode: {} }) {
         var node = LiteGraph.createNode(this.type);
         var data = this.serialize();
 
-        const subgraph = (data as any).subgraph as SerializedLGraph;
         let mapping: GraphIDMapping | null = null
-        if (LiteGraph.use_uuids)
-            mapping = reassignGraphIDs(subgraph)
+        if (LiteGraph.use_uuids) {
+            // LGraph.serialize() seems to reuse objects in the original graph. But we
+            // need to change node IDs here, so clone it first.
+            const subgraph = LiteGraph.cloneObject((data as any).subgraph)
+            mapping = reassignGraphIDs(subgraph);
+            (data as any).subgraph = subgraph;
+        }
 
         delete data["id"];
         delete data["inputs"];
         delete data["outputs"];
         node.configure(data);
+        debugger
 
         // At this point the subgraph is instantiated, so notify child nodes of
         // their new IDs.
         if (LiteGraph.use_uuids)
             notifyReassignedIDs(node.subgraph, mapping);
+
+        cloneData.forNode[this.id] ||= {}
+        cloneData.forNode[this.id].subgraphNewIDMapping = mapping
+        cloneData.forNode[node.id] ||= {}
+        cloneData.forNode[node.id].subgraphNewIDMapping = mapping
 
         return node;
     };
@@ -599,7 +609,7 @@ export default class Subgraph extends LGraphNode {
             const newPos: Vector2 = [node.pos[0] - min_x, node.pos[1] - min_y]
             const prevNodeId = node.id;
             node.graph.remove(node, { removedBy: "moveIntoSubgraph" })
-            this.subgraph.add(node, { addedBy: "moveIntoSubgraph", prevNodeId });
+            this.subgraph.add(node, { addedBy: "moveIntoSubgraph", prevNodeID });
             node.pos = newPos
         }
 

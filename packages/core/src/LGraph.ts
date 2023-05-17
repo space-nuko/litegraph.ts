@@ -2,7 +2,7 @@ import type { ContextMenuItem, IContextMenuItem } from "./ContextMenu";
 import type { SlotIndex } from "./INodeSlot";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
-import LGraphNode, { LGraphNodeConstructor } from "./LGraphNode";
+import LGraphNode, { LGraphNodeCloneData, LGraphNodeConstructor } from "./LGraphNode";
 import type { SerializedLLink } from "./LLink";
 import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
@@ -13,19 +13,22 @@ import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { UUID } from "./types";
 
-export type LGraphAddNodeMode = "configure" | "clone" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null
+export type LGraphAddNodeMode = "configure" | "cloneSelection" | "paste" | "moveIntoSubgraph" | "moveOutOfSubgraph" | null
 export type LGraphAddNodeOptions = {
     skipComputeOrder?: boolean,
     doCalcSize?: boolean,
     doProcessChange?: boolean,
     addedBy?: LGraphAddNodeMode,
-    prevNodeId?: NodeID,
+    prevNodeID?: NodeID,
+    prevNode?: LGraphNode,
+    cloneData?: LGraphNodeCloneData,
     subgraphs?: Subgraph[],
     pos?: Vector2
 }
 
+export type LGraphRemoveNodeMode = "moveIntoSubgraph" | "moveOutOfSubgraph" | null;
 export type LGraphRemoveNodeOptions = {
-    removedBy?: "moveIntoSubgraph" | "moveOutOfSubgraph" | null,
+    removedBy?: LGraphRemoveNodeMode,
     subgraphs?: Subgraph[]
 }
 

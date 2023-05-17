@@ -34,6 +34,10 @@ export type LCreateDefaultNodeForSlotOptions = {
     posSizeFix?: Vector2 // alpha, adjust the position x,y based on the new node size w,h
 }
 
+export type LGraphNodeCloneData = {
+    forNode: Record<NodeID, any>
+}
+
 export type SearchboxExtra = {
     data: {
         title: string,
@@ -244,6 +248,8 @@ export default class LGraphNode {
                 //object
                 //also detects node.subgraph
                 if (this[j] && this[j].configure) {
+                    if (this[j].type === "graph/subgraph")
+                        debugger
                     this[j].configure(info[j]);
                 } else {
                     this[j] = LiteGraph.cloneObject(info[j], this[j]);
@@ -386,7 +392,7 @@ export default class LGraphNode {
     }
 
     /** Creates a clone of this node  */
-    clone(): LGraphNode {
+    clone(cloneData: LGraphNodeCloneData = { extra: {} }): LGraphNode {
         var node = LiteGraph.createNode(this.type);
         if (!node) {
             return null;

@@ -1,4 +1,4 @@
-import { GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphRemoveNodeOptions, LiteGraph, NodeID, Subgraph } from "@litegraph-ts/core"
+import { GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphNodeCloneData, LGraphRemoveNodeOptions, LiteGraph, NodeID, Subgraph } from "@litegraph-ts/core"
 import { ConstantInteger, Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
@@ -328,7 +328,18 @@ export default class SubgraphTests extends UnitTest {
         expect(nodeA.getOutputLinks(0)).toHaveLength(1)
         expect(nodeB.getInputLink(0)).toBeTruthy()
 
-        const clonedSubgraph = subgraph.clone();
+        expect(Object.keys(subgraph.subgraph.links)).toHaveLength(1)
+        const link = Object.values(subgraph.subgraph.links)[0]
+
+        const cloneData: LGraphNodeCloneData = { forNode: {} }
+        const clonedSubgraph = subgraph.clone(cloneData);
+
+        for (const id of [subgraph.id, clonedSubgraph.id]) {
+            expect(cloneData.forNode[id]).toBeInstanceOf(Object)
+            expect(cloneData.forNode[id].subgraphNewIDMapping).toBeInstanceOf(Object)
+            expect(Object.keys(cloneData.forNode[id].subgraphNewIDMapping.nodeIDs)).toHaveLength(4)
+            expect(Object.keys(cloneData.forNode[id].subgraphNewIDMapping.linkIDs)).toHaveLength(2)
+        }
 
         expect(clonedSubgraph.subgraph._nodes).toHaveLength(2);
 
@@ -336,10 +347,86 @@ export default class SubgraphTests extends UnitTest {
 
         expect(clonedNodeA.type).toEqual("basic/integer")
         expect(clonedNodeA.outputs[0].links).toHaveLength(1)
-        console.warn(clonedNodeA.outputs)
         expect(clonedNodeA.getOutputLinks(0)[0]).toBeTruthy()
         expect(clonedNodeB.type).toEqual("basic/watch")
         expect(clonedNodeB.inputs[0].link).toBeTruthy()
         expect(clonedNodeB.getInputLink(0)).toBeTruthy()
+
+        expect(Object.keys(clonedSubgraph.subgraph.links)).toHaveLength(1)
+        const clonedLink = Object.values(clonedSubgraph.subgraph.links)[0]
+        expect(clonedLink.id).not.toEqual(link.id)
+    }
+
+    test__clone__reconnectsInnerNodesRecursively() {
+        const graph = new LGraph();
+
+        const nodeA = LiteGraph.createNode(ConstantInteger)
+        const nodeB = LiteGraph.createNode(Watch)
+
+        const subgraphA = LiteGraph.createNode(Subgraph)
+        const subgraphB = LiteGraph.createNode(Subgraph)
+
+        graph.add(subgraphA)
+        subgraphA.subgraph.add(subgraphB)
+        subgraphB.subgraph.add(nodeA)
+        subgraphB.subgraph.add(nodeB)
+
+        expect(nodeA.type).toEqual("basic/integer")
+        expect(nodeA.getOutputLinks(0)).toHaveLength(0)
+        expect(nodeB.type).toEqual("basic/watch")
+        expect(nodeB.getInputLink(0)).toBeFalsy()
+
+        nodeA.connect(0, nodeB, 0)
+
+        expect(nodeA.getOutputLinks(0)).toHaveLength(1)
+        expect(nodeB.getInputLink(0)).toBeTruthy()
+
+        const nodeIds = Array.from(graph.iterateNodesInOrderRecursive()).map(n => n.id)
+        const linkIds = Array.from(graph.iterateNodesInOrderRecursive())
+            .flatMap(n => Array.from(n.iterateAllLinks()))
+            .map(l => l.id)
+
+        expect(Object.keys(subgraphB.subgraph.links)).toHaveLength(1)
+        const link = Object.values(subgraphB.subgraph.links)[0]
+
+        // Clone!
+        const cloneData: LGraphNodeCloneData = { forNode: {} }
+        const clonedSubgraphA = subgraphA.clone(cloneData);
+
+        for (const id of [subgraphA.id, clonedSubgraphA.id]) {
+            expect(cloneData.forNode[id]).toBeInstanceOf(Object)
+            expect(cloneData.forNode[id].subgraphNewIDMapping).toBeInstanceOf(Object)
+            expect(Object.keys(cloneData.forNode[id].subgraphNewIDMapping.nodeIDs)).toHaveLength(6)
+            expect(Object.keys(cloneData.forNode[id].subgraphNewIDMapping.linkIDs)).toHaveLength(2)
+        }
+
+        // Ensure original graph was not modified (LGraph.serialize() hangs on
+        // to references in the original graph!)
+        const nodeIds2 = Array.from(graph.iterateNodesInOrderRecursive()).map(n => n.id)
+        const linkIds2 = Array.from(graph.iterateNodesInOrderRecursive())
+            .flatMap(n => Array.from(n.iterateAllLinks()))
+            .map(l => l.id)
+        expect(nodeIds2).toEqual(expect.arrayContaining(nodeIds))
+        expect(linkIds2).toEqual(expect.arrayContaining(linkIds))
+
+        expect(clonedSubgraphA.subgraph._nodes).toHaveLength(1);
+
+        const [clonedSubgraphB] = clonedSubgraphA.subgraph._nodes
+
+        expect(clonedSubgraphB.subgraph._nodes).toHaveLength(2);
+        const [clonedNodeA, clonedNodeB] = clonedSubgraphB.subgraph._nodes
+
+        expect(Object.keys(clonedSubgraphB.subgraph.links)).toHaveLength(1)
+        const clonedLink = Object.values(clonedSubgraphB.subgraph.links)[0]
+        expect(clonedLink.id).not.toEqual(link.id)
+
+        expect(clonedNodeA.type).toEqual("basic/integer")
+        expect(clonedNodeA.outputs[0].links).toHaveLength(1)
+        expect(clonedNodeA.getOutputLinks(0)[0]).toBeTruthy()
+        expect(clonedNodeA.getOutputLinks(0)[0].id).toEqual(clonedLink.id)
+        expect(clonedNodeB.type).toEqual("basic/watch")
+        expect(clonedNodeB.inputs[0].link).toBeTruthy()
+        expect(clonedNodeB.getInputLink(0)).toBeTruthy()
+        expect(clonedNodeB.getInputLink(0).id).toEqual(clonedLink.id)
     }
 }

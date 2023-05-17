@@ -925,7 +925,7 @@ export default class LGraphCanvas_UI {
             const newPos: Vector2 = [node.pos[0] - min_x + place_x, node.pos[1] - min_y + place_y]
             const prevNodeId = node.id;
             node.graph.remove(node, { removedBy: "moveOutOfSubgraph" })
-            parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeId });
+            parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeID });
             node.pos = newPos
             prevNodeIDtoNewNode[prevNodeId] = node
         }
