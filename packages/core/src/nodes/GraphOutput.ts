@@ -1,8 +1,8 @@
-import type { default as IWidget, ITextWidget } from "../IWidget";
+import type { default as IWidget, ITextWidget, IComboWidget } from "../IWidget";
 import type { SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
-import type { NodeID, SlotType, Vector2 } from "../types";
+import { BASE_SLOT_TYPES, NodeID, SlotType, Vector2 } from "../types";
 import { BuiltInSlotType } from "../types";
 import { UUID } from "../types";
 import Subgraph from "./Subgraph";
@@ -11,6 +11,13 @@ export interface GraphOutputProperties extends Record<string, any> {
     name: string,
     type: SlotType,
     subgraphID: NodeID | null
+}
+
+function getSlotTypesOut(widget: IWidget, node: LGraphNode): string[] {
+    let result = []
+    result = result.concat(BASE_SLOT_TYPES)
+    result = result.concat(LiteGraph.slot_types_out)
+    return result
 }
 
 export default class GraphOutput extends LGraphNode {
@@ -28,7 +35,7 @@ export default class GraphOutput extends LGraphNode {
     }
 
     nameWidget: ITextWidget;
-    typeWidget: ITextWidget;
+    typeWidget: IWidget;
 
     nameInGraph: string = "";
 
@@ -38,10 +45,14 @@ export default class GraphOutput extends LGraphNode {
     constructor(title?: string) {
         super(title)
 
-        let that = this;
-
         this.nameWidget = this.addWidget("text", "Name", this.properties.name, "name");
-        this.typeWidget = this.addWidget("text", "Type", "" + this.properties.type, "type");
+
+        if (LiteGraph.graph_inputs_outputs_use_combo_widget) {
+            this.typeWidget = this.addWidget<IComboWidget>("combo", "Type", "" + this.properties.type, "type", { values: getSlotTypesOut });
+        }
+        else {
+            this.typeWidget = this.addWidget<ITextWidget>("text", "Type", "" + this.properties.type, "type");
+        }
 
         this.widgets_up = true;
     }
@@ -135,5 +146,6 @@ LiteGraph.registerNodeType({
     class: GraphOutput,
     title: "Output",
     desc: "Output of the graph",
-    type: "graph/output"
+    type: "graph/output",
+    hide_in_node_lists: true
 })

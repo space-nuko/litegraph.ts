@@ -606,7 +606,7 @@ export default class Subgraph extends LGraphNode {
         // Add nodes into the subgraph
         for (const [index, node] of nodes.entries()) {
             const newPos: Vector2 = [node.pos[0] - min_x, node.pos[1] - min_y]
-            const prevNodeId = node.id;
+            const prevNodeID = node.id;
             node.graph.remove(node, { removedBy: "moveIntoSubgraph" })
             this.subgraph.add(node, { addedBy: "moveIntoSubgraph", prevNodeID });
             node.pos = newPos

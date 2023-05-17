@@ -137,6 +137,12 @@ export default class LiteGraph {
     // use this if you must have node IDs that are unique across all graphs and subgraphs.
     static use_uuids: boolean = false;
 
+    // delay in milliseconds between typing in the search box and refreshing the list
+    static search_box_refresh_interval_ms: number = 250;
+
+    // use a combo widget for selecting graph input/output types instead of a text box
+    static graph_inputs_outputs_use_combo_widget: boolean = false;
+
     /** Register a node class so it can be listed when the user wants to create a new one */
     static registerNodeType<T extends LGraphNode>(config: LGraphNodeConstructor): void {
         if (LiteGraph.debug) {
@@ -516,7 +522,7 @@ export default class LiteGraph {
         var categories = { "": 1 };
         for (var i in LiteGraph.registered_node_types) {
             var type = LiteGraph.registered_node_types[i];
-            if (type.category && !type.skip_list) {
+            if (type.category && !type.hide_in_node_lists) {
                 if (type.filter != filter)
                     continue;
                 categories[type.category] = 1;

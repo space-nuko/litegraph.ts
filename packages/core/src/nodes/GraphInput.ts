@@ -1,8 +1,9 @@
 import type { default as IWidget, ITextWidget } from "../IWidget";
+import { IComboWidget } from "../IWidget";
 import type { SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
-import type { NodeID, SlotType, Vector2 } from "../types";
+import { BASE_SLOT_TYPES, NodeID, SlotType, Vector2 } from "../types";
 import { BuiltInSlotType } from "../types";
 import { UUID } from "../types";
 import Subgraph from "./Subgraph";
@@ -12,6 +13,13 @@ export interface GraphInputProperties extends Record<string, any> {
     type: SlotType,
     value: any,
     subgraphID: NodeID | null
+}
+
+function getSlotTypesIn(widget: IWidget, node: LGraphNode): string[] {
+    let result = []
+    result = result.concat(BASE_SLOT_TYPES)
+    result = result.concat(LiteGraph.slot_types_in)
+    return result
 }
 
 export default class GraphInput extends LGraphNode {
@@ -30,7 +38,7 @@ export default class GraphInput extends LGraphNode {
     }
 
     nameWidget: ITextWidget;
-    typeWidget: ITextWidget;
+    typeWidget: IWidget;
     valueWidget: IWidget;
 
     nameInGraph: string = "";
@@ -55,17 +63,33 @@ export default class GraphInput extends LGraphNode {
             }
         );
 
-        this.typeWidget = this.addWidget(
-            "text",
-            "Type",
-            "" + this.properties.type,
-            function(v) {
-                if (!v) {
-                    return
+        if (LiteGraph.graph_inputs_outputs_use_combo_widget) {
+            this.typeWidget = this.addWidget<IComboWidget>(
+                "combo",
+                "Type",
+                "" + this.properties.type,
+                function(v) {
+                    if (!v?.content) {
+                        return
+                    }
+                    that.setProperty("type", v);
+                },
+                { values: getSlotTypesIn }
+            );
+        }
+        else {
+            this.typeWidget = this.addWidget<ITextWidget>(
+                "text",
+                "Type",
+                "" + this.properties.type,
+                function(v) {
+                    if (!v) {
+                        return
+                    }
+                    that.setProperty("type", v);
                 }
-                that.setProperty("type", v);
-            }
-        );
+            );
+        }
 
         this.valueWidget = this.addWidget(
             "number",
@@ -188,5 +212,6 @@ LiteGraph.registerNodeType({
     class: GraphInput,
     title: "Input",
     desc: "Input of the graph",
-    type: "graph/input"
+    type: "graph/input",
+    hide_in_node_lists: true
 })

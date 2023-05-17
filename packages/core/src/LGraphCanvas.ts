@@ -57,7 +57,8 @@ export type GraphDialogOptions = {
     event?: MouseEvent,
     checkForInput?: boolean,
     closeOnLeave?: boolean,
-    closeOnLeave_checkModified?: boolean
+    closeOnLeave_checkModified?: boolean,
+    onclose?: () => void,
 }
 
 export interface IGraphDialog extends HTMLDivElement {

@@ -71,13 +71,16 @@ export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
     desc: string,
     category?: string,
     supported_extensions?: string[],
-    /** Type name used for serialization, like "graph/input".
+    /**
+     * Type name used for serialization, like "graph/input".
      * Should be unique across all nodes.
-     * The part before the final slash is the category. */
+     * The part before the final slash is the category, if it's not manually provided.
+     */
     type: string,
     name?: string,
     filter?: string,
-    skip_list?: boolean
+    /** If true, hide from the search box and Add Node menus */
+    hide_in_node_lists?: boolean
 }
 
 export type SerializedLGraphNode<T extends LGraphNode = LGraphNode> = {
@@ -186,7 +189,7 @@ export default class LGraphNode {
     shape: SlotShape;
 
     serialize_widgets: boolean = false;
-    skip_list: boolean = false;
+    hide_in_node_lists: boolean = false;
     block_delete: boolean = false;
     ignore_remove: boolean = false;
 
