@@ -13,6 +13,7 @@ import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./
 import { getStaticPropertyOnInstance } from "./utils";
 import { UUID } from "./types";
 import { v4 as uuidv4 } from "uuid";
+import { GraphIDMapping } from "./nodes/Subgraph";
 
 export type NodeTypeOpts = {
     node: string,
@@ -2923,6 +2924,8 @@ export default class LGraphNode {
     }
 
     onSlotPropertyChanged?(kind: LConnectionKind, slot: SlotIndex, slotInfo: INodeInputSlot | INodeOutputSlot, name: string, value: any, prev_value?: any): boolean;
+
+    onReassignID?(idMap: GraphIDMapping): void;
 
     /** Called by `LGraphCanvas.processContextMenu` */
     getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];

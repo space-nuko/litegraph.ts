@@ -1,4 +1,4 @@
-import { LGraph, LGraphAddNodeOptions, LGraphNode, LGraphRemoveNodeOptions, LiteGraph, Subgraph } from "@litegraph-ts/core"
+import { GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphRemoveNodeOptions, LiteGraph, NodeID, Subgraph } from "@litegraph-ts/core"
 import { Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
@@ -19,6 +19,35 @@ class CustomGraph extends LGraph {
         this.removedCalls.push(options)
     }
 }
+
+interface CustomSavedIDNodeProperties extends Record<string, any> {
+    subgraphID: NodeID | null
+}
+
+class CustomSavedIDNode extends LGraphNode {
+    properties: CustomSavedIDNodeProperties = {
+        subgraphID: null
+    }
+
+    override onAdded(graph: LGraph) {
+        if (graph._is_subgraph) {
+            this.properties.subgraphID = graph._subgraph_node.id
+        }
+    }
+
+    override onReassignID(mapping: GraphIDMapping) {
+        if (this.properties.subgraphID) {
+            this.properties.subgraphID = mapping.nodeIDs[this.properties.subgraphID]
+        }
+    }
+}
+
+LiteGraph.registerNodeType({
+    class: CustomSavedIDNode,
+    title: "Custom Saved ID",
+    desc: "Node that saves a node ID to its properties",
+    type: "test/custom_saved_id"
+})
 
 export default class SubgraphTests extends UnitTest {
     test__hooksCustomGraphClass() {
@@ -243,5 +272,37 @@ export default class SubgraphTests extends UnitTest {
         expect(clonedSubgraph.id).not.toEqual(idSubgraph)
         expect(clonedSubgraph.subgraph._nodes).toHaveLength(1);
         expect(clonedSubgraph.subgraph._nodes[0].id).not.toEqual(idNode)
+    }
+
+    test__clone__reassignsNewIdsRecursively() {
+        if (!LiteGraph.use_uuids)
+            return;
+
+        const graph = new LGraph();
+
+        const node = LiteGraph.createNode(CustomSavedIDNode)
+
+        const subgraphA = LiteGraph.createNode(Subgraph)
+        const subgraphB = LiteGraph.createNode(Subgraph)
+
+        graph.add(subgraphA)
+        subgraphA.subgraph.add(subgraphB)
+        subgraphB.subgraph.add(node)
+
+        const idSubgraphA = subgraphA.id
+        const idSubgraphB = subgraphB.id
+        const idNode = node.id
+
+        expect(node.properties.subgraphID).toEqual(idSubgraphB)
+
+        const clonedSubgraph = subgraphA.clone();
+
+        expect(clonedSubgraph.id).not.toEqual(idSubgraphA)
+        expect(clonedSubgraph.subgraph._nodes).toHaveLength(1);
+        expect(clonedSubgraph.subgraph._nodes[0].id).not.toEqual(idSubgraphB)
+        expect(clonedSubgraph.subgraph._nodes[0].subgraph._nodes).toHaveLength(1)
+        const clonedSubgraphB = clonedSubgraph.subgraph._nodes[0]
+        expect(clonedSubgraphB.subgraph._nodes[0].id).not.toEqual(idNode)
+        expect(clonedSubgraphB.subgraph._nodes[0].properties.subgraphID).toEqual(clonedSubgraphB.id)
     }
 }

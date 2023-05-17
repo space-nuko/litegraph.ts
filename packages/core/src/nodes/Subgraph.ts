@@ -11,6 +11,7 @@ import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2, LinkID, NodeID
 import { UUID } from "../types";
 import GraphInput from "./GraphInput";
 import GraphOutput from "./GraphOutput";
+import { v4 as uuidv4 } from "uuid"
 
 export interface SubgraphProperties extends Record<string, any> {
     enabled: boolean
@@ -26,6 +27,78 @@ export type SubgraphOutputPair = {
     innerNode: GraphOutput,
     outerOutput: INodeOutputSlot,
     outerOutputIndex: number
+}
+
+/*
+ * Two-directional mappings from old -> new *and* new -> old for replaced
+ * node/link IDs.
+ */
+export type GraphIDMapping = {
+    nodeIDs: Record<NodeID, NodeID>,
+    linkIDs: Record<LinkID, LinkID>,
+}
+
+function reassignGraphIDs(graph: SerializedLGraph): GraphIDMapping {
+    const idMap: GraphIDMapping = { nodeIDs: {}, linkIDs: {} }
+
+    for (const node of graph.nodes) {
+        const oldID = node.id
+        const newID = uuidv4()
+        node.id = newID
+
+        if (idMap.nodeIDs[oldID] || idMap.nodeIDs[newID]) {
+            throw new Error(`New/old node UUID wasn't unique in changed map! ${oldID} ${newID}`)
+        }
+
+        idMap.nodeIDs[oldID] = newID
+        idMap.nodeIDs[newID] = oldID
+    }
+
+    for (const link of graph.links) {
+        const oldID = link[0]
+        const newID = uuidv4();
+        link[0] = newID
+
+        if (idMap.linkIDs[oldID] || idMap.linkIDs[newID]) {
+            throw new Error(`New/old link UUID wasn't unique in changed map! ${oldID} ${newID}`)
+        }
+
+        idMap.linkIDs[oldID] = newID
+        idMap.linkIDs[newID] = oldID
+
+        const nodeFrom = link[1]
+        const nodeTo = link[3]
+
+        if (!idMap.nodeIDs[nodeFrom]) {
+            throw new Error(`Old node UUID not found in mapping! ${nodeFrom}`)
+        }
+
+        link[1] = idMap.nodeIDs[nodeFrom]
+
+        if (!idMap.nodeIDs[nodeTo]) {
+            throw new Error(`Old node UUID not found in mapping! ${nodeTo}`)
+        }
+
+        link[3] = idMap.nodeIDs[nodeTo]
+    }
+
+    // Recurse!
+    for (const node of graph.nodes) {
+        if (node.type === "graph/subgraph") {
+            const merge = reassignGraphIDs((node as any).subgraph as SerializedLGraph)
+            idMap.nodeIDs = { ...idMap.nodeIDs, ...merge.nodeIDs }
+            idMap.linkIDs = { ...idMap.linkIDs, ...merge.linkIDs }
+        }
+    }
+
+    return idMap
+}
+
+function notifyReassignedIDs(subgraph: LGraph, mapping: GraphIDMapping) {
+    for (const node of subgraph.iterateNodesInOrderRecursive()) {
+        if (node.onReassignID)
+            node.onReassignID(mapping);
+    }
 }
 
 export default class Subgraph extends LGraphNode {
@@ -227,7 +300,7 @@ export default class Subgraph extends LGraphNode {
     };
 
     private onSubgraphNodeAdded(node: LGraphNode, options: LGraphAddNodeOptions) {
-        console.debug("onSubgraphNodeAdded", node.id, options.subgraphs?.length)
+        // console.debug("onSubgraphNodeAdded", node.id, options.subgraphs?.length)
         if (this.graph?.onNodeAdded) {
             options.subgraphs ||= []
             options.subgraphs.push(this)
@@ -236,7 +309,7 @@ export default class Subgraph extends LGraphNode {
     };
 
     private onSubgraphNodeRemoved(node: LGraphNode, options: LGraphRemoveNodeOptions) {
-        console.debug("onSubgraphNodeRemoved", node.id, options.subgraphs?.length)
+        // console.debug("onSubgraphNodeRemoved", node.id, options.subgraphs?.length)
         if (this.graph?.onNodeRemoved) {
             options.subgraphs ||= []
             options.subgraphs.push(this)
@@ -358,13 +431,20 @@ export default class Subgraph extends LGraphNode {
         var data = this.serialize();
 
         const subgraph = (data as any).subgraph as SerializedLGraph;
-        for (const node of subgraph.nodes) {
+        let mapping: GraphIDMapping | null = null
+        if (LiteGraph.use_uuids)
+            mapping = reassignGraphIDs(subgraph)
 
-        }
         delete data["id"];
         delete data["inputs"];
         delete data["outputs"];
         node.configure(data);
+
+        // At this point the subgraph is instantiated, so notify child nodes of
+        // their new IDs.
+        if (LiteGraph.use_uuids)
+            notifyReassignedIDs(node.subgraph, mapping);
+
         return node;
     };
 
