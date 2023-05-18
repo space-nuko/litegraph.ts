@@ -611,7 +611,7 @@ export default class LGraphNode {
     }
 
     /** sets the output data */
-    setOutputDataType(slot: number, type: string): void {
+    setOutputDataType(slot: number, type: SlotType): void {
         if (!this.outputs) {
             return;
         }
@@ -814,7 +814,7 @@ export default class LGraphNode {
     }
 
     /** sets the input data type */
-    setInputDataType(slot: number, type: string): void {
+    setInputDataType(slot: number, type: SlotType): void {
         if (!this.inputs || !this.graph) {
             return;
         }
