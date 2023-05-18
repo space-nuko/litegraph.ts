@@ -18,7 +18,7 @@ export interface GraphInputProperties extends Record<string, any> {
 function getSlotTypesIn(widget: IWidget, node: LGraphNode): string[] {
     let result = []
     result = result.concat(BASE_SLOT_TYPES)
-    result = result.concat(LiteGraph.slot_types_in)
+    result = result.concat(LiteGraph.slot_types_in.map(ty => ty.toUpperCase()))
     return result
 }
 
@@ -55,11 +55,15 @@ export default class GraphInput extends LGraphNode {
             "text",
             "Name",
             this.properties.name,
-            function(v) {
+            (v: string) => {
                 if (!v) {
                     return
                 }
-                that.setProperty("name", v);
+                const subgraph = this.getParentSubgraph();
+                if (!subgraph)
+                    return;
+                v = subgraph.getValidGraphInputName(v);
+                this.setProperty("name", v);
             }
         );
 
@@ -69,7 +73,7 @@ export default class GraphInput extends LGraphNode {
                 "Type",
                 "" + this.properties.type,
                 function(v) {
-                    if (!v?.content) {
+                    if (!v) {
                         return
                     }
                     that.setProperty("type", v);

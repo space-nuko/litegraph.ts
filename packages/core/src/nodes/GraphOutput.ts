@@ -45,7 +45,21 @@ export default class GraphOutput extends LGraphNode {
     constructor(title?: string) {
         super(title)
 
-        this.nameWidget = this.addWidget("text", "Name", this.properties.name, "name");
+        this.nameWidget = this.addWidget(
+            "text",
+            "Name",
+            this.properties.name,
+            (v: string) => {
+                if (!v) {
+                    return
+                }
+                const subgraph = this.getParentSubgraph();
+                if (!subgraph)
+                    return;
+                v = subgraph.getValidGraphOutputName(v);
+                this.setProperty("name", v);
+            }
+        );
 
         if (LiteGraph.graph_inputs_outputs_use_combo_widget) {
             this.typeWidget = this.addWidget<IComboWidget>("combo", "Type", "" + this.properties.type, "type", { values: getSlotTypesOut });
