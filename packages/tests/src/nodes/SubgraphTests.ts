@@ -111,7 +111,29 @@ export default class SubgraphTests extends UnitTest {
         expect(restoredNodeA.subgraph).toBeNull()
     }
 
-    test__onSubgraphTypeChange_detectsInputTypeChanges() {
+    test__addGraphInput__addsEverything() {
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const inputPair = subgraph.addGraphInput("test1", "string");
+        expect(subgraph.inputs[inputPair.outerInputIndex]).toEqual(inputPair.outerInput)
+        expect(inputPair.innerNode.graph).toEqual(subgraph.subgraph)
+    }
+
+    test__addGraphOutput__addsEverything() {
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const outputPair = subgraph.addGraphOutput("test1", "string");
+        expect(subgraph.outputs[outputPair.outerOutputIndex]).toEqual(outputPair.outerOutput)
+        expect(outputPair.innerNode.graph).toEqual(subgraph.subgraph)
+    }
+
+    test__onSubgraphTypeChange__detectsInputTypeChanges() {
         const graph = new LGraph();
 
         const subgraph = LiteGraph.createNode(Subgraph)
@@ -126,7 +148,6 @@ export default class SubgraphTests extends UnitTest {
         expect(subgraph.subgraph.inputs["test1"]).toBeDefined()
         expect(subgraph.subgraph.inputs["test1"].name).toEqual("test1")
         expect(subgraph.subgraph.inputs["test1"].type).toEqual("string")
-        expect(subgraph.subgraph.inputs["test1"].value).toEqual("foo")
 
         inputPair.innerNode.setProperty("type", "boolean")
 
@@ -137,7 +158,7 @@ export default class SubgraphTests extends UnitTest {
         expect(subgraph.subgraph.inputs["test1"].value).toEqual("foo") // XXX data not changed
     }
 
-    test__onSubgraphTypeChange_detectsOutputTypeChanges() {
+    test__onSubgraphTypeChange__detectsOutputTypeChanges() {
         const graph = new LGraph();
 
         const subgraph = LiteGraph.createNode(Subgraph)

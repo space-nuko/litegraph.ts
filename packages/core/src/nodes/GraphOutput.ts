@@ -96,8 +96,8 @@ export default class GraphOutput extends LGraphNode {
 
         //update graph
         if (this.graph && this.nameInGraph && typeof type === "string") {
+            this.graph.changeOutputType(this.nameInGraph, type);
             if (this.inputs[0].type !== type) {
-                this.graph.changeOutputType(this.nameInGraph, type);
                 this.setInputDataType(0, type);
             }
         }
