@@ -480,7 +480,7 @@ export default class LGraphNode {
     }
 
     getInputSlotProperty(slot: SlotIndex, name: string): any {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return;
         }
 
@@ -498,7 +498,7 @@ export default class LGraphNode {
     }
 
     getOutputSlotProperty(slot: SlotIndex, name: string): any {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return;
         }
 
@@ -516,7 +516,7 @@ export default class LGraphNode {
     }
 
     setInputSlotProperty(slot: SlotIndex, name: string, value: any) {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return;
         }
 
@@ -547,7 +547,7 @@ export default class LGraphNode {
     }
 
     setOutputSlotProperty(slot: SlotIndex, name: string, value: any) {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return;
         }
 
@@ -579,7 +579,7 @@ export default class LGraphNode {
 
     /** sets the output data */
     setOutputData(slot: SlotIndex, data: any): void {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return;
         }
 
@@ -656,9 +656,9 @@ export default class LGraphNode {
      * @return data or if it is not connected returns undefined
      */
     getInputData<T = any>(slot: number, force_update?: boolean): T {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return;
-        } //undefined;
+        }
 
         if (slot >= this.inputs.length || this.inputs[slot].link == null) {
             return;
@@ -763,7 +763,7 @@ export default class LGraphNode {
      * @return {LLink} object or null
      */
     getInputLink(slot: SlotIndex): LLink | null {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return null;
         }
         if (slot < this.inputs.length) {
@@ -775,7 +775,7 @@ export default class LGraphNode {
 
     /** returns the node connected in the input slot */
     getInputNode(slot: SlotIndex): LGraphNode | null {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return null;
         }
         if (slot < this.inputs.length) {
@@ -797,7 +797,7 @@ export default class LGraphNode {
 
     /** returns the value of an input with this name, otherwise checks if there is a property with that name */
     getInputOrProperty<T = any>(name: string): T {
-        if (!this.inputs || !this.inputs.length) {
+        if (!this.inputs || !this.inputs.length || !this.graph) {
             return this.properties ? this.properties[name] : null;
         }
 
@@ -815,7 +815,7 @@ export default class LGraphNode {
 
     /** sets the input data type */
     setInputDataType(slot: number, type: string): void {
-        if (!this.inputs) {
+        if (!this.inputs || !this.graph) {
             return;
         }
         if (slot == -1 || slot >= this.inputs.length) {
@@ -848,7 +848,7 @@ export default class LGraphNode {
      * @return {LLink} object or null
      */
     getOutputSlotConnectedTo(slot: SlotIndex): INodeOutputSlot | null {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return null;
         }
         if (slot >= 0 && slot < this.outputs.length) {
@@ -869,7 +869,7 @@ export default class LGraphNode {
 
     /** tells you the last output data that went in that slot */
     getOutputData<T = any>(slot: SlotIndex): T | null {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return null;
         }
         if (slot >= this.outputs.length) {
@@ -886,7 +886,7 @@ export default class LGraphNode {
      * @return {LLink} object or null
      */
     getOutputLinks(slot: SlotIndex): LLink[] {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return [];
         }
         if (slot >= 0 && slot < this.outputs.length) {
@@ -907,7 +907,7 @@ export default class LGraphNode {
      * @return {LLink} object or null
      */
     getInputSlotsConnectedTo(slot: SlotIndex): INodeInputSlot[] {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return [];
         }
         if (slot >= 0 && slot < this.outputs.length) {
@@ -938,7 +938,7 @@ export default class LGraphNode {
 
     /** tells you if there is a connection in one output slot */
     isOutputConnected(slot: SlotIndex): boolean {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return false;
         }
         return (
@@ -950,7 +950,7 @@ export default class LGraphNode {
 
     /** tells you if there is any connection in the output slots */
     isAnyOutputConnected(): boolean {
-        if (!this.outputs) {
+        if (!this.outputs || !this.graph) {
             return false;
         }
         for (var i = 0; i < this.outputs.length; ++i) {
@@ -963,7 +963,7 @@ export default class LGraphNode {
 
     /** retrieves all the nodes connected to this output slot */
     getOutputNodes(slot: SlotIndex): LGraphNode[] {
-        if (!this.outputs || this.outputs.length == 0) {
+        if (!this.outputs || this.outputs.length == 0 || !this.graph) {
             return null;
         }
 
@@ -991,6 +991,9 @@ export default class LGraphNode {
     }
 
     *iterateAllLinks(): Iterable<LLink> {
+        if (!this.graph)
+            return
+
         for (const input of this.iterateInputInfo()) {
             if (input.link) {
                 const link = this.graph.links[input.link]
