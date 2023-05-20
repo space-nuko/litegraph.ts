@@ -1243,12 +1243,7 @@ export default class LGraphCanvas_Rendering {
 
         var titleMode = node.titleMode;
 
-        var render_title = true;
-        if (titleMode == TitleMode.TRANSPARENT_TITLE || titleMode == TitleMode.NO_TITLE) {
-            render_title = false;
-        } else if (titleMode == TitleMode.AUTOHIDE_TITLE && mouseOver) {
-            render_title = true;
-        }
+        var render_title = node.isShowingTitle(mouseOver);
 
         var area = LGraphCanvas_Rendering.tmp_area;
         area[0] = 0; //x

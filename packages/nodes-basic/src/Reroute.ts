@@ -10,7 +10,7 @@ export default class Reroute extends LGraphNode {
         ]
     }
 
-    static overrideSize = [40, 30];
+    static overrideSize = [60, 30];
     override resizable: boolean = false;
     override titleMode: TitleMode = TitleMode.NO_TITLE;
 

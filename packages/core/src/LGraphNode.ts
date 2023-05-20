@@ -2678,6 +2678,15 @@ export default class LGraphNode {
         }
     }
 
+    isShowingTitle(mouseOver: boolean): boolean {
+        if (this.titleMode == TitleMode.TRANSPARENT_TITLE || this.titleMode == TitleMode.NO_TITLE) {
+            return false;
+        } else if (this.titleMode == TitleMode.AUTOHIDE_TITLE && mouseOver) {
+            return true;
+        }
+        return true
+    }
+
     /** Collapse the node to make it smaller on the canvas */
     collapse(force: boolean = false): void {
         (this.graph as any)._version++;

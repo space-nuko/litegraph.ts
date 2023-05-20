@@ -1023,6 +1023,7 @@ export default class LGraphCanvas_Events {
                 if (
                     node &&
                     e.click_time < 300 &&
+                    node.isShowingTitle(true) &&
                     LiteGraph.isInsideRectangle(
                         e.canvasX,
                         e.canvasY,
