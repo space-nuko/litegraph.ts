@@ -8,7 +8,7 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import GraphInput from "./nodes/GraphInput";
 import Subgraph from "./nodes/Subgraph";
-import type { LConnectionKind, LinkID, NodeID, Vector2, Version } from "./types";
+import { LConnectionKind, LinkID, NodeID, TitleMode, Vector2, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { UUID } from "./types";
@@ -1078,7 +1078,8 @@ export default class LGraph {
         var nRet = null;
         for (var i = nodesList.length - 1; i >= 0; i--) {
             var n = nodesList[i];
-            if (n.isPointInside(x, y, margin)) {
+            var skip_title = n.titleMode == TitleMode.NO_TITLE;
+            if (n.isPointInside(x, y, margin, skip_title)) {
                 // check for lesser interest nodes (TODO check for overlapping, use the top)
                 /*if (typeof n == "LGraphGroup"){
                     nRet = n;
