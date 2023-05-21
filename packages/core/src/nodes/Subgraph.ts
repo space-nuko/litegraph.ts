@@ -184,14 +184,6 @@ export default class Subgraph extends LGraphNode {
     //     return graph;
     // }
 
-    *iterateParentNodes(): Iterable<Subgraph> {
-        let subgraph = this.graph._subgraph_node;
-        while (subgraph) {
-            yield subgraph;
-            subgraph = subgraph.graph?._subgraph_node;
-        }
-    }
-
     *iterateParentGraphs(): Iterable<LGraph> {
         let graph = this.graph;
         while (graph) {

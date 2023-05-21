@@ -13,7 +13,7 @@ import { BuiltInSlotShape, BuiltInSlotType, LConnectionKind, NodeMode } from "./
 import { getStaticPropertyOnInstance } from "./utils";
 import { UUID } from "./types";
 import { v4 as uuidv4 } from "uuid";
-import { GraphIDMapping } from "./nodes/Subgraph";
+import Subgraph, { GraphIDMapping } from "./nodes/Subgraph";
 
 export type NodeTypeOpts = {
     node: string,
@@ -449,6 +449,14 @@ export default class LGraphNode {
             return null;
 
         return graph
+    }
+
+    *iterateParentSubgraphNodes(): Iterable<Subgraph> {
+        let subgraph = this.graph._subgraph_node;
+        while (subgraph) {
+            yield subgraph;
+            subgraph = subgraph.graph?._subgraph_node;
+        }
     }
 
     /** sets the value of a property */
