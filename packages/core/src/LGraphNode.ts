@@ -1962,7 +1962,14 @@ export default class LGraphNode {
         if (targetNode && targetNode.constructor === Number) {
             targetNode = this.graph.getNodeById(targetNode);
         }
-        let targetSlot = targetNode.findInputSlotIndexByType(targetSlotType, true);
+
+        let sourceSlotType = targetSlotType;
+        if (targetSlotType === BuiltInSlotType.EVENT)
+            sourceSlotType = BuiltInSlotType.ACTION;
+        else if (targetSlotType === BuiltInSlotType.ACTION)
+            sourceSlotType = BuiltInSlotType.EVENT;
+
+        let targetSlot = targetNode.findInputSlotIndexByType(sourceSlotType, true);
         if (targetSlot >= 0 && targetSlot !== null) {
             if (LiteGraph.debug)
                 console.debug("CONNbyTYPE type " + targetSlotType + " for " + targetSlot)
@@ -2025,9 +2032,16 @@ export default class LGraphNode {
         if (sourceNode && sourceNode.constructor === Number) {
             sourceNode = this.graph.getNodeById(sourceNode);
         }
-        sourceSlot = sourceNode.findOutputSlotIndexByType(sourceSlotType, true);
+
+        let targetSlotType = sourceSlotType;
+        if (sourceSlotType === BuiltInSlotType.EVENT)
+            targetSlotType = BuiltInSlotType.ACTION;
+        else if (sourceSlotType === BuiltInSlotType.ACTION)
+            targetSlotType = BuiltInSlotType.EVENT;
+
+        sourceSlot = sourceNode.findOutputSlotIndexByType(targetSlotType, true);
         if (sourceSlot >= 0 && sourceSlot !== null) {
-            console.debug("CONNbyTYPE OUT! type " + sourceSlotType + " for " + sourceSlot)
+            console.debug("CONNbyTYPE OUT! type " + sourceSlotType + " for " + sourceSlot + " to " + targetSlotType)
             return sourceNode.connect(sourceSlot, this, slot);
         } else {
 
@@ -2039,7 +2053,7 @@ export default class LGraphNode {
                 }
             }
 
-            if (opts.createEventInCase && sourceSlotType == BuiltInSlotType.EVENT) {
+            if (opts.createEventInCase && sourceSlotType == BuiltInSlotType.EVENT || sourceSlotType == BuiltInSlotType.ACTION) {
                 // WILL CREATE THE onExecuted OUT SLOT
                 if (LiteGraph.do_add_triggers_slots) {
                     var sourceSlot = sourceNode.addOnExecutedOutput();
@@ -2048,7 +2062,7 @@ export default class LGraphNode {
             }
             // connect to the first free output slot if not found a specific type and this input is general
             if (opts.firstFreeIfInputGeneralInCase && (sourceSlotType == 0 || sourceSlotType == "*" || sourceSlotType == "")) {
-                let sourceSlot = sourceNode.findOutputSlotIndexByName(null, true, [BuiltInSlotType.EVENT]);
+                let sourceSlot = sourceNode.findOutputSlotIndexByName(null, true, [BuiltInSlotType.EVENT, BuiltInSlotType.ACTION]);
                 if (sourceSlot >= 0) {
                     return sourceNode.connect(sourceSlot, this, slot);
                 }
