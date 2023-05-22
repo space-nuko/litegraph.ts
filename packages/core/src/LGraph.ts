@@ -731,6 +731,16 @@ export default class LGraph {
     }
 
     /**
+     * Iterates all nodes in this graph *excluding* subgraphs.
+     */
+    *iterateNodesOfTypeRecursive<T extends LGraphNode>(type: string): Iterable<T> {
+        for (const node of this.iterateNodesInOrderRecursive()) {
+            if (node.type === type)
+                yield node as T;
+        }
+    }
+
+    /**
      * Sends an event to all the nodes, useful to trigger stuff
      * @param eventName the name of the event (function to be called)
      * @param params parameters in array format
@@ -1038,6 +1048,33 @@ export default class LGraph {
     }
 
     /**
+     * Returns a list of nodes that matches a class
+     * @param classObject the class itself (not an string)
+     * @return a list with all the nodes of this type
+     */
+    findNodesByClassRecursive<T extends LGraphNode>(type: new () => T, result: T[] = []): T[] {
+        result.length = 0;
+        for (const node of this.iterateNodesOfClassRecursive(type)) {
+            result.push(node);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a list of nodes that matches a type
+     * @param type the name of the node type
+     * @return a list with all the nodes of this type
+     */
+    findNodesByTypeRecursive(type: string, result: LGraphNode[] = []): LGraphNode[] {
+        var type = type.toLowerCase();
+        result.length = 0;
+        for (const node of this.iterateNodesOfTypeRecursive(type)) {
+            result.push(node);
+        }
+        return result;
+    }
+
+    /**
      * Returns the first node that matches a name in its title
      * @param title the name of the node to search
      * @return the node or null
@@ -1242,8 +1279,6 @@ export default class LGraph {
             return false;
         }
 
-        console.warn("CHANGEINPUTTYPE", name, this.inputs[name].type, "=>", type)
-
         if (
             this.inputs[name].type &&
             String(this.inputs[name].type).toLowerCase() ==
@@ -1258,7 +1293,6 @@ export default class LGraph {
         if (this.onInputTypeChanged) {
             this.onInputTypeChanged(name, oldType, type);
         }
-        console.info("CHANGEDINPUTTYPE", name, this.inputs[name].type, "=>", type)
 
         return true;
     }
