@@ -479,17 +479,13 @@ export default class Subgraph extends LGraphNode {
     };
 
     buildFromNodes(nodes: LGraphNode[]) {
-        // Nodes that connect data between parent graph and subgraph
-        // Since the nodes will reparented to a new graph causing the node ID
-        // to be changed, we can't rely on node IDs to reference the reinserted
-        // nodes. So the new nodes are referred to by index into the nodes array instead
-        // { linkID => [fromIndex, toIndex, connectionPos, slotName] }
-        const linksIn: Record<LinkID, [LLink, number, number, Vector2, string]> = {}
-        const linksOut: Record<LinkID, [LLink, number, number, Vector2, string]> = {}
+        // { linkID => [link, connectionPos, slotName] }
+        const linksIn: Record<LinkID, [LLink, Vector2, string]> = {}
+        const linksOut: Record<LinkID, [LLink, Vector2, string]> = {}
 
         // Links internal to the subgraph
-        // { linkID => [LLink, fromIndex, toIndex, connectionPos] }
-        const innerLinks: Record<LinkID, [LLink, number, number, Vector2]> = {}
+        // { linkID => [link, connectionPos] }
+        const innerLinks: Record<LinkID, [LLink, Vector2]> = {}
 
         const containedNodes = nodes.reduce((result, node) => { result[node.id] = node; return result }, {})
 
@@ -505,47 +501,29 @@ export default class Subgraph extends LGraphNode {
             max_y = Math.max(node.pos[1] + node.size[1], max_y);
         }
 
-        const indexToNode: Record<number, LGraphNode> = {}
-        const nodeIdToIndex: Record<NodeID, number> = {}
-        for (const [index, node] of nodes.entries()) {
-            indexToNode[index] = node;
-            nodeIdToIndex[node.id] = index;
-        }
-
-        let nextIndex = nodes.length;
+        const nodeIdToNewNode: Record<NodeID, LGraphNode> = {}
 
         // detect inputs and outputs
         for (const node of nodes) {
+            nodeIdToNewNode[node.id] = node;
+
             for (let index = 0; index < node.inputs.length; index++) {
                 const link = node.getInputLink(index)
 
                 if (link) {
                     const pos = node.getConnectionPos(true, index);
                     const input = node.getInputInfo(index);
+                    const inputNode = node.getInputNode(index);
 
-                    let indexFrom = nodeIdToIndex[link.origin_id]
-                    if (indexFrom == null) {
-                        // Found a node outside the selected nodes
-                        indexFrom = nextIndex;
-                        nextIndex += 1;
-                        nodeIdToIndex[link.origin_id] = indexFrom
-                        indexToNode[indexFrom] = node.graph.getNodeById(link.origin_id)
-                    }
-
-                    let indexTo = nodeIdToIndex[link.target_id]
-                    if (indexTo == null) {
-                        indexTo = nextIndex;
-                        nextIndex += 1;
-                        nodeIdToIndex[link.target_id] = indexTo
-                        indexToNode[indexTo] = node.graph.getNodeById(link.target_id)
-                    }
+                    if (inputNode)
+                        nodeIdToNewNode[inputNode.id] = inputNode;
 
                     const isSelected = containedNodes[link.origin_id] != null;
                     if (isSelected) {
-                        innerLinks[link.id] = [link, indexFrom, indexTo, pos];
+                        innerLinks[link.id] = [link, pos];
                     }
                     else {
-                        linksIn[link.id] = [link, indexFrom, indexTo, pos, input.name];
+                        linksIn[link.id] = [link, pos, input.name];
                     }
                 }
             }
@@ -556,30 +534,17 @@ export default class Subgraph extends LGraphNode {
                 for (const link of links) {
                     const pos = node.getConnectionPos(false, index);
                     const output = node.getOutputInfo(index);
+                    const outputNode = node.graph.getNodeById(link.target_id)
 
-                    let indexFrom = nodeIdToIndex[link.origin_id]
-                    if (indexFrom == null) {
-                        // Found a node outside the selected nodes
-                        indexFrom = nextIndex;
-                        nextIndex += 1;
-                        nodeIdToIndex[link.origin_id] = indexFrom
-                        indexToNode[indexFrom] = node.graph.getNodeById(link.origin_id)
-                    }
-
-                    let indexTo = nodeIdToIndex[link.target_id]
-                    if (indexTo == null) {
-                        indexTo = nextIndex;
-                        nextIndex += 1;
-                        nodeIdToIndex[link.target_id] = indexTo
-                        indexToNode[indexTo] = node.graph.getNodeById(link.target_id)
-                    }
+                    if (outputNode)
+                        nodeIdToNewNode[outputNode.id] = outputNode;
 
                     const isSelected = containedNodes[link.target_id] != null;
                     if (isSelected) {
-                        innerLinks[link.id] = [link, indexFrom, indexTo, pos];
+                        innerLinks[link.id] = [link, pos];
                     }
                     else {
-                        linksOut[link.id] = [link, indexFrom, indexTo, pos, output.name];
+                        linksOut[link.id] = [link, pos, output.name];
                     }
                 }
             }
@@ -588,8 +553,8 @@ export default class Subgraph extends LGraphNode {
         // Sort links in order from highest to lowest
         const sortedLinksIn = Object.values(linksIn);
         const sortedLinksOut = Object.values(linksOut);
-        sortedLinksIn.sort((a, b) => a[3][1] - b[3][1])
-        sortedLinksOut.sort((a, b) => a[3][1] - b[3][1])
+        sortedLinksIn.sort((a, b) => a[1][1] - b[1][1])
+        sortedLinksOut.sort((a, b) => a[1][1] - b[1][1])
 
         if (LiteGraph.debug) {
             console.debug("NODES", Object.keys(nodes))
@@ -600,16 +565,17 @@ export default class Subgraph extends LGraphNode {
 
         // { nodeId => { slotId => outputSlotOnSubgraphNode } }
         const inputSlotsCreated: Record<number, Record<number, SubgraphInputPair>> = {}
-        // { slotId => outputSlotOnSubgraphNode }
-        const outputSlotsCreated: Record<number, SubgraphOutputPair> = {}
+        const outputSlotsCreated: Record<number, Record<number, SubgraphOutputPair>> = {}
 
         // Add nodes into the subgraph
-        for (const [index, node] of nodes.entries()) {
+        for (const node of nodes) {
             const newPos: Vector2 = [node.pos[0] - min_x, node.pos[1] - min_y]
             const prevNodeID = node.id;
             node.graph.remove(node, { removedBy: "moveIntoSubgraph" })
             this.subgraph.add(node, { addedBy: "moveIntoSubgraph", prevNodeID });
             node.pos = newPos
+            nodeIdToNewNode[prevNodeID] = node;
+            nodeIdToNewNode[node.id] = node;
         }
 
         let i = 0;
@@ -617,7 +583,7 @@ export default class Subgraph extends LGraphNode {
         let outputNodeY = 0
 
         // Reconnect links from outside the subgraph -> inside
-        for (const [linkIn, fromIndex, toIndex, _pos, inputName] of sortedLinksIn) {
+        for (const [linkIn, _pos, inputName] of sortedLinksIn) {
             let pair = null;
             if (inputSlotsCreated[linkIn.origin_id])
                 pair = inputSlotsCreated[linkIn.origin_id][linkIn.origin_slot]
@@ -631,8 +597,8 @@ export default class Subgraph extends LGraphNode {
                 }
             }
 
-            const fromNode = indexToNode[fromIndex]
-            const toNode = indexToNode[toIndex]
+            const fromNode = nodeIdToNewNode[linkIn.origin_id]
+            const toNode = nodeIdToNewNode[linkIn.target_id]
 
             // console.warn("CONNECT", fromNode, linkIn.origin_slot, this, pair.outerInputIndex)
 
@@ -646,8 +612,10 @@ export default class Subgraph extends LGraphNode {
         i = 0;
 
         // Reconnect links from inside the subgraph -> outside
-        for (const [linkOut, fromIndex, toIndex, _pos, outputName] of sortedLinksOut) {
-            let pair = outputSlotsCreated[linkOut.target_slot];
+        for (const [linkOut, _pos, outputName] of sortedLinksOut) {
+            let pair = null;
+            if (outputSlotsCreated[linkOut.target_id])
+                pair = outputSlotsCreated[linkOut.target_id][linkOut.target_slot]
             if (!pair) {
                 const newOutputName = this.getValidGraphOutputName(outputName);
                 pair = this.addGraphOutput(newOutputName, linkOut.type, [max_x - min_x + 200, outputNodeY])
@@ -658,19 +626,20 @@ export default class Subgraph extends LGraphNode {
                 }
             }
 
-            const fromNode = indexToNode[fromIndex]
-            const toNode = indexToNode[toIndex]
+            const fromNode = nodeIdToNewNode[linkOut.origin_id]
+            const toNode = nodeIdToNewNode[linkOut.target_id]
 
             fromNode.connect(linkOut.origin_slot, pair.innerNode, 0)
             this.connect(pair.outerOutputIndex, toNode, linkOut.target_slot)
 
-            outputSlotsCreated[linkOut.target_slot] = pair
+            outputSlotsCreated[linkOut.target_id] ||= {}
+            outputSlotsCreated[linkOut.target_id][linkOut.origin_slot] = pair
         }
 
         // Reconnect internal links
-        for (const [innerLink, fromIndex, toIndex, _pos] of Object.values(innerLinks)) {
-            const fromNode = indexToNode[fromIndex]
-            const toNode = indexToNode[toIndex]
+        for (const [innerLink, _pos] of Object.values(innerLinks)) {
+            const fromNode = nodeIdToNewNode[innerLink.origin_id]
+            const toNode = nodeIdToNewNode[innerLink.target_id]
 
             fromNode.connect(innerLink.origin_slot, toNode, innerLink.target_slot)
         }
