@@ -74,6 +74,9 @@ export interface ISliderWidget
     type: "slider";
 }
 export interface INumberWidgetOptions extends WidgetPanelOptions {
+    min?: number;
+    max?: number;
+    step?: number;
     precision: number
 }
 export interface INumberWidget extends IWidget<INumberWidgetOptions, number> {

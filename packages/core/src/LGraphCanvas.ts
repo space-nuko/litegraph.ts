@@ -1782,7 +1782,7 @@ export default class LGraphCanvas
                     var old_value = w.value;
                     if (event.type == LiteGraph.pointerevents_method + "move" && w.type == "number") {
                         if (event.deltaX)
-                            w.value += event.deltaX * 0.1 * (w.options.step || 1);
+                            w.value += event.deltaX * (w.options.step || 0.1);
                         if (w.options.min != null && w.value < w.options.min) {
                             w.value = w.options.min;
                         }
