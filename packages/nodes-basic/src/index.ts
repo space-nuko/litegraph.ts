@@ -5,6 +5,7 @@ export { default as ConstantString } from "./ConstantString";
 export { default as ConstantObject } from "./ConstantObject";
 export { default as ConstantFile } from "./ConstantFile";
 export { default as ConstantJSON } from "./ConstantJSON";
+export { default as ConstantNull } from "./ConstantNull";
 export { default as ArrayElement } from "./ArrayElement";
 export { default as SetArray } from "./SetArray";
 export { default as Reroute } from "./Reroute";
