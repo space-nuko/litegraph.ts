@@ -58,6 +58,7 @@ export default class StringTemplate extends LGraphNode {
         if (property === "outputJSON") {
             const isJSON = value == true;
             this.outputs[0].type = isJSON ? "*" : "string";
+            this.boxcolor = LiteGraph.NODE_DEFAULT_BOXCOLOR;
         }
         this._value = null;
     }
@@ -86,7 +87,7 @@ export default class StringTemplate extends LGraphNode {
                 }
             }
             try {
-                this.boxcolor = "#AEA";
+                this.boxcolor = this.properties.outputJSON ? "#AEA" : LiteGraph.NODE_DEFAULT_BOXCOLOR;
                 this._value = this.substituteTemplate(template, args)
             }
             catch (error) {
