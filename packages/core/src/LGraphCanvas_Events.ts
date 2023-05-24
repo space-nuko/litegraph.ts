@@ -79,24 +79,6 @@ export default class LGraphCanvas_Events {
                 return;
         }
 
-        const findLinkCenterAtPos = (x: number, y: number): LLink | null => {
-            for (let i = 0; i < this.visible_links.length; ++i) {
-                const link = this.visible_links[i];
-                const center = link._pos;
-                if (
-                    !center ||
-                    x < center[0] - 4 ||
-                    x > center[0] + 4 ||
-                    y < center[1] - 4 ||
-                    y > center[1] + 4
-                ) {
-                    continue;
-                }
-                return link
-            }
-            return null;
-        }
-
         //left button mouse / single finger
         if (e.which == 1 && !this.pointer_is_double) {
             if (e.ctrlKey && this.allow_interaction && !this.read_only) {
@@ -350,7 +332,7 @@ export default class LGraphCanvas_Events {
                     if (!clickedSubgraphButton) {
                         //search for link connector
                         if (this.allow_interaction && !this.read_only) {
-                            const link = findLinkCenterAtPos(e.canvasX, e.canvasY)
+                            const link = this.findLinkCenterAtPos(e.canvasX, e.canvasY)
                             if (link != null) {
                                 this.showLinkMenu(link, e);
                                 this.over_link_center = null; //clear tooltip
@@ -474,16 +456,17 @@ export default class LGraphCanvas_Events {
                     }
                 }
                 else {
-                    const link = findLinkCenterAtPos(e.canvasX, e.canvasY)
-                    if (link != null)
+                    const link = this.findLinkCenterAtPos(e.canvasX, e.canvasY)
+                    if (link != null) {
+                        this.over_link_center = null;
+                        this.dirty_canvas = true;
                         target = { type: "link", item: link }
+                    }
                 }
-
 
                 // show menu on this node
                 this.processContextMenu(target, e);
             }
-
         }
 
         this.selected_group_moving = false;
@@ -740,22 +723,7 @@ export default class LGraphCanvas_Events {
             } else { //not over a node
 
                 //search for link connector
-                var over_link = null;
-                for (var i = 0; i < this.visible_links.length; ++i) {
-                    var link = this.visible_links[i];
-                    var center = link._pos;
-                    if (
-                        !center ||
-                        e.canvasX < center[0] - 4 ||
-                        e.canvasX > center[0] + 4 ||
-                        e.canvasY < center[1] - 4 ||
-                        e.canvasY > center[1] + 4
-                    ) {
-                        continue;
-                    }
-                    over_link = link;
-                    break;
-                }
+                var over_link = this.findLinkCenterAtPos(e.canvasX, e.canvasY);
                 if (over_link != this.over_link_center) {
                     this.over_link_center = over_link;
                     this.dirty_canvas = true;

@@ -2,6 +2,7 @@ import LGraphNode from "./LGraphNode"
 import LiteGraph from "./LiteGraph"
 import type { MouseEventExt, CustomEventExt, EventExt } from "./DragAndScale"
 import INodeSlot, { SlotInPosition } from "./INodeSlot";
+import LGraphCanvas from "./LGraphCanvas";
 
 export interface ContextMenuRoot extends HTMLDivElement {
     closing_timer?: number
@@ -358,7 +359,7 @@ export default class ContextMenu {
 
         let ctxMenu = this;
 
-        function inner_over(e: MouseEventExt) {
+        function inner_over(e: MouseEvent) {
             var value = this.value;
             if (!value || !value.has_submenu) {
                 return;
@@ -368,11 +369,16 @@ export default class ContextMenu {
         }
 
         //menu option clicked
-        function inner_onclick(e: MouseEventExt) {
+        function inner_onclick(_e: MouseEvent) {
             let index = parseInt(this.dataset["value"])
             var value = ctxMenu.values[index];
             if (LiteGraph.debug)
                 console.debug("ContextMenu inner_onclick", index, value);
+
+            const graphCanvas = LGraphCanvas.active_canvas
+            if (!graphCanvas)
+                return;
+            const e = graphCanvas.adjustMouseEvent(_e);
 
             var close_parent = true;
 

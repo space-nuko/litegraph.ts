@@ -2231,7 +2231,7 @@ export default class LGraphCanvas_UI {
         const menu = new ContextMenu(options, {
             event: e,
             title: link.data != null ? link.data.constructor.name : null,
-            // callback: inner_clicked
+            extra: link
         });
 
         return false;

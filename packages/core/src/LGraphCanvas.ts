@@ -1130,6 +1130,29 @@ export default class LGraphCanvas
         return -1;
     };
 
+    findLinkCenterAtPos(x: number, y: number): LLink | null {
+        for (let i = 0; i < this.visible_links.length; ++i) {
+            const link = this.visible_links[i];
+
+            // check if this link was already deleted
+            if (this.graph && this.graph.links[link.id] == null)
+                continue
+
+            const center = link._pos;
+            if (
+                !center ||
+                x < center[0] - 4 ||
+                x > center[0] + 4 ||
+                y < center[1] - 4 ||
+                y > center[1] + 4
+            ) {
+                continue;
+            }
+            return link
+        }
+        return null;
+    }
+
     /** process a key event */
     processKey(e: KeyboardEvent): boolean | undefined {
         if (!this.graph) {

@@ -813,6 +813,12 @@ export default class LGraph {
             }
         }
 
+        if (options.pos) {
+            if (isNaN(options.pos[0]) || isNaN(options.pos[1])) {
+                throw "LiteGraph: Node position contained NaN(s)!"
+            }
+        }
+
         if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
             throw "LiteGraph: max number of nodes in a graph reached";
         }
@@ -836,8 +842,9 @@ export default class LGraph {
         this._nodes.push(node);
         this._nodes_by_id[node.id] = node;
 
-        if (options.pos)
+        if (options.pos) {
             node.pos = options.pos
+        }
 
         if (node.onAdded) {
             node.onAdded(this);
