@@ -2983,5 +2983,6 @@ export default class LGraphNode {
     /** Called by `LGraphCanvas.processContextMenu` */
     getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];
     getExtraMenuOptions?(graphCanvas: LGraphCanvas, options: ContextMenuItem[]): ContextMenuItem[];
-    getSlotMenuOptions?(slot: INodeSlot): ContextMenuItem[];
+    getExtraLinkOptions?(graphCanvas: LGraphCanvas, link: LLink, linkType: LConnectionKind, options: ContextMenuItem[]): ContextMenuItem[];
+    getSlotMenuOptions?(slot: SlotInPosition): ContextMenuItem[];
 }

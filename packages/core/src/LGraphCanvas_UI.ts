@@ -1,14 +1,14 @@
 import { ContextMenuEventListener, ContextMenuItem, ContextMenuSpecialItem, IContextMenuItem, IContextMenuOptions } from "./ContextMenu";
 import ContextMenu from "./ContextMenu";
 import type { EventExt, MouseEventExt } from "./DragAndScale";
-import type { default as INodeSlot, SlotNameOrIndex, SlotIndex } from "./INodeSlot";
-import type { GraphDialogOptions, IGraphDialog, IGraphPanel, IGraphWidgetUI, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
+import type { default as INodeSlot, SlotNameOrIndex, SlotIndex, SlotInPosition } from "./INodeSlot";
+import type { GraphDialogOptions, IContextMenuTarget, IGraphDialog, IGraphPanel, IGraphWidgetUI, ILinkContextMenuTarget, INodeContextMenuTarget, INodePanel, ISubgraphPropertiesPanel } from "./LGraphCanvas";
 import LGraphCanvas from "./LGraphCanvas";
 import LGraphGroup from "./LGraphGroup";
 import LGraphNode, { InputSlotLayout, NodeTypeSpec, OutputSlotLayout } from "./LGraphNode";
 import type LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
-import { LinkID, NODE_MODE_NAMES, NodeID, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
+import { LConnectionKind, LinkID, NODE_MODE_NAMES, NodeID, NodeMode, SLOT_SHAPE_NAMES, type SlotShape, type SlotType, type Vector2 } from "./types";
 import { BuiltInSlotType } from "./types";
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
@@ -2164,57 +2164,75 @@ export default class LGraphCanvas_UI {
         return false;
     }
 
-    showLinkMenu(this: LGraphCanvas, link: LLink, e: any): boolean {
-        var that = this;
-        // console.log(link);
-        var node_left = that.graph.getNodeById(link.origin_id);
-        var node_right = that.graph.getNodeById(link.target_id);
-        var fromType: SlotType | null = null;
+    getLinkMenuOptions(this: LGraphCanvas, link: LLink): ContextMenuItem[] {
+        const node_left = this.graph.getNodeById(link.origin_id);
+        const node_right = this.graph.getNodeById(link.target_id);
+
+        let fromType: SlotType | null = null;
         if (node_left && node_left.outputs && node_left.outputs[link.origin_slot])
             fromType = node_left.outputs[link.origin_slot].type;
-        var destType: SlotType | null = null;
+
+        let destType: SlotType | null = null;
         if (node_right && node_right.outputs && node_right.outputs[link.target_slot])
             destType = node_right.inputs[link.target_slot].type;
 
-        var options: ContextMenuItem[] = ["Add Node", ContextMenuSpecialItem.SEPARATOR, "Delete", ContextMenuSpecialItem.SEPARATOR];
-
-
-        var menu = new ContextMenu(options, {
-            event: e,
-            title: link.data != null ? link.data.constructor.name : null,
-            callback: inner_clicked
-        });
-
-        function inner_clicked(v: IContextMenuItem, options, e) {
-            switch (v.content) {
-                case "Add Node":
-                    LGraphCanvas.onMenuAdd(null, null, e, menu, function(node) {
-                        // console.debug("node autoconnect");
-                        if (!node.inputs || !node.inputs.length || !node.outputs || !node.outputs.length) {
-                            return;
-                        }
-                        // leave the connection type checking inside connectByType
-                        if (node_left.connectByTypeInput(link.origin_slot, node, fromType)) {
-                            node.connectByTypeInput(link.target_slot, node_right, destType);
-                            node.pos[0] -= node.size[0] * 0.5;
-                        }
-                    });
-                    break;
-
-                case "Delete":
-                    that.graph.removeLink(link.id);
-                    break;
-                default:
-                /*var nodeCreated = createDefaultNodeForSlot({   nodeFrom: node_left
-                                                                ,slotFrom: link.origin_slot
-                                                                ,nodeTo: node
-                                                                ,slotTo: link.target_slot
-                                                                ,e: e
-                                                                ,nodeType: "AUTO"
-                                                            });
-                if(nodeCreated) console.log("new node in beetween "+v+" created");*/
+        const addNode = (node: LGraphNode) => {
+            console.debug("node autoconnect");
+            if (!node.inputs || !node.inputs.length || !node.outputs || !node.outputs.length) {
+                return;
+            }
+            // leave the connection type checking inside connectByType
+            if (node_left.connectByTypeInput(link.origin_slot, node, fromType)) {
+                node.connectByTypeInput(link.target_slot, node_right, destType);
+                node.pos[0] -= node.size[0] * 0.5;
             }
         }
+
+        const linkAddNode: ContextMenuEventListener = (value, options, event, parentMenu, extra) => {
+            LGraphCanvas.onMenuAdd(value, options, event, parentMenu, addNode);
+        }
+
+        const linkDeleteNode = () => {
+            this.graph.removeLink(link.id);
+        }
+
+        let options: ContextMenuItem[] = [
+            {
+                content: "Add Node",
+                has_submenu: true,
+                callback: linkAddNode
+            },
+            ContextMenuSpecialItem.SEPARATOR,
+            {
+                content: "Delete",
+                has_submenu: true,
+                callback: linkDeleteNode
+            },
+            ContextMenuSpecialItem.SEPARATOR
+        ]
+
+        if (this.graph.onGetLinkMenuOptions) {
+            options = this.graph.onGetLinkMenuOptions(options, link);
+        }
+
+        if (node_left.getExtraLinkOptions) {
+            options = node_left.getExtraLinkOptions(this, link, LConnectionKind.OUTPUT, options);
+        }
+        if (node_right.getExtraLinkOptions) {
+            options = node_right.getExtraLinkOptions(this, link, LConnectionKind.INPUT, options);
+        }
+
+        return options;
+    }
+
+    showLinkMenu(this: LGraphCanvas, link: LLink, e: any): boolean {
+        const options = this.getLinkMenuOptions(link);
+
+        const menu = new ContextMenu(options, {
+            event: e,
+            title: link.data != null ? link.data.constructor.name : null,
+            // callback: inner_clicked
+        });
 
         return false;
     }
@@ -2488,7 +2506,6 @@ export default class LGraphCanvas_UI {
         return dialog;
     }
 
-
     getCanvasMenuOptions(this: LGraphCanvas): ContextMenuItem[] {
         var options = null;
         var that = this;
@@ -2717,28 +2734,101 @@ export default class LGraphCanvas_UI {
     }
 
     /** Called when mouse right click */
-    processContextMenu(this: LGraphCanvas, node: LGraphNode, _event: Event): void {
-        var that = this;
+    processContextMenu(this: LGraphCanvas, target: IContextMenuTarget | null, _event: Event): void {
         var canvas = LGraphCanvas.active_canvas;
         var ref_window = canvas.getCanvasWindow();
 
         let event = _event as MouseEventExt;
 
+        let node: LGraphNode = null;
+        let link: LLink = null;
+        let item: any = null
+
+        if (target != null) {
+            item = target.item
+            if (target.type === "node")
+                node = (target as INodeContextMenuTarget).item
+            if (target.type === "link")
+                link = (target as ILinkContextMenuTarget).item
+        }
+
         let menu_info: ContextMenuItem[] | null = null;
-        var options: any = {
+        var options: IContextMenuOptions = {
             event: event,
-            callback: inner_option_clicked,
-            extra: node
+            extra: item
         };
 
-        if (node)
+        if (node != null)
             options.title = node.type;
 
         //check if mouse is in input
-        var slot = null;
-        if (node) {
+        let slot: SlotInPosition = null;
+        if (node != null) {
             slot = node.getSlotInPosition(event.canvasX, event.canvasY);
             LGraphCanvas.active_node = node;
+        }
+
+        const removeSlotCb: ContextMenuEventListener = (v) => {
+            const info: SlotInPosition = v.slot;
+            node.graph.beforeChange();
+            if (info.input) {
+                node.removeInput(info.slot);
+            } else if (info.output) {
+                node.removeOutput(info.slot);
+            }
+            node.graph.afterChange();
+        }
+
+        const disconnectLinksCb: ContextMenuEventListener = (v) => {
+            var info = v.slot;
+            node.graph.beforeChange();
+            if (info.output) {
+                node.disconnectOutput(info.slot);
+            } else if (info.input) {
+                node.disconnectInput(info.slot);
+            }
+            node.graph.afterChange();
+        }
+
+        const renameSlotCb: ContextMenuEventListener = (v) => {
+            var info = v.slot;
+            var slot_info = info.input
+                ? node.getInputInfo(info.slot)
+                : node.getOutputInfo(info.slot);
+            var dialog = this.createDialog(
+                "<span class='name'>Name</span><input autofocus type='text'/><button>OK</button>",
+                options as any
+            );
+            var input = dialog.querySelector("input");
+            if (input && slot_info) {
+                input.value = slot_info.label || "";
+            }
+            var inner = () => {
+                node.graph.beforeChange();
+                if (input.value) {
+                    if (slot_info) {
+                        slot_info.label = input.value;
+                    }
+                    this.setDirty(true);
+                }
+                dialog.close();
+                node.graph.afterChange();
+            }
+            dialog.querySelector("button").addEventListener("click", inner);
+            input.addEventListener("keydown", function(e) {
+                dialog.is_modified = true;
+                if (e.keyCode == 27) {
+                    //ESC
+                    dialog.close();
+                } else if (e.keyCode == 13) {
+                    inner(); // save
+                } else if (e.keyCode != 13 && e.target instanceof Element && e.target.localName != "textarea") {
+                    return;
+                }
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            input.focus();
         }
 
         if (slot) {
@@ -2753,33 +2843,36 @@ export default class LGraphCanvas_UI {
                     slot.output.links &&
                     slot.output.links.length
                 ) {
-                    menu_info.push({ content: "Disconnect Links", slot: slot });
+                    menu_info.push({ content: "Disconnect Links", slot: slot, callback: disconnectLinksCb });
                 }
                 var _slot = slot.input || slot.output;
                 if (_slot.removable) {
                     menu_info.push(
                         _slot.locked
                             ? "Cannot remove"
-                            : { content: "Remove Slot", slot: slot }
+                            : { content: "Remove Slot", slot: slot, callback: removeSlotCb }
                     );
                 }
                 if (!_slot.nameLocked) {
-                    menu_info.push({ content: "Rename Slot", slot: slot });
+                    menu_info.push({ content: "Rename Slot", slot: slot, callback: renameSlotCb });
                 }
 
             }
-            options.title =
-                (slot.input ? slot.input.type : slot.output.type) || "*";
             if (slot.input && slot.input.type == BuiltInSlotType.ACTION) {
                 options.title = "Action";
             }
-            if (slot.output && slot.output.type == BuiltInSlotType.EVENT) {
+            else if (slot.output && slot.output.type == BuiltInSlotType.EVENT) {
                 options.title = "Event";
+            }
+            else {
+                options.title = String(slot.input ? slot.input.type : slot.output.type) || "*";
             }
         } else {
             if (node) {
                 //on node
                 menu_info = this.getNodeMenuOptions(node);
+            } else if (link) {
+                menu_info = this.getLinkMenuOptions(link);
             } else {
                 menu_info = this.getCanvasMenuOptions();
                 var group = this.graph.getGroupOnPos(
@@ -2806,77 +2899,7 @@ export default class LGraphCanvas_UI {
             return;
         }
 
-        var menu = new ContextMenu(menu_info, options, ref_window);
-
-        function inner_option_clicked(v, options, e) {
-            if (!v) {
-                return;
-            }
-
-            if (v.content == "Remove Slot") {
-                var info = v.slot;
-                node.graph.beforeChange();
-                if (info.input) {
-                    node.removeInput(info.slot);
-                } else if (info.output) {
-                    node.removeOutput(info.slot);
-                }
-                node.graph.afterChange();
-                return;
-            } else if (v.content == "Disconnect Links") {
-                var info = v.slot;
-                node.graph.beforeChange();
-                if (info.output) {
-                    node.disconnectOutput(info.slot);
-                } else if (info.input) {
-                    node.disconnectInput(info.slot);
-                }
-                node.graph.afterChange();
-                return;
-            } else if (v.content == "Rename Slot") {
-                var info = v.slot;
-                var slot_info = info.input
-                    ? node.getInputInfo(info.slot)
-                    : node.getOutputInfo(info.slot);
-                var dialog = that.createDialog(
-                    "<span class='name'>Name</span><input autofocus type='text'/><button>OK</button>",
-                    options
-                );
-                var input = dialog.querySelector("input");
-                if (input && slot_info) {
-                    input.value = slot_info.label || "";
-                }
-                var inner = function() {
-                    node.graph.beforeChange();
-                    if (input.value) {
-                        if (slot_info) {
-                            slot_info.label = input.value;
-                        }
-                        that.setDirty(true);
-                    }
-                    dialog.close();
-                    node.graph.afterChange();
-                }
-                dialog.querySelector("button").addEventListener("click", inner);
-                input.addEventListener("keydown", function(e) {
-                    dialog.is_modified = true;
-                    if (e.keyCode == 27) {
-                        //ESC
-                        dialog.close();
-                    } else if (e.keyCode == 13) {
-                        inner(); // save
-                    } else if (e.keyCode != 13 && e.target instanceof Element && e.target.localName != "textarea") {
-                        return;
-                    }
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-                input.focus();
-            }
-
-            //if(v.callback)
-            //	return v.callback.call(that, node, options, e, menu, that, event );
-        }
+        const menu = new ContextMenu(menu_info, options, ref_window);
     }
 
     createPanel(title: string, options:

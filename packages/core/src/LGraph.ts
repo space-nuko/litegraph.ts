@@ -891,6 +891,7 @@ export default class LGraph {
     onAfterExecute?(): void;
 
     onGetNodeMenuOptions?(options: ContextMenuItem[], node: LGraphNode): ContextMenuItem[];
+    onGetLinkMenuOptions?(options: ContextMenuItem[], link: LLink): ContextMenuItem[];
 
     /**
      * Called when a node's connection is changed

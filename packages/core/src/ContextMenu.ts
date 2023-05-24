@@ -1,7 +1,7 @@
 import LGraphNode from "./LGraphNode"
 import LiteGraph from "./LiteGraph"
 import type { MouseEventExt, CustomEventExt, EventExt } from "./DragAndScale"
-import INodeSlot from "./INodeSlot";
+import INodeSlot, { SlotInPosition } from "./INodeSlot";
 
 export interface ContextMenuRoot extends HTMLDivElement {
     closing_timer?: number
@@ -16,7 +16,7 @@ export interface IContextMenuItem {
     title?: string;
     disabled?: boolean;
     has_submenu?: boolean;
-    slot?: INodeSlot;
+    slot?: SlotInPosition;
     submenu?: {
         options: ContextMenuItem[];
     } & IContextMenuOptions;

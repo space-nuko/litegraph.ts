@@ -52,6 +52,19 @@ export interface IGraphWidgetUI extends HTMLDivElement {
     value: any
 }
 
+export interface IContextMenuTarget<T = any> {
+    type: string,
+    item: T
+}
+
+export interface INodeContextMenuTarget extends IContextMenuTarget<LGraphNode> {
+    type: "node"
+}
+
+export interface ILinkContextMenuTarget extends IContextMenuTarget<LLink> {
+    type: "link"
+}
+
 export type GraphDialogOptions = {
     position?: Vector2,
     event?: MouseEvent,
@@ -368,6 +381,7 @@ export default class LGraphCanvas
     getMenuOptions?(graphCanvas: LGraphCanvas): ContextMenuItem[];
     /** Called by `getCanvasMenuOptions`, append to default options */
     getExtraMenuOptions?(graphCanvas: LGraphCanvas, options: ContextMenuItem[]): ContextMenuItem[] | null;
+    getExtraLinkMenuOptions?(graphCanvas: LGraphCanvas, link: LLink, options: ContextMenuItem[]): ContextMenuItem[] | null;
     pause_rendering: boolean = false;
     /** if set to true users cannot modify the graph */
     read_only: boolean = false;
@@ -2114,6 +2128,10 @@ export default class LGraphCanvas
         return LGraphCanvas_UI.prototype.getNodeMenuOptions.apply(this, arguments);
     }
 
+    getLinkMenuOptions(link: LLink): ContextMenuItem[] {
+        return LGraphCanvas_UI.prototype.getLinkMenuOptions.apply(this, arguments);
+    }
+
     getGroupMenuOptions(group: LGraphGroup): ContextMenuItem[] {
         return LGraphCanvas_UI.prototype.getGroupMenuOptions.apply(this, arguments);
     }
@@ -2196,7 +2214,7 @@ export default class LGraphCanvas
         return LGraphCanvas_UI.prototype.showSubgraphPropertiesDialogRight.apply(this, arguments);
     }
 
-    processContextMenu(node: LGraphNode, _event: Event): void {
+    processContextMenu(target: IContextMenuTarget | null, _event: Event): void {
         LGraphCanvas_UI.prototype.processContextMenu.apply(this, arguments);
     }
 
