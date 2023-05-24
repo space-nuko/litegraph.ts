@@ -265,7 +265,7 @@ export default class LGraphCanvas
     align_to_grid: false; // snap to grid
     always_render_background: boolean = false;
     autoresize?: boolean;
-    background_image: string = LGraphCanvas.DEFAULT_BACKGROUND_IMAGE;
+    background_image: string | null = LGraphCanvas.DEFAULT_BACKGROUND_IMAGE;
     bgcanvas: HTMLCanvasElement;
     bgctx: CanvasRenderingContext2D;
     block_click: boolean = false;
@@ -391,12 +391,15 @@ export default class LGraphCanvas
     render_connections_border: boolean = true;
     /** too much cpu */
     render_connections_shadows: boolean = false;
+    render_connections: boolean = true;
     render_curved_connections: boolean = false;
     render_execution_order: boolean = false;
     render_link_tooltip: boolean = true;
     render_only_selected: boolean = true;
     render_shadows: boolean = true;
     render_title_colored: boolean = true;
+    render_subgraph_panels: boolean = true;
+    render_subgraph_stack_header: boolean = true;
     round_radius: number = 8;
     selected_group: null | LGraphGroup;
     selected_group_resizing: boolean;

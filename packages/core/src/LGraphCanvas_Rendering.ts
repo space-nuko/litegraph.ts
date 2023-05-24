@@ -341,7 +341,7 @@ export default class LGraphCanvas_Rendering {
         }
 
         //draws panel in the corner
-        if (this._graph_stack && this._graph_stack.length) {
+        if (this._graph_stack && this._graph_stack.length && this.render_subgraph_panels) {
             this.drawSubgraphPanel(ctx);
         }
 
@@ -603,7 +603,7 @@ export default class LGraphCanvas_Rendering {
         }
 
         //show subgraph stack header
-        if (this._graph_stack && this._graph_stack.length) {
+        if (this._graph_stack && this._graph_stack.length && this.render_subgraph_stack_header) {
             ctx.save();
             const top_entry = this._graph_stack[this._graph_stack.length - 1];
             const parent_graph = top_entry.graph
@@ -724,7 +724,7 @@ export default class LGraphCanvas_Rendering {
             }
 
             //draw connections
-            if (!this.live_mode) {
+            if (!this.live_mode && this.render_connections) {
                 this.drawConnections(ctx);
             }
 
