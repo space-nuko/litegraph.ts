@@ -683,17 +683,15 @@ padding: 4px 18px;
 border-radius: 20px;
 cursor: pointer;
 }
-  
-.litegraph .draggable {
-    /* Prevents inconsistent highlighting of element while being dragged
+
+/* Prevents inconsistent highlighting of element while being dragged
    Copied from https://stackoverflow.com/questions/826782 */
-    .noselect {
-        -webkit-touch-callout: none; /* iOS Safari */
-        -webkit-user-select: none; /* Safari */
-        -khtml-user-select: none; /* Konqueror HTML */
-        -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-        user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-    }
+.litegraph .draggable .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+                          supported by Chrome and Opera */
 }
