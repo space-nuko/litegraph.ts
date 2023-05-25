@@ -143,6 +143,9 @@ export default class LiteGraph {
     // use a combo widget for selecting graph input/output types instead of a text box
     static graph_inputs_outputs_use_combo_widget: boolean = false;
 
+    // if true, save a _data entry in serialized node outputs for debugging
+    static serialize_slot_data: boolean = false;
+
     /** Register a node class so it can be listed when the user wants to create a new one */
     static registerNodeType<T extends LGraphNode>(config: LGraphNodeConstructor): void {
         if (LiteGraph.debug) {

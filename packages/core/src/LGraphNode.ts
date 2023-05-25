@@ -604,8 +604,13 @@ export default class LGraphNode {
             return;
         }
 
-        //store data in the output itself in case we want to debug
-        output_info._data = data;
+        if (LiteGraph.serialize_slot_data) {
+            //store data in the output itself in case we want to debug
+            output_info._data = data;
+        }
+        else {
+            output_info._data = undefined;
+        }
 
         //if there are connections, pass the data to the connections
         if (this.outputs[slot].links) {
