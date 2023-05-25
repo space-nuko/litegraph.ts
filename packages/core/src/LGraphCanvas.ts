@@ -102,7 +102,9 @@ export type ClipboardClonedNodeInfo = {
 export type ClipboardInfo = {
     nodes: SerializedLGraphNode[],
     nodeCloneData: Record<NodeID, ClipboardClonedNodeInfo>,
-    links: [NodeID, number, NodeID, number][]
+
+    // indexInNodesArray, slotNumber, indexInNodesArray, slotNumber
+    links: [number, number, number, number][]
 }
 
 /**

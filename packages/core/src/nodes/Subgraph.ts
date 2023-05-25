@@ -38,7 +38,7 @@ export type GraphIDMapping = {
     linkIDs: Record<LinkID, LinkID>,
 }
 
-function reassignGraphIDs(graph: SerializedLGraph): GraphIDMapping {
+export function reassignGraphIDs(graph: SerializedLGraph): GraphIDMapping {
     const idMap: GraphIDMapping = { nodeIDs: {}, linkIDs: {} }
 
     for (const node of graph.nodes) {
