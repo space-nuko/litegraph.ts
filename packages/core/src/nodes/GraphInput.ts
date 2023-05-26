@@ -95,7 +95,7 @@ export default class GraphInput extends LGraphNode {
     }
 
     setName(v: string) {
-        if (!v || v === this.properties.name) {
+        if (v == null || v === this.properties.name) {
             return
         }
         const subgraph = this.getParentSubgraph();
@@ -107,7 +107,7 @@ export default class GraphInput extends LGraphNode {
 
     setType(v: string) {
         if (!v) {
-            return
+            v = "*"
         }
 
         let type: SlotType = v;

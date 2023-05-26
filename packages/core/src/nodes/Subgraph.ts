@@ -491,6 +491,10 @@ export default class Subgraph extends LGraphNode {
     };
 
     buildFromNodes(nodes: LGraphNode[]) {
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+        if (nodes.length === 0)
+            return;
+
         // { linkID => [link, connectionPos, slotName] }
         const linksIn: Record<LinkID, [LLink, Vector2, string]> = {}
         const linksOut: Record<LinkID, [LLink, Vector2, string]> = {}
@@ -600,8 +604,7 @@ export default class Subgraph extends LGraphNode {
             if (inputSlotsCreated[linkIn.origin_id])
                 pair = inputSlotsCreated[linkIn.origin_id][linkIn.origin_slot]
             if (!pair) {
-                const newInputName = this.getValidGraphInputName(inputName);
-                pair = this.addGraphInput(newInputName, linkIn.type, [-200, inputNodeY])
+                pair = this.addGraphInput(inputName, linkIn.type, [-200, inputNodeY])
                 inputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
                 if (!pair) {
                     console.error("Failed creating subgraph output pair!", linkIn);
@@ -629,8 +632,7 @@ export default class Subgraph extends LGraphNode {
             if (outputSlotsCreated[linkOut.target_id])
                 pair = outputSlotsCreated[linkOut.target_id][linkOut.target_slot]
             if (!pair) {
-                const newOutputName = this.getValidGraphOutputName(outputName);
-                pair = this.addGraphOutput(newOutputName, linkOut.type, [max_x - min_x + 200, outputNodeY])
+                pair = this.addGraphOutput(outputName, linkOut.type, [max_x - min_x + 200, outputNodeY])
                 outputNodeY += pair.innerNode.size[1] + LiteGraph.NODE_SLOT_HEIGHT
                 if (!pair) {
                     console.error("Failed creating subgraph output pair!", linkOut);
@@ -658,6 +660,8 @@ export default class Subgraph extends LGraphNode {
     }
 
     addGraphInput(name: string, type: SlotType, pos?: Vector2): SubgraphInputPair | null {
+        name = this.getValidGraphInputName(name)
+
         const innerNode = LiteGraph.createNode(GraphInput);
         if (innerNode == null)
             return null;
@@ -691,6 +695,8 @@ export default class Subgraph extends LGraphNode {
     }
 
     addGraphOutput(name: string, type: SlotType, pos?: Vector2): SubgraphOutputPair | null {
+        name = this.getValidGraphOutputName(name)
+
         const innerNode = LiteGraph.createNode(GraphOutput);
         if (innerNode == null)
             return null;
@@ -740,6 +746,11 @@ export default class Subgraph extends LGraphNode {
         }
         else {
             console.warn("[Subgraph] No GraphInputs found on input removal", inputName)
+
+            // remove the input ourselves since no subgraph hook was triggered
+            const index = this.findInputSlotIndexByName(inputName)
+            if (index !== -1)
+                this.removeInput(index);
         }
     }
 
@@ -760,10 +771,16 @@ export default class Subgraph extends LGraphNode {
         }
         else {
             console.warn("[Subgraph] No GraphOutputs found on output removal", outputName)
+
+            // remove the output ourselves since no subgraph hook was triggered
+            const index = this.findOutputSlotIndexByName(outputName)
+            if (index !== -1)
+                this.removeOutput(index);
         }
     }
 
     getValidGraphInputName(baseName: string): string {
+        baseName ||= "newInput"
         let name = baseName
         let existing = this.getInnerGraphInput(name)
         let i = 1;
@@ -775,6 +792,7 @@ export default class Subgraph extends LGraphNode {
     }
 
     getValidGraphOutputName(baseName: string): string {
+        baseName ||= "newOutput"
         let name = baseName
         let existing = this.getInnerGraphOutput(name)
         let i = 1;
@@ -818,12 +836,12 @@ export default class Subgraph extends LGraphNode {
     }
 
     moveNodesToParentGraph(nodes: LGraphNode[]): Record<NodeID, LGraphNode> {
-        const subgraphNode = this;
-        const parentGraph = subgraphNode.graph;
-
         nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
         if (nodes.length === 0)
             return;
+
+        const subgraphNode = this;
+        const parentGraph = subgraphNode.graph;
 
         let min_x = Number.MAX_SAFE_INTEGER;
         let max_x = 0;
@@ -881,6 +899,10 @@ export default class Subgraph extends LGraphNode {
     }
 
     convertNodesToSubgraphInputs(nodes: LGraphNode[]) {
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+        if (nodes.length === 0)
+            return;
+
         const containedIds = toHashMap(nodes, (node) => node.id);
         const parentIntoSubgraphLinks: LLink[] = [];
         const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
@@ -936,6 +958,10 @@ export default class Subgraph extends LGraphNode {
     }
 
     convertNodesToSubgraphOutputs(nodes: LGraphNode[]) {
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+        if (nodes.length === 0)
+            return;
+
         const containedIds = toHashMap(nodes, (node) => node.id);
         const parentIntoSubgraphLinks: LLink[] = [];
         const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
@@ -967,7 +993,6 @@ export default class Subgraph extends LGraphNode {
             innerNodeSlotToGraphOutput[link.target_id] ||= {}
             let pair = innerNodeSlotToGraphOutput[link.target_id][link.target_slot]
             if (pair == null) {
-                const name = this.getValidGraphOutputName(innerOutput.name)
                 pair = this.addGraphOutput(name, innerOutput.type)
                 innerNodeSlotToGraphOutput[link.target_id][link.target_slot] = pair
 

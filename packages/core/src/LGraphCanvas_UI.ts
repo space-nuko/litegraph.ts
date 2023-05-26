@@ -2015,17 +2015,15 @@ export default class LGraphCanvas_UI {
 
         const addSubgraphInput = (e: MouseEventExt) => {
             const subgraph = nodeX.graph._subgraph_node;
-            let name = subgraph.getValidGraphInputName(slotX.name)
             const pos: Vector2 = [e.canvasX, e.canvasY]
-            const pair = subgraph.addGraphInput(name, slotX.type, pos);
+            const pair = subgraph.addGraphInput(slotX.name, slotX.type, pos);
             pair.innerNode.connect(0, nodeX, iSlotConn);
         }
 
         const addSubgraphOutput = (e: MouseEventExt) => {
             const subgraph = nodeX.graph._subgraph_node;
-            let name = subgraph.getValidGraphOutputName(slotX.name)
             const pos: Vector2 = [e.canvasX, e.canvasY]
-            const pair = subgraph.addGraphOutput(name, slotX.type, pos);
+            const pair = subgraph.addGraphOutput(slotX.name, slotX.type, pos);
             nodeX.connect(iSlotConn, pair.innerNode, 0);
         }
 

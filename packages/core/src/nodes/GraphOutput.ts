@@ -82,7 +82,7 @@ export default class GraphOutput extends LGraphNode {
     }
 
     setName(v: string) {
-        if (!v || v === this.properties.name) {
+        if (v == null || v === this.properties.name) {
             return
         }
         const subgraph = this.getParentSubgraph();
@@ -94,7 +94,7 @@ export default class GraphOutput extends LGraphNode {
 
     setType(v: string) {
         if (!v) {
-            return
+            v = "*"
         }
 
         let type: SlotType = v;
@@ -202,7 +202,7 @@ export default class GraphOutput extends LGraphNode {
             return
 
         const outer = subgraph.outputs[outerIndex]
-        if (outer == null || outer.type !== BuiltInSlotType.EVENT)
+        if (outer == null /* || outer.type !== BuiltInSlotType.EVENT */)
             return
 
         // console.debug("[GraphOutput] Trigger slot!", subgraph, outerIndex, outer, action, param);
