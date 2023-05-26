@@ -423,6 +423,11 @@
 	background-color: #333;
 }
 
+.litegraph .subgraph_property :disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .litegraph .subgraph_property.extra {
     margin-top: 8px;
 }

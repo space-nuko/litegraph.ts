@@ -1867,7 +1867,9 @@ export default class LGraphCanvas_UI {
                     if (input.not_subgraph_input)
                         continue;
                     var html = `
-<button>&#10005;</button>
+<button class="delete">&#10005;</button>
+<button class="move_up">↑</button>
+<button class="move_down">↓</button>
 <span class='bullet_icon'></span>
 <span class='name'></span>
 <span class='type'></span>`;
@@ -1876,9 +1878,27 @@ export default class LGraphCanvas_UI {
                     elem.dataset["slot"] = "" + i;
                     elem.querySelector<HTMLSpanElement>(".name").innerText = input.name;
                     elem.querySelector<HTMLSpanElement>(".type").innerText = "" + input.type;
-                    elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
+                    elem.querySelector<HTMLButtonElement>(".delete").addEventListener("click", function(e) {
                         const inputName = (this.parentNode as HTMLElement).dataset["name"]
                         subgraphNode.removeGraphInput(inputName);
+                        inner_refresh();
+                    });
+                    const move_up = elem.querySelector<HTMLButtonElement>(".move_up");
+                    move_up.disabled = i <= 0;
+                    move_up.addEventListener("click", function(e) {
+                        const inputIndex: number = +(this.parentNode as HTMLElement).dataset["slot"]
+                        if (inputIndex < 0)
+                            return;
+                        subgraphNode.moveInput(inputIndex, inputIndex - 1);
+                        inner_refresh();
+                    });
+                    const move_down = elem.querySelector<HTMLButtonElement>(".move_down")
+                    move_down.disabled = i >= node.inputs.length - 1;
+                    move_down.addEventListener("click", function(e) {
+                        const inputIndex: number = +(this.parentNode as HTMLElement).dataset["slot"]
+                        if (inputIndex > node.inputs.length - 1)
+                            return;
+                        subgraphNode.moveInput(inputIndex, inputIndex + 1);
                         inner_refresh();
                     });
                 }
@@ -1972,6 +1992,8 @@ export default class LGraphCanvas_UI {
                         continue;
                     var html = `
 <button>&#10005;</button>
+<button class="move_up">↑</button>
+<button class="move_down">↓</button>
 <span class='bullet_icon'></span>
 <span class='name'></span>
 <span class='type'></span>`;
@@ -1983,6 +2005,24 @@ export default class LGraphCanvas_UI {
                     elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
                         const outputName = (this.parentNode as HTMLElement).dataset["name"]
                         subgraphNode.removeGraphOutput(outputName);
+                        inner_refresh();
+                    });
+                    const move_up = elem.querySelector<HTMLButtonElement>(".move_up");
+                    move_up.disabled = i <= 0;
+                    move_up.addEventListener("click", function(e) {
+                        const outputIndex: number = +(this.parentNode as HTMLElement).dataset["slot"]
+                        if (outputIndex < 0)
+                            return;
+                        subgraphNode.moveOutput(outputIndex, outputIndex - 1);
+                        inner_refresh();
+                    });
+                    const move_down = elem.querySelector<HTMLButtonElement>(".move_down")
+                    move_down.disabled = i >= node.outputs.length - 1;
+                    move_down.addEventListener("click", function(e) {
+                        const outputIndex: number = +(this.parentNode as HTMLElement).dataset["slot"]
+                        if (outputIndex > node.outputs.length - 1)
+                            return;
+                        subgraphNode.moveOutput(outputIndex, outputIndex + 1);
                         inner_refresh();
                     });
                 }

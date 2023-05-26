@@ -396,7 +396,7 @@ export default class Subgraph extends LGraphNode {
     };
 
     private onSubgraphRemovedOutput(name: string) {
-        var slot = this.findInputSlotIndexByName(name);
+        var slot = this.findOutputSlotIndexByName(name);
         if (slot == -1) {
             return;
         }

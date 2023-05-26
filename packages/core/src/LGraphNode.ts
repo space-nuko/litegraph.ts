@@ -1375,6 +1375,34 @@ export default class LGraphNode {
         this.setDirtyCanvas(true, true);
     }
 
+    moveOutput(slot: number, newSlot: number): void {
+        const output = this.outputs[slot]
+        if (output == null)
+            return;
+
+        if (newSlot < 0 || newSlot > this.outputs.length - 1)
+            return;
+
+        const otherOutput = this.outputs[newSlot];
+
+        if (output.links) {
+            for (const linkID of output.links) {
+                const link = this.graph.links[linkID]
+                link.origin_slot = newSlot
+            }
+        }
+
+        if (otherOutput.links) {
+            for (const linkID of otherOutput.links) {
+                const otherLink = this.graph.links[linkID]
+                otherLink.origin_slot = slot
+            }
+        }
+
+        this.outputs[newSlot] = output;
+        this.outputs[slot] = otherOutput;
+    }
+
     /**
      * add a new input slot to use in this node
      * @param name
@@ -1438,6 +1466,30 @@ export default class LGraphNode {
             this.onInputRemoved(slot, slot_info[0]);
         }
         this.setDirtyCanvas(true, true);
+    }
+
+    moveInput(slot: number, newSlot: number): void {
+        const input = this.inputs[slot]
+        if (input == null)
+            return;
+
+        if (newSlot < 0 || newSlot > this.inputs.length - 1)
+            return;
+
+        const otherInput = this.inputs[newSlot];
+
+        if (input.link != null) {
+            const link = this.graph.links[input.link]
+            link.target_slot = newSlot
+        }
+
+        if (otherInput.link != null) {
+            const otherLink = this.graph.links[otherInput.link]
+            otherLink.target_slot = slot
+        }
+
+        this.inputs[newSlot] = input;
+        this.inputs[slot] = otherInput;
     }
 
     /**
