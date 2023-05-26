@@ -699,6 +699,46 @@ export default class Subgraph extends LGraphNode {
         return { innerNode, outerOutput, outerOutputIndex }
     }
 
+    removeGraphInput(inputName: string) {
+        const inputSlot = this.findInputSlotIndexByName(inputName);
+        if (inputSlot == null) {
+            console.error("[Subgraph] No input in slot!", inputName)
+            return;
+        }
+
+        const innerNodes = this.subgraph.findNodesByClass(GraphInput).filter(n => n.properties.name === inputName);
+
+        if (innerNodes.length > 0) {
+            // Removing the nodes will also trigger removeInput from subgraph hooks
+            for (const node of innerNodes) {
+                this.subgraph.remove(node);
+            }
+        }
+        else {
+            console.warn("[Subgraph] No GraphInputs found on input removal", inputName)
+        }
+    }
+
+    removeGraphOutput(outputName: string) {
+        const outputSlot = this.findOutputSlotIndexByName(outputName);
+        if (outputSlot == null) {
+            console.error("[Subgraph] No output in slot!", outputName)
+            return;
+        }
+
+        const innerNodes = this.subgraph.findNodesByClass(GraphOutput).filter(n => n.properties.name === outputName);
+
+        if (innerNodes.length > 0) {
+            // Removing the nodes will also trigger removeOutput from subgraph hooks
+            for (const node of innerNodes) {
+                this.subgraph.remove(node);
+            }
+        }
+        else {
+            console.warn("[Subgraph] No GraphOutputs found on output removal", outputName)
+        }
+    }
+
     getValidGraphInputName(baseName: string): string {
         let name = baseName
         let existing = this.getInnerGraphInput(name)

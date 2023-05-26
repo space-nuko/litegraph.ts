@@ -14,8 +14,8 @@ import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import { IPropertyInfo } from "./IProperty";
 import { clamp, makeDraggable, toHashMap } from "./utils";
-import GraphInput from "./nodes/GraphInput";
-import GraphOutput from "./nodes/GraphOutput";
+import GraphInput, { getSlotTypesIn } from "./nodes/GraphInput";
+import GraphOutput, { getSlotTypesOut } from "./nodes/GraphOutput";
 import Subgraph, { SubgraphInputPair, SubgraphOutputPair } from "./nodes/Subgraph";
 
 export default class LGraphCanvas_UI {
@@ -1849,7 +1849,9 @@ export default class LGraphCanvas_UI {
         panel.node = node;
         panel.classList.add("subgraph_dialog");
 
-        var subgraph = (node as Subgraph).subgraph;
+        const subgraphNode = node as Subgraph;
+
+        var subgraph = subgraphNode.subgraph;
         if (!subgraph) {
             console.warn("subnode without subgraph!");
             return;
@@ -1875,7 +1877,8 @@ export default class LGraphCanvas_UI {
                     elem.querySelector<HTMLSpanElement>(".name").innerText = input.name;
                     elem.querySelector<HTMLSpanElement>(".type").innerText = "" + input.type;
                     elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
-                        node.removeInput(Number((this.parentNode as HTMLElement).dataset["slot"]));
+                        const inputName = (this.parentNode as HTMLElement).dataset["name"]
+                        subgraphNode.removeGraphInput(inputName);
                         inner_refresh();
                     });
                 }
@@ -1887,12 +1890,24 @@ export default class LGraphCanvas_UI {
 <span class='label'>Name</span>
 <input class='name'/>
 <span class='label'>Type</span>
-<input class='type'></input>
+<select class='type'></select>
 <button>+</button>`;
         var elem = panel.addHTML(html, "subgraph_property extra", true);
         const nameInput = elem.querySelector<HTMLInputElement>(".name");
-        const typeInput = elem.querySelector<HTMLInputElement>(".type");
+        const typeInput = elem.querySelector<HTMLSelectElement>(".type");
         const addButton = elem.querySelector<HTMLButtonElement>("button");
+
+        let first = true;
+        for (const inType of getSlotTypesIn()) {
+            var opt = document.createElement('option');
+            opt.value = inType
+            opt.innerHTML = inType
+            typeInput.appendChild(opt);
+            if (first) {
+                opt.selected = true;
+                first = false;
+            }
+        }
 
         const addInput = () => {
             var name = nameInput.value;
@@ -1939,7 +1954,9 @@ export default class LGraphCanvas_UI {
         panel.node = node;
         panel.classList.add("subgraph_dialog");
 
-        var subgraph = (node as Subgraph).subgraph;
+        const subgraphNode = node as Subgraph;
+
+        const subgraph = subgraphNode.subgraph;
         if (!subgraph) {
             console.warn("subnode without subgraph!");
             return;
@@ -1964,7 +1981,8 @@ export default class LGraphCanvas_UI {
                     elem.querySelector<HTMLSpanElement>(".name").innerText = output.name;
                     elem.querySelector<HTMLSpanElement>(".type").innerText = "" + output.type;
                     elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
-                        node.removeOutput(Number((this.parentNode as HTMLElement).dataset["slot"]));
+                        const outputName = (this.parentNode as HTMLElement).dataset["name"]
+                        subgraphNode.removeGraphOutput(outputName);
                         inner_refresh();
                     });
                 }
@@ -1976,12 +1994,24 @@ export default class LGraphCanvas_UI {
 <span class='label'>Name</span>
 <input class='name'/>
 <span class='label'>Type</span>
-<input class='type'></input>
+<select class='type'></select>
 <button>+</button>`;
         var elem = panel.addHTML(html, "subgraph_property extra", true);
         const nameInput = elem.querySelector<HTMLInputElement>(".name");
-        const typeInput = elem.querySelector<HTMLInputElement>(".type");
+        const typeInput = elem.querySelector<HTMLSelectElement>(".type");
         const addButton = elem.querySelector<HTMLButtonElement>("button");
+
+        let first = true;
+        for (const outType of getSlotTypesOut()) {
+            var opt = document.createElement('option');
+            opt.value = outType
+            opt.innerHTML = outType
+            typeInput.appendChild(opt);
+            if (first) {
+                opt.selected = true;
+                first = false;
+            }
+        }
 
         const addOutput = () => {
             var name = nameInput.value;
@@ -3121,8 +3151,17 @@ export default class LGraphCanvas_UI {
             var panel = panels[i] as IGraphDialog;
             if (!panel.node)
                 continue;
-            if (!panel.node.graph || panel.graph != this.graph)
+            if (!panel.node.graph)
                 panel.close();
+
+            if (panel.node.graph != this.graph) {
+                if (panel.node.is(Subgraph) && this.graph._is_subgraph && this.graph === panel.node.subgraph) {
+                    continue
+                }
+                else {
+                    panel.close();
+                }
+            }
         }
     }
 

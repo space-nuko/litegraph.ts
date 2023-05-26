@@ -1635,11 +1635,9 @@ export default class LGraph {
                 var n_info = nodes[i]; //stored info
                 var node = LiteGraph.createNode(n_info.type, n_info.title);
                 if (!node) {
-                    if (LiteGraph.debug) {
-                        console.log(
-                            "Node not found or has errors: " + n_info.type
-                        );
-                    }
+                    console.error(
+                        "Node not found or has errors: " + n_info.type
+                    );
 
                     //in case of error we create a replacement node to avoid losing info
                     node = new LGraphNode();

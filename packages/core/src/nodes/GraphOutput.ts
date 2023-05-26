@@ -13,9 +13,10 @@ export interface GraphOutputProperties extends Record<string, any> {
     subgraphID: NodeID | null
 }
 
-function getSlotTypesOut(widget: IWidget, node: LGraphNode): string[] {
+export function getSlotTypesOut(): string[] {
     let result = []
     result = result.concat(BASE_SLOT_TYPES)
+    result = result.concat([BuiltInSlotType.EVENT])
     result = result.concat(LiteGraph.slot_types_out)
     return result
 }
