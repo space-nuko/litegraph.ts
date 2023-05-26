@@ -507,6 +507,9 @@ export default class SubgraphTests extends UnitTest {
 
         const graphInput = graphInputs[0]
         expect(graphInput.outputs[0].links).toHaveLength(2)
+        expect(graphInput.outputs[0].type).toEqual(BuiltInSlotType.EVENT)
+        expect(subgraph.inputs).toHaveLength(1)
+        expect(subgraph.inputs[0].type).toEqual(BuiltInSlotType.ACTION)
     }
 
     test__convertNodesToSubgraphOutputs__converts() {
@@ -537,6 +540,9 @@ export default class SubgraphTests extends UnitTest {
 
         const graphOutput = graphOutputs[0]
         expect(graphOutput.inputs[0].link).toBeTruthy();
+        expect(graphOutput.inputs[0].type).toEqual(BuiltInSlotType.ACTION);
+        expect(subgraph.outputs).toHaveLength(1)
+        expect(subgraph.outputs[0].type).toEqual(BuiltInSlotType.EVENT)
     }
 
     test__onAction__forwardsInsideAndOutside() {
@@ -571,8 +577,8 @@ export default class SubgraphTests extends UnitTest {
         inner.connect(0, targetPair.innerNode, 0)
 
         expect(origin.outputs[0].links).toHaveLength(1)
-        expect(originPair.innerNode.properties.type).toEqual(BuiltInSlotType.ACTION)
-        expect(targetPair.innerNode.properties.type).toEqual(BuiltInSlotType.EVENT)
+        expect(originPair.innerNode.properties.type).toEqual(BuiltInSlotType.EVENT)
+        expect(targetPair.innerNode.properties.type).toEqual(BuiltInSlotType.ACTION)
 
         origin.triggerSlot(0);
 

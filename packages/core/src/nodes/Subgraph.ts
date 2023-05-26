@@ -7,7 +7,7 @@ import type { LActionOptions, LGraphNodeCloneData, OptionalSlots, PropertyLayout
 import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
-import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2, LinkID, NodeID } from "../types";
+import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2, LinkID, NodeID, BuiltInSlotType } from "../types";
 import { UUID } from "../types";
 import { toHashMap } from "../utils";
 import GraphInput from "./GraphInput";
@@ -662,7 +662,13 @@ export default class Subgraph extends LGraphNode {
         if (innerNode == null)
             return null;
 
-        console.warn("[Subgraph] addGraphInput", name, type, pos)
+        let outerType = type;
+        if (type === BuiltInSlotType.EVENT)
+            outerType = BuiltInSlotType.ACTION
+        else if (type === BuiltInSlotType.ACTION)
+            type = BuiltInSlotType.EVENT;
+
+        console.warn("[Subgraph] addGraphInput", name, type, outerType, pos)
 
         // These will run onPropertyChanged.
         innerNode.setProperty("name", name)
@@ -676,7 +682,7 @@ export default class Subgraph extends LGraphNode {
             innerNode.pos = [pos[0] - nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
 
         // The following call will add an input slot to this node automatically from onSubgraphNewInput.
-        this.subgraph.addInput(name, type, null);
+        this.subgraph.addInput(name, outerType, null);
 
         const outerInputIndex = this.inputs.length - 1;
         const outerInput = this.inputs[outerInputIndex]
@@ -689,7 +695,13 @@ export default class Subgraph extends LGraphNode {
         if (innerNode == null)
             return null;
 
-        console.warn("[Subgraph] addGraphOutput", name, type, pos)
+        let outerType = type;
+        if (type === BuiltInSlotType.EVENT)
+            type = BuiltInSlotType.ACTION
+        else if (type === BuiltInSlotType.ACTION)
+            outerType = BuiltInSlotType.EVENT;
+
+        console.warn("[Subgraph] addGraphOutput", name, type, outerType, pos)
 
         // These will run onPropertyChanged.
         innerNode.setProperty("name", name)
@@ -703,7 +715,7 @@ export default class Subgraph extends LGraphNode {
             innerNode.pos = [pos[0], pos[1] - nodeSize[1] * 0.5];
 
         // The following call will add an output slot to this node automatically from onSubgraphNewOutput.
-        this.subgraph.addOutput(name, type, null);
+        this.subgraph.addOutput(name, outerType, null);
 
         const outerOutputIndex = this.outputs.length - 1;
         const outerOutput = this.outputs[outerOutputIndex]
