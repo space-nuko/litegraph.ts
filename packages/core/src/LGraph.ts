@@ -8,7 +8,7 @@ import LLink from "./LLink";
 import LiteGraph from "./LiteGraph";
 import GraphInput from "./nodes/GraphInput";
 import Subgraph from "./nodes/Subgraph";
-import { LConnectionKind, LinkID, NodeID, TitleMode, Vector2, Version } from "./types";
+import { LConnectionKind, LinkID, NodeID, SlotType, TitleMode, Vector2, Version } from "./types";
 import { LayoutDirection, NodeMode } from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { UUID } from "./types";
@@ -39,13 +39,13 @@ export interface LGraphConfig {
 
 export type LGraphInput = {
     name: string,
-    type: string,
+    type: SlotType,
     value: any
 }
 
 export type LGraphOutput = {
     name: string,
-    type: string,
+    type: SlotType,
     value: any
 }
 
@@ -1205,8 +1205,14 @@ export default class LGraph {
         }
     }
 
+    triggerSlot(action: any, param: any): void {
+        if (this.onTrigger) {
+            this.onTrigger(action, param);
+        }
+    }
+
     /** Tell this graph it has a global graph input of this type */
-    addInput(name: string, type: string, value?: any): void {
+    addInput(name: string, type: SlotType, value?: any): void {
         var input = this.inputs[name];
         if (input) {
             //already exist
@@ -1227,7 +1233,7 @@ export default class LGraph {
         }
     }
 
-    onInputAdded?(name: string, type: string, value: any): void;
+    onInputAdded?(name: string, type: SlotType, value: any): void;
 
     /** Assign a data to the global graph input */
     setInputData(name: string, data: any): void {
@@ -1279,10 +1285,10 @@ export default class LGraph {
         return true;
     }
 
-    onInputTypeChanged?(name: string, oldType: string, newType: string): void;
+    onInputTypeChanged?(name: string, oldType: SlotType, newType: SlotType): void;
 
     /** Changes the type of a global graph input */
-    changeInputType(name: string, type: string): boolean | undefined {
+    changeInputType(name: string, type: SlotType): boolean | undefined {
         if (!this.inputs[name]) {
             return false;
         }
@@ -1326,10 +1332,10 @@ export default class LGraph {
         return true;
     }
 
-    onOutputAdded?(name: string, type: string, value: any)
+    onOutputAdded?(name: string, type: SlotType, value: any)
 
     /** Creates a global graph output */
-    addOutput(name: string, type: string, value: any): void {
+    addOutput(name: string, type: SlotType, value: any): void {
         this.outputs[name] = { name: name, type: type, value: value };
         this._version++;
 
@@ -1388,10 +1394,10 @@ export default class LGraph {
         return true;
     }
 
-    onOutputTypeChanged?(name: string, oldType: string, newType: string)
+    onOutputTypeChanged?(name: string, oldType: SlotType, newType: SlotType)
 
     /** Changes the type of a global graph output */
-    changeOutputType(name: string, type: string): boolean | undefined {
+    changeOutputType(name: string, type: SlotType): boolean | undefined {
         if (!this.outputs[name]) {
             return false;
         }

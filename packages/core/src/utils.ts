@@ -1,3 +1,5 @@
+import { BuiltInSlotType, SlotType } from "./types";
+
 interface CanvasRenderingContext2D {
     /** like rect but rounded corners */
     roundRect(
@@ -68,4 +70,24 @@ export function makeDraggable(el: HTMLElement): HTMLElement {
     el.addEventListener('mousedown', (e) => onDrag(e, el));
     el.classList.add("draggable")
     return el
+}
+
+export function getLitegraphTypeName(type: SlotType): string {
+    if (type === BuiltInSlotType.EVENT) {
+        return "Event"
+    }
+    else if (type === BuiltInSlotType.ACTION) {
+        return "Action"
+    }
+    else if (type === BuiltInSlotType.DEFAULT) {
+        return "Default"
+    }
+    return type;
+}
+
+export function isValidLitegraphType(type: any): type is SlotType {
+    return type === BuiltInSlotType.EVENT
+        || type === BuiltInSlotType.ACTION
+        || type === BuiltInSlotType.DEFAULT
+        || typeof type === "string"
 }

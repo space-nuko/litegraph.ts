@@ -1,10 +1,11 @@
 import type { default as IWidget, ITextWidget, IComboWidget } from "../IWidget";
-import type { SlotLayout } from "../LGraphNode";
+import type { LActionOptions, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LiteGraph from "../LiteGraph";
-import { BASE_SLOT_TYPES, NodeID, SlotType, Vector2 } from "../types";
+import { BASE_SLOT_TYPES, BuiltInSlotShape, NodeID, SlotType, Vector2 } from "../types";
 import { BuiltInSlotType } from "../types";
 import { UUID } from "../types";
+import { getLitegraphTypeName, isValidLitegraphType } from "../utils";
 import Subgraph from "./Subgraph";
 
 export interface GraphOutputProperties extends Record<string, any> {
@@ -19,6 +20,10 @@ export function getSlotTypesOut(): string[] {
     result = result.concat([BuiltInSlotType.EVENT])
     result = result.concat(LiteGraph.slot_types_out)
     return result
+}
+
+export function getSlotTypesOutFormatted(): string[] {
+    return getSlotTypesOut().map(getLitegraphTypeName);
 }
 
 export default class GraphOutput extends LGraphNode {
@@ -46,30 +51,61 @@ export default class GraphOutput extends LGraphNode {
     constructor(title?: string) {
         super(title)
 
+        let that = this;
+
         this.nameWidget = this.addWidget(
             "text",
             "Name",
             this.properties.name,
-            (v: string) => {
-                if (!v) {
-                    return
-                }
-                const subgraph = this.getParentSubgraph();
-                if (!subgraph)
-                    return;
-                v = subgraph.getValidGraphOutputName(v);
-                this.setProperty("name", v);
-            }
+            this.setName.bind(this)
         );
 
         if (LiteGraph.graph_inputs_outputs_use_combo_widget) {
-            this.typeWidget = this.addWidget<IComboWidget>("combo", "Type", "" + this.properties.type, "type", { values: getSlotTypesOut });
+            this.typeWidget = this.addWidget<IComboWidget>(
+                "combo",
+                "Type",
+                getLitegraphTypeName(this.properties.type),
+                this.setType.bind(this),
+                { values: getSlotTypesOutFormatted }
+            );
         }
         else {
-            this.typeWidget = this.addWidget<ITextWidget>("text", "Type", "" + this.properties.type, "type");
+            this.typeWidget = this.addWidget<ITextWidget>(
+                "text",
+                "Type",
+                getLitegraphTypeName(this.properties.type),
+                this.setType.bind(this),
+            );
         }
 
         this.widgets_up = true;
+    }
+
+    setName(v: string) {
+        if (!v) {
+            return
+        }
+        const subgraph = this.getParentSubgraph();
+        if (!subgraph)
+            return;
+        v = subgraph.getValidGraphOutputName(v);
+        this.setProperty("name", v);
+    }
+
+    setType(v: string) {
+        if (!v) {
+            return
+        }
+
+        let type: SlotType = v;
+        if (v === "-1" || v === "Action")
+            type = BuiltInSlotType.ACTION
+        else if (v === "-2" || v === "Event")
+            type = BuiltInSlotType.EVENT
+        else if (v === "0")
+            type = "*"
+
+        this.setProperty("type", type);
     }
 
     override onConfigure() {
@@ -82,23 +118,34 @@ export default class GraphOutput extends LGraphNode {
 
     updateType() {
         var type = this.properties.type;
+        const input = this.inputs[0]
         if (this.typeWidget)
-            this.typeWidget.value = "" + type;
+            this.typeWidget.value = getLitegraphTypeName(type);
+
+        if (type == "array") {
+            input.shape = BuiltInSlotShape.GRID_SHAPE;
+        }
+        else if (type === BuiltInSlotType.EVENT || type === BuiltInSlotType.ACTION) {
+            input.shape = BuiltInSlotShape.BOX_SHAPE;
+        }
+        else {
+            input.shape = BuiltInSlotShape.DEFAULT;
+        }
 
         //update output
-        if (this.inputs[0].type != type) {
+        if (input.type != type) {
 
             if (type == "action" || type == "event")
                 type = BuiltInSlotType.EVENT;
-            if (!LiteGraph.isValidConnection(this.inputs[0].type, type))
+            if (!LiteGraph.isValidConnection(input.type, type))
                 this.disconnectInput(0);
-            this.inputs[0].type = type;
+            input.type = type;
         }
 
         //update graph
-        if (this.graph && this.nameInGraph && typeof type === "string") {
+        if (this.graph && this.nameInGraph && isValidLitegraphType(type)) {
             this.graph.changeOutputType(this.nameInGraph, type);
-            if (this.inputs[0].type !== type) {
+            if (input.type !== type) {
                 this.setInputDataType(0, type);
             }
         }
@@ -141,10 +188,25 @@ export default class GraphOutput extends LGraphNode {
         return this.title;
     }
 
-    override onAction(action: any, param: any) {
-        if (this.properties.type == BuiltInSlotType.ACTION) {
-            this.graph.trigger(this.properties.name, param);
-        }
+    override onAction(action: any, param: any, options: LActionOptions) {
+        // if (this.properties.type == BuiltInSlotType.ACTION) {
+        //     this.graph.trigger(this.properties.name, param);
+        // }
+
+        const subgraph = this.getParentSubgraph();
+        if (!subgraph)
+            return;
+
+        const outerIndex = subgraph.findOutputSlotIndexByName(this.properties.name);
+        if (outerIndex == null)
+            return
+
+        const outer = subgraph.outputs[outerIndex]
+        if (outer == null || outer.type !== BuiltInSlotType.EVENT)
+            return
+
+        // console.debug("[GraphOutput] Trigger slot!", subgraph, outerIndex, outer, action, param);
+        subgraph.triggerSlot(outerIndex, param);
     }
 
     override onExecute() {

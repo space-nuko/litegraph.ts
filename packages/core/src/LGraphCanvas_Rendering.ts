@@ -6,6 +6,7 @@ import LLink from "./LLink";
 import GraphInput from "./nodes/GraphInput";
 import { BuiltInSlotShape, BuiltInSlotType, Dir, TitleMode, NODE_MODE_NAMES, NODE_MODE_COLORS, LinkRenderMode } from "./types";
 import type { Vector2 } from "./types"
+import { getLitegraphTypeName } from "./utils";
 
 export default class LGraphCanvas_Rendering {
     onRender?(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void;
@@ -414,7 +415,7 @@ export default class LGraphCanvas_Rendering {
                 ctx.fillText(input.name, 30, y + h * 0.75);
                 // var tw = ctx.measureText(input.name);
                 ctx.fillStyle = "#777";
-                ctx.fillText("" + input.type, 130, y + h * 0.75);
+                ctx.fillText(getLitegraphTypeName(input.type), 130, y + h * 0.75);
                 y += h;
             }
         //add + button
@@ -464,7 +465,7 @@ export default class LGraphCanvas_Rendering {
                 ctx.fillText(output.name, canvas_w - w + 30, y + h * 0.75);
                 // var tw = ctx.measureText(input.name);
                 ctx.fillStyle = "#777";
-                ctx.fillText("" + output.type, canvas_w - w + 130, y + h * 0.75);
+                ctx.fillText(getLitegraphTypeName(output.type), canvas_w - w + 130, y + h * 0.75);
                 y += h;
             }
         //add + button

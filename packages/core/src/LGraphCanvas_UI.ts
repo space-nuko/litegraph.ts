@@ -13,7 +13,7 @@ import { BuiltInSlotType } from "./types";
 import type IWidget from "./IWidget";
 import type { IComboWidgetOptions, WidgetPanelOptions, WidgetPanelCallback } from "./IWidget";
 import { IPropertyInfo } from "./IProperty";
-import { clamp, makeDraggable, toHashMap } from "./utils";
+import { clamp, getLitegraphTypeName, makeDraggable, toHashMap } from "./utils";
 import GraphInput, { getSlotTypesIn } from "./nodes/GraphInput";
 import GraphOutput, { getSlotTypesOut } from "./nodes/GraphOutput";
 import Subgraph, { SubgraphInputPair, SubgraphOutputPair } from "./nodes/Subgraph";
@@ -1877,7 +1877,7 @@ export default class LGraphCanvas_UI {
                     elem.dataset["name"] = input.name;
                     elem.dataset["slot"] = "" + i;
                     elem.querySelector<HTMLSpanElement>(".name").innerText = input.name;
-                    elem.querySelector<HTMLSpanElement>(".type").innerText = "" + input.type;
+                    elem.querySelector<HTMLSpanElement>(".type").innerText = getLitegraphTypeName(input.type)
                     elem.querySelector<HTMLButtonElement>(".delete").addEventListener("click", function(e) {
                         const inputName = (this.parentNode as HTMLElement).dataset["name"]
                         subgraphNode.removeGraphInput(inputName);
@@ -1917,23 +1917,27 @@ export default class LGraphCanvas_UI {
         const typeInput = elem.querySelector<HTMLSelectElement>(".type");
         const addButton = elem.querySelector<HTMLButtonElement>("button");
 
-        let first = true;
         for (const inType of getSlotTypesIn()) {
             var opt = document.createElement('option');
             opt.value = inType
-            opt.innerHTML = inType
+            opt.innerHTML = getLitegraphTypeName(inType)
             typeInput.appendChild(opt);
-            if (first) {
+            if (inType === "*") {
                 opt.selected = true;
-                first = false;
             }
         }
 
         const addInput = () => {
-            var name = nameInput.value;
-            var type = typeInput.value;
+            const name = nameInput.value;
+            let type: SlotType = typeInput.value;
+            if (type === "-1")
+                type = BuiltInSlotType.ACTION;
+            else if (type === "-2")
+                type = BuiltInSlotType.EVENT;
+
             if (!name || node.findInputSlotIndexByName(name) != -1)
                 return;
+
             this.addGraphInputNode((node as Subgraph), name, type)
             nameInput.value = "";
             typeInput.value = "";
@@ -2001,7 +2005,7 @@ export default class LGraphCanvas_UI {
                     elem.dataset["name"] = output.name;
                     elem.dataset["slot"] = "" + i;
                     elem.querySelector<HTMLSpanElement>(".name").innerText = output.name;
-                    elem.querySelector<HTMLSpanElement>(".type").innerText = "" + output.type;
+                    elem.querySelector<HTMLSpanElement>(".type").innerText = getLitegraphTypeName(output.type)
                     elem.querySelector<HTMLButtonElement>("button").addEventListener("click", function(e) {
                         const outputName = (this.parentNode as HTMLElement).dataset["name"]
                         subgraphNode.removeGraphOutput(outputName);
@@ -2041,23 +2045,27 @@ export default class LGraphCanvas_UI {
         const typeInput = elem.querySelector<HTMLSelectElement>(".type");
         const addButton = elem.querySelector<HTMLButtonElement>("button");
 
-        let first = true;
         for (const outType of getSlotTypesOut()) {
             var opt = document.createElement('option');
             opt.value = outType
-            opt.innerHTML = outType
+            opt.innerHTML = getLitegraphTypeName(outType)
             typeInput.appendChild(opt);
-            if (first) {
+            if (outType === "*") {
                 opt.selected = true;
-                first = false;
             }
         }
 
         const addOutput = () => {
-            var name = nameInput.value;
-            var type = typeInput.value;
+            const name = nameInput.value;
+            let type: SlotType = typeInput.value;
+            if (type === "-1")
+                type = BuiltInSlotType.ACTION;
+            else if (type === "-2")
+                type = BuiltInSlotType.EVENT;
+
             if (!name || node.findOutputSlotIndexByName(name) != -1)
                 return;
+
             this.addGraphOutputNode((node as Subgraph), name, type)
             nameInput.value = "";
             typeInput.value = "";
@@ -2928,15 +2936,8 @@ export default class LGraphCanvas_UI {
                 }
 
             }
-            if (slot.input && slot.input.type == BuiltInSlotType.ACTION) {
-                options.title = "Action";
-            }
-            else if (slot.output && slot.output.type == BuiltInSlotType.EVENT) {
-                options.title = "Event";
-            }
-            else {
-                options.title = String(slot.input ? slot.input.type : slot.output.type) || "*";
-            }
+            const slotType = (slot.input ? slot.input.type : slot.output.type) || "*";
+            options.title = getLitegraphTypeName(slotType);
         } else {
             if (node) {
                 //on node

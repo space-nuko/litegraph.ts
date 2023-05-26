@@ -3,7 +3,7 @@ import type { MouseEventExt } from "../DragAndScale";
 import { INodeInputSlot, INodeOutputSlot } from "../INodeSlot";
 import LGraph, { LGraphAddNodeOptions, LGraphRemoveNodeOptions, SerializedLGraph } from "../LGraph";
 import type LGraphCanvas from "../LGraphCanvas";
-import type { LGraphNodeCloneData, OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
+import type { LActionOptions, LGraphNodeCloneData, OptionalSlots, PropertyLayout, SerializedLGraphNode, SlotLayout } from "../LGraphNode";
 import LGraphNode from "../LGraphNode";
 import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
@@ -199,8 +199,19 @@ export default class Subgraph extends LGraphNode {
         }, 10);
     };
 
-    override onAction(action: any, param: any) {
-        this.subgraph.onAction(action, param);
+    override onAction(action: any, param: any, options: LActionOptions) {
+        // this.subgraph.onAction(action, param);
+
+        const { originNode, link } = options;
+
+        if (!originNode || !link)
+            return;
+
+        const targetSlot = link.target_slot;
+
+        const graphInput = this.getInnerGraphInputByIndex(targetSlot)
+        // console.debug("[Subgraph] Trigger slot!", graphInput, targetSlot, link, originNode, action, param);
+        graphInput.triggerSlot(0, param);
     };
 
     override onExecute() {
@@ -307,10 +318,10 @@ export default class Subgraph extends LGraphNode {
 
     //**** INPUTS ***********************************
     private onSubgraphTrigger(event: string, param: string) {
-        var slot = this.findOutputSlotIndexByName(event);
-        if (slot != -1) {
-            this.triggerSlot(slot);
-        }
+        // var slot = this.findOutputSlotIndexByName(event);
+        // if (slot != -1) {
+        //     this.triggerSlot(slot);
+        // }
     };
 
     private onSubgraphNodeAdded(node: LGraphNode, options: LGraphAddNodeOptions) {
@@ -664,7 +675,7 @@ export default class Subgraph extends LGraphNode {
             innerNode.pos = [pos[0] - nodeSize[0] * 0.5, pos[1] - nodeSize[1] * 0.5];
 
         // The following call will add an input slot to this node automatically from onSubgraphNewInput.
-        this.subgraph.addInput(name, "" + type, null);
+        this.subgraph.addInput(name, type, null);
 
         const outerInputIndex = this.inputs.length - 1;
         const outerInput = this.inputs[outerInputIndex]
@@ -691,7 +702,7 @@ export default class Subgraph extends LGraphNode {
             innerNode.pos = [pos[0], pos[1] - nodeSize[1] * 0.5];
 
         // The following call will add an output slot to this node automatically from onSubgraphNewOutput.
-        this.subgraph.addOutput(name, "" + type, null);
+        this.subgraph.addOutput(name, type, null);
 
         const outerOutputIndex = this.outputs.length - 1;
         const outerOutput = this.outputs[outerOutputIndex]

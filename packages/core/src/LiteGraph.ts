@@ -271,15 +271,17 @@ export default class LiteGraph {
             this[registerTo][sT].nodes.push(sCN);
 
             // check if is a new type
-            if (!out) {
-                if (!LiteGraph.slot_types_in.includes(sT.toLowerCase())) {
-                    LiteGraph.slot_types_in.push(sT.toLowerCase());
-                    LiteGraph.slot_types_in.sort();
-                }
-            } else {
-                if (!LiteGraph.slot_types_out.includes(sT.toLowerCase())) {
-                    LiteGraph.slot_types_out.push(sT.toLowerCase());
-                    LiteGraph.slot_types_out.sort();
+            if (sT !== "_event_" && sT !== "*") {
+                if (!out) {
+                    if (!LiteGraph.slot_types_in.includes(sT.toLowerCase())) {
+                        LiteGraph.slot_types_in.push(sT.toLowerCase());
+                        LiteGraph.slot_types_in.sort();
+                    }
+                } else {
+                    if (!LiteGraph.slot_types_out.includes(sT.toLowerCase())) {
+                        LiteGraph.slot_types_out.push(sT.toLowerCase());
+                        LiteGraph.slot_types_out.sort();
+                    }
                 }
             }
         }
@@ -397,7 +399,7 @@ export default class LiteGraph {
             try {
                 node = new regConfig.class(title, ...args) as T;
             } catch (err) {
-                console.error(err);
+                console.error("Error creating node!", err);
                 return null;
             }
         } else {

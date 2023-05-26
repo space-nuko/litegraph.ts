@@ -62,6 +62,12 @@ export type PropertyLayout = {
     options?: Partial<IPropertyInfo>
 }[];
 
+export type LActionOptions = {
+    action_call?: string,
+    link?: LLink
+    originNode?: LGraphNode
+}
+
 export type LGraphNodeConstructorFactory<T> = new (title?: string, ...restArgs: any[]) => T;
 
 export interface LGraphNodeConstructor<T extends LGraphNode = LGraphNode> {
@@ -1082,7 +1088,7 @@ export default class LGraphNode {
         return true;
     }
 
-    doExecute(param?: any, options: { action_call?: string } = {}): void {
+    doExecute(param?: any, options: LActionOptions = {}): void {
         if (this.onExecute) {
             // enable this to give the event an ID
             if (!options.action_call) options.action_call = this.id + "_exec_" + Math.floor(Math.random() * 9999);
@@ -1111,7 +1117,7 @@ export default class LGraphNode {
      * @param {String} action name
      * @param {*} param
      */
-    actionDo(action: any, param: any, options: { action_call?: string } = {}) {
+    actionDo(action: any, param: any, options: LActionOptions = {}) {
         if (this.onAction) {
 
             // enable this to give the event an ID
@@ -1134,7 +1140,7 @@ export default class LGraphNode {
     };
 
     /**  Triggers an event in this node, this will trigger any output with the same name */
-    trigger(action: string, param: any, options?: object): void {
+    trigger(action: string, param: any, options?: LActionOptions): void {
         if (!this.outputs || !this.outputs.length) {
             return;
         }
@@ -1156,7 +1162,7 @@ export default class LGraphNode {
      * @param param
      * @param link_id in case you want to trigger and specific output link in a slot
      */
-    triggerSlot(slot: SlotIndex, param?: any, link_id?: LinkID, options: object = {}): void {
+    triggerSlot(slot: SlotIndex, param?: any, link_id?: LinkID, options: LActionOptions = {}): void {
         if (!this.outputs) {
             return;
         }
@@ -1203,11 +1209,15 @@ export default class LGraphNode {
             }
 
             //used to mark events in graph
-            var target_connection = node.inputs[linkInfo.target_slot];
+            const target_connection = node.inputs[linkInfo.target_slot];
+
+            options.link = linkInfo;
+            options.originNode = this;
 
             if (node.mode === NodeMode.ON_TRIGGER) {
                 // generate unique trigger ID if not present
-                if (!(options as any).action_call) (options as any).action_call = this.id + "_trigg_" + Math.floor(Math.random() * 9999);
+                if (!options.action_call)
+                    options.action_call = this.id + "_trigg_" + Math.floor(Math.random() * 9999);
                 if (node.onExecute) {
                     // -- wrapping node.onExecute(param); --
                     node.doExecute(param, options);
@@ -1215,9 +1225,10 @@ export default class LGraphNode {
             }
             else if (node.onAction) {
                 // generate unique action ID if not present
-                if (!(options as any).action_call) (options as any).action_call = this.id + "_act_" + Math.floor(Math.random() * 9999);
+                if (!options.action_call)
+                    options.action_call = this.id + "_act_" + Math.floor(Math.random() * 9999);
                 //pass the action name
-                var target_connection = node.inputs[linkInfo.target_slot];
+                const target_connection = node.inputs[linkInfo.target_slot];
                 // wrap node.onAction(target_connection.name, param);
                 node.actionDo(target_connection.name, param, options);
             }
@@ -2905,7 +2916,7 @@ export default class LGraphNode {
     /** Called by `LGraph.runStep` `LGraphNode.getInputData` */
     onExecute?(param: any, options: object): void;
 
-    onAction?(action: any, param: any, options: { action_call?: string }): void;
+    onAction?(action: any, param: any, options: LActionOptions): void;
 
     /** Called by `LGraph.serialize` */
     onSerialize?(o: SerializedLGraphNode): void;

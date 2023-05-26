@@ -1,4 +1,4 @@
-import { GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphNodeCloneData, LGraphRemoveNodeOptions, LiteGraph, NodeID, Subgraph } from "@litegraph-ts/core"
+import { BuiltInSlotType, GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphNodeCloneData, LGraphRemoveNodeOptions, LiteGraph, NodeID, SlotLayout, Subgraph } from "@litegraph-ts/core"
 import { ConstantInteger, Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
@@ -47,6 +47,31 @@ LiteGraph.registerNodeType({
     title: "Custom Saved ID",
     desc: "Node that saves a node ID to its properties",
     type: "test/custom_saved_id"
+})
+
+class CustomTriggerNode extends LGraphNode {
+    static slotLayout: SlotLayout = {
+        inputs: [
+            { name: "action", type: BuiltInSlotType.ACTION },
+        ],
+        outputs: [
+            { name: "event", type: BuiltInSlotType.EVENT },
+        ],
+    }
+
+    triggers: [any, any][] = [];
+
+    override onAction(action: any, param: any) {
+        this.triggers.push([action, param])
+        this.triggerSlot(0, param);
+    }
+}
+
+LiteGraph.registerNodeType({
+    class: CustomTriggerNode,
+    title: "Custom Trigger Node",
+    desc: "Node that tracks action triggers",
+    type: "test/custom_trigger_node"
 })
 
 export default class SubgraphTests extends UnitTest {
@@ -449,5 +474,43 @@ export default class SubgraphTests extends UnitTest {
         expect(clonedNodeB.inputs[0].link).toBeTruthy()
         expect(clonedNodeB.getInputLink(0)).toBeTruthy()
         expect(clonedNodeB.getInputLink(0).id).toEqual(clonedLink.id)
+    }
+
+    test__onAction__forwardsInsideAndOutside() {
+        if (!LiteGraph.use_uuids)
+            return;
+
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const originPair = subgraph.addGraphInput("test", BuiltInSlotType.ACTION);
+        const targetPair = subgraph.addGraphOutput("test", BuiltInSlotType.EVENT);
+
+        expect(subgraph.subgraph.inputs["test"].type).toEqual(BuiltInSlotType.ACTION)
+        expect(subgraph.subgraph.outputs["test"].type).toEqual(BuiltInSlotType.EVENT)
+
+        const origin = LiteGraph.createNode(CustomTriggerNode)
+        const inner = LiteGraph.createNode(CustomTriggerNode)
+        const target = LiteGraph.createNode(CustomTriggerNode)
+
+        graph.add(origin)
+        graph.add(target)
+        subgraph.subgraph.add(inner)
+
+        origin.connect(0, subgraph, 0)
+        subgraph.connect(0, target, 0)
+        originPair.innerNode.connect(0, inner, 0)
+        inner.connect(0, targetPair.innerNode, 0)
+
+        expect(origin.outputs[0].links).toHaveLength(1)
+        expect(originPair.innerNode.properties.type).toEqual(BuiltInSlotType.ACTION)
+        expect(targetPair.innerNode.properties.type).toEqual(BuiltInSlotType.EVENT)
+
+        origin.triggerSlot(0);
+
+        expect(inner.triggers).toHaveLength(1)
+        expect(target.triggers).toHaveLength(1)
     }
 }
