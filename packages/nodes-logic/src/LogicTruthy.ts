@@ -1,13 +1,13 @@
 import type { PropertyLayout, SlotLayout } from "@litegraph-ts/core"
 import { LGraphNode, LiteGraph } from "@litegraph-ts/core"
 
-export default class IsTruthy extends LGraphNode {
+export default class LogicTruthy extends LGraphNode {
     static slotLayout: SlotLayout = {
         inputs: [
             { name: "in", type: "*" },
         ],
         outputs: [
-            { name: "is_truthy", type: "boolean" },
+            { name: "truthy", type: "boolean" },
         ]
     }
 
@@ -21,8 +21,8 @@ export default class IsTruthy extends LGraphNode {
 }
 
 LiteGraph.registerNodeType({
-    class: IsTruthy,
-    title: "~= true",
+    class: LogicTruthy,
+    title: "~= TRUE",
     desc: "Returns true if input is truthy",
-    type: "basic/is_truthy"
+    type: "logic/truthy"
 })

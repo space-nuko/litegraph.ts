@@ -13,4 +13,3 @@ export { default as Time } from "./Time";
 export { default as Watch } from "./Watch";
 export { default as GenericCompare } from "./GenericCompare";
 export { default as IsNull } from "./IsNull";
-export { default as IsTruthy } from "./IsTruthy";
