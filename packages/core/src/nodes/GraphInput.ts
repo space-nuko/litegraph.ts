@@ -95,7 +95,7 @@ export default class GraphInput extends LGraphNode {
     }
 
     setName(v: string) {
-        if (!v) {
+        if (!v || v === this.properties.name) {
             return
         }
         const subgraph = this.getParentSubgraph();
