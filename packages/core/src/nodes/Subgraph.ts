@@ -9,6 +9,7 @@ import LLink from "../LLink";
 import LiteGraph from "../LiteGraph";
 import { BuiltInSlotShape, SlotType, type NodeMode, type Vector2, LinkID, NodeID } from "../types";
 import { UUID } from "../types";
+import { toHashMap } from "../utils";
 import GraphInput from "./GraphInput";
 import GraphOutput from "./GraphOutput";
 import { v4 as uuidv4 } from "uuid"
@@ -802,6 +803,174 @@ export default class Subgraph extends LGraphNode {
         if (!inputSlot)
             return null;
         return this.getInnerGraphInput(inputSlot.name);
+    }
+
+    moveNodesToParentGraph(nodes: LGraphNode[]): Record<NodeID, LGraphNode> {
+        const subgraphNode = this;
+        const parentGraph = subgraphNode.graph;
+
+        nodes = nodes.filter(n => !n.is(GraphInput) && !n.is(GraphOutput))
+        if (nodes.length === 0)
+            return;
+
+        let min_x = Number.MAX_SAFE_INTEGER;
+        let max_x = 0;
+        let min_y = Number.MAX_SAFE_INTEGER;
+        let max_y = 0;
+
+        for (const node of Object.values(nodes)) {
+            min_x = Math.min(node.pos[0], min_x);
+            max_x = Math.max(node.pos[0] + node.size[0], max_x);
+            min_y = Math.min(node.pos[1], min_y);
+            max_y = Math.max(node.pos[1] + node.size[1], max_y);
+        }
+
+        const width = max_x - min_x
+        const height = max_y - min_y
+
+        const place_x = (subgraphNode.pos[0] + subgraphNode.size[0] / 2) - (width / 2)
+        const place_y = (subgraphNode.pos[1] + subgraphNode.size[1] / 2) - (height / 2)
+
+        const innerLinks: Record<LinkID, [LLink, Vector2]> = {}
+
+        const nodeIdToNode: Record<NodeID, LGraphNode> = {}
+        for (const [index, node] of nodes.entries()) {
+            nodeIdToNode[node.id] = node;
+        }
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                const isInputLink = link.target_id === node.id;
+                const pos = node.getConnectionPos(isInputLink, isInputLink ? link.target_slot : link.origin_slot);
+                if (nodeIdToNode[link.origin_id] != null && nodeIdToNode[link.target_id] != null) {
+                    innerLinks[link.id] = [link, pos];
+                }
+            }
+        }
+
+        const prevNodeIDtoNewNode = {}
+
+        for (const [index, node] of nodes.entries()) {
+            const newPos: Vector2 = [node.pos[0] - min_x + place_x, node.pos[1] - min_y + place_y]
+            const prevNodeID = node.id;
+            node.graph.remove(node, { removedBy: "moveOutOfSubgraph" })
+            parentGraph.add(node, { addedBy: "moveOutOfSubgraph", prevNodeID });
+            node.pos = newPos
+            prevNodeIDtoNewNode[prevNodeID] = node
+        }
+
+        for (const [link, pos] of Object.values(innerLinks)) {
+            const originNode = nodeIdToNode[link.origin_id]
+            const targetNode = nodeIdToNode[link.target_id]
+            originNode.connect(link.origin_slot, targetNode, link.target_slot)
+        }
+
+        return prevNodeIDtoNewNode;
+    }
+
+    convertNodesToSubgraphInputs(nodes: LGraphNode[]) {
+        const containedIds = toHashMap(nodes, (node) => node.id);
+        const parentIntoSubgraphLinks: LLink[] = [];
+        const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
+
+        const innerGraph = this.subgraph;
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                // The selected nodes shouldn't have any origin links leading
+                // out of the selection
+                if (containedIds[link.origin_id] == null) {
+                    throw new Error("Can't convert to input with an origin link outward")
+                }
+                else if (containedIds[link.target_id] == null) {
+                    parentIntoSubgraphLinks.push(link);
+                    const connPos: Vector2 = [0, 0]
+                    node.getConnectionPos(false, link.target_slot, connPos)
+                    prevPositions[node.id] = [[node.pos[0], node.pos[1]], connPos]
+                }
+            }
+        }
+
+        const oldIdsToNodes = this.moveNodesToParentGraph(nodes);
+
+        const innerNodeSlotToGraphInput: Record<NodeID, Record<number, SubgraphInputPair>> = {}
+
+        for (const link of parentIntoSubgraphLinks) {
+            const innerNode = innerGraph.getNodeById(link.target_id);
+            const innerInput = innerNode.getInputInfo(link.target_slot)
+
+            innerNodeSlotToGraphInput[link.origin_id] ||= {}
+            let pair = innerNodeSlotToGraphInput[link.origin_id][link.origin_slot]
+            if (pair == null) {
+                const name = this.getValidGraphInputName(innerInput.name)
+                pair = this.addGraphInput(name, innerInput.type)
+                innerNodeSlotToGraphInput[link.origin_id][link.origin_slot] = pair
+
+                // Align graph input's slot over previous slot position
+                const [pos, connPos] = prevPositions[link.origin_id];
+                const newPos = pair.innerNode.pos;
+                const newSize = pair.innerNode.computeSize();
+                const newConnPos = pair.innerNode.getConnectionPos(true, 0);
+                const offset = [pair.innerNode.pos[0] - newConnPos[0], pair.innerNode.pos[1] - newConnPos[1]]
+                const placePos: Vector2 = [connPos[0] + offset[0] - newSize[0], connPos[1] + offset[1]]
+                console.warn("newPos", newPos, "size", pair.innerNode.size, "connPos", connPos, "newConPos", newConnPos, "offset", offset);
+                pair.innerNode.pos = placePos;
+            }
+
+            const outerNode = oldIdsToNodes[link.origin_id];
+            outerNode.connect(link.origin_slot, this, pair.outerInputIndex)
+            pair.innerNode.connect(0, innerNode, link.target_slot)
+        }
+    }
+
+    convertNodesToSubgraphOutputs(nodes: LGraphNode[]) {
+        const containedIds = toHashMap(nodes, (node) => node.id);
+        const parentIntoSubgraphLinks: LLink[] = [];
+        const prevPositions: Record<NodeID, [Vector2, Vector2]> = {} // pos, slot pos
+
+        const innerGraph = this.subgraph;
+
+        for (const node of nodes) {
+            for (const link of node.iterateAllLinks()) {
+                if (containedIds[link.origin_id] == null) {
+                    parentIntoSubgraphLinks.push(link);
+                    const connPos: Vector2 = [0, 0]
+                    node.getConnectionPos(true, link.origin_slot, connPos)
+                    prevPositions[node.id] = [[node.pos[0], node.pos[1]], connPos]
+                }
+                else if (containedIds[link.target_id] == null) {
+                    throw new Error("Can't convert to input with an origin link outward")
+                }
+            }
+        }
+
+        const oldIdsToNodes = this.moveNodesToParentGraph(nodes);
+
+        const innerNodeSlotToGraphOutput: Record<NodeID, Record<number, SubgraphOutputPair>> = {}
+
+        for (const link of parentIntoSubgraphLinks) {
+            const innerNode = innerGraph.getNodeById(link.origin_id);
+            const innerOutput = innerNode.getOutputInfo(link.origin_slot)
+
+            innerNodeSlotToGraphOutput[link.target_id] ||= {}
+            let pair = innerNodeSlotToGraphOutput[link.target_id][link.target_slot]
+            if (pair == null) {
+                const name = this.getValidGraphOutputName(innerOutput.name)
+                pair = this.addGraphOutput(name, innerOutput.type)
+                innerNodeSlotToGraphOutput[link.target_id][link.target_slot] = pair
+
+                // Align graph output's slot over previous slot position
+                const [pos, connPos] = prevPositions[link.target_id];
+                const newConnPos = pair.innerNode.getConnectionPos(true, 0);
+                const offset = [pair.innerNode.pos[0] - newConnPos[0], pair.innerNode.pos[1] - newConnPos[1]]
+                const placePos: Vector2 = [connPos[0] + offset[0], connPos[1] + offset[1]]
+                pair.innerNode.pos = placePos;
+            }
+
+            const outerNode = oldIdsToNodes[link.target_id];
+            innerNode.connect(link.origin_slot, pair.innerNode, 0)
+            this.connect(pair.outerOutputIndex, outerNode, link.target_slot)
+        }
     }
 }
 

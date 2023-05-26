@@ -2189,6 +2189,9 @@ export default class LGraphNode {
 
         //avoid loopback
         if (targetNode == this) {
+            if (LiteGraph.debug) {
+                console.error("Connect: Error, can't connect node to itself!");
+            }
             return null;
         }
 
@@ -2215,6 +2218,9 @@ export default class LGraphNode {
                 targetNode.changeMode(NodeMode.ON_TRIGGER);
                 targetSlot = targetNode.findInputSlotIndexByName("onTrigger");
             } else {
+                if (LiteGraph.debug) {
+                    console.error("Connect: Error, can't connect event target slot");
+                }
                 return null; // -- break --
             }
         } else if (
@@ -2234,8 +2240,10 @@ export default class LGraphNode {
         var output = this.outputs[slot];
 
         if (!this.outputs[slot]) {
-            /*console.debug("Invalid slot passed: "+slot);
-            console.debug(this.outputs);*/
+            if (LiteGraph.debug) {
+                console.warn("Connect: Invalid slot passed: " + slot);
+                console.warn(this.outputs);
+            }
             return null;
         }
 
@@ -2250,6 +2258,7 @@ export default class LGraphNode {
             this.setDirtyCanvas(false, true);
             if (changed)
                 this.graph.connectionChange(this, linkInfo);
+            console.warn("Connect: Invalid connection: ", targetSlot, output.type, input.type);
             return null;
         } else {
             if (LiteGraph.debug) {
@@ -2260,11 +2269,17 @@ export default class LGraphNode {
         //allows nodes to block connection, callback
         if (targetNode.onConnectInput) {
             if (targetNode.onConnectInput(targetSlot, output.type, output, this, slot) === false) {
+                if (LiteGraph.debug) {
+                    console.debug("onConnectInput blocked", output.type, input.type);
+                }
                 return null;
             }
         }
         if (this.onConnectOutput) { // callback
             if (this.onConnectOutput(slot, input.type, input, targetNode, targetSlot) === false) {
+                if (LiteGraph.debug) {
+                    console.debug("onConnectOutput blocked", output.type, input.type);
+                }
                 return null;
             }
         }

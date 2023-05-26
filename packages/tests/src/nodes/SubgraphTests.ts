@@ -1,4 +1,4 @@
-import { BuiltInSlotType, GraphIDMapping, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphNodeCloneData, LGraphRemoveNodeOptions, LiteGraph, NodeID, SlotLayout, Subgraph } from "@litegraph-ts/core"
+import { BuiltInSlotType, GraphIDMapping, GraphInput, GraphOutput, LGraph, LGraphAddNodeOptions, LGraphNode, LGraphNodeCloneData, LGraphRemoveNodeOptions, LiteGraph, NodeID, SlotLayout, Subgraph } from "@litegraph-ts/core"
 import { ConstantInteger, Watch } from "@litegraph-ts/nodes-basic"
 import { expect, vi } from 'vitest'
 import UnitTest from "../UnitTest"
@@ -476,10 +476,70 @@ export default class SubgraphTests extends UnitTest {
         expect(clonedNodeB.getInputLink(0).id).toEqual(clonedLink.id)
     }
 
-    test__onAction__forwardsInsideAndOutside() {
+    test__convertNodesToSubgraphInputs__converts() {
         if (!LiteGraph.use_uuids)
             return;
 
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const origin = LiteGraph.createNode(CustomTriggerNode)
+        const inner = LiteGraph.createNode(CustomTriggerNode)
+        const inner2 = LiteGraph.createNode(CustomTriggerNode)
+
+        subgraph.subgraph.add(origin)
+        subgraph.subgraph.add(inner)
+        subgraph.subgraph.add(inner2)
+
+        origin.connect(0, inner, 0)
+        origin.connect(0, inner2, 0)
+
+        subgraph.convertNodesToSubgraphInputs([origin]);
+
+        expect(inner.inputs[0].link).toBeTruthy()
+        expect(inner2.inputs[0].link).toBeTruthy()
+
+        const graphInputs = subgraph.subgraph.findNodesByClass(GraphInput)
+        console.error(graphInputs.map(i => i.properties.name))
+        expect(graphInputs).toHaveLength(1)
+
+        const graphInput = graphInputs[0]
+        expect(graphInput.outputs[0].links).toHaveLength(2)
+    }
+
+    test__convertNodesToSubgraphOutputs__converts() {
+        if (!LiteGraph.use_uuids)
+            return;
+
+        const graph = new LGraph();
+
+        const subgraph = LiteGraph.createNode(Subgraph)
+        graph.add(subgraph)
+
+        const target = LiteGraph.createNode(CustomTriggerNode)
+        const inner = LiteGraph.createNode(CustomTriggerNode)
+
+        subgraph.subgraph.add(inner)
+        subgraph.subgraph.add(target)
+
+        inner.connect(0, target, 0)
+
+        expect(inner.outputs[0].links).toHaveLength(1)
+
+        subgraph.convertNodesToSubgraphOutputs([target]);
+
+        expect(inner.outputs[0].links).toHaveLength(1)
+
+        const graphOutputs = subgraph.subgraph.findNodesByClass(GraphOutput)
+        expect(graphOutputs).toHaveLength(1)
+
+        const graphOutput = graphOutputs[0]
+        expect(graphOutput.inputs[0].link).toBeTruthy();
+    }
+
+    test__onAction__forwardsInsideAndOutside() {
         const graph = new LGraph();
 
         const subgraph = LiteGraph.createNode(Subgraph)
@@ -493,15 +553,21 @@ export default class SubgraphTests extends UnitTest {
 
         const origin = LiteGraph.createNode(CustomTriggerNode)
         const inner = LiteGraph.createNode(CustomTriggerNode)
+        const inner2 = LiteGraph.createNode(CustomTriggerNode)
+        const inner3 = LiteGraph.createNode(CustomTriggerNode)
         const target = LiteGraph.createNode(CustomTriggerNode)
 
         graph.add(origin)
         graph.add(target)
         subgraph.subgraph.add(inner)
+        subgraph.subgraph.add(inner2)
+        subgraph.subgraph.add(inner3)
 
         origin.connect(0, subgraph, 0)
         subgraph.connect(0, target, 0)
         originPair.innerNode.connect(0, inner, 0)
+        originPair.innerNode.connect(0, inner2, 0)
+        originPair.innerNode.connect(0, inner3, 0)
         inner.connect(0, targetPair.innerNode, 0)
 
         expect(origin.outputs[0].links).toHaveLength(1)
@@ -511,6 +577,8 @@ export default class SubgraphTests extends UnitTest {
         origin.triggerSlot(0);
 
         expect(inner.triggers).toHaveLength(1)
+        expect(inner2.triggers).toHaveLength(1)
+        expect(inner3.triggers).toHaveLength(1)
         expect(target.triggers).toHaveLength(1)
     }
 }
