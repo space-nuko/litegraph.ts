@@ -828,17 +828,28 @@ export default class LGraphCanvas_UI {
         var dialog = document.createElement("div") as IGraphDialog;
         dialog.is_modified = false;
         dialog.className = "graphdialog rounded";
-        if (multiline)
+
+        if (multiline) {
+            let rows = 5;
+            if (typeof value !== "string") {
+                value = JSON.stringify(value, null, 2);
+            }
+            const lines = (value.match(/\n/g) || '').length + 1
+            rows = clamp(lines, 5, 10)
+
             dialog.innerHTML = `
 <span class='name'></span>
-<textarea autofocus class='value'></textarea>
+<textarea autofocus rows='${rows}' cols='30' class='value'></textarea>
 <button class='rounded'>OK</button>
 `;
-        else
+        }
+        else {
             dialog.innerHTML = `
 <span class='name'></span>
 <input autofocus type='text' class='value'/>
 <button class='rounded'>OK</button>`;
+        }
+
         dialog.close = function() {
             that.prompt_box = null;
             if (dialog.parentNode) {
