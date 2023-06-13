@@ -599,7 +599,7 @@ export default class LGraphCanvas_UI {
                     "<span style='display: block; color: #999; padding-left: 4px; border-left: 8px solid " +
                     color.color +
                     "; background-color:" +
-                    color.bgColor +
+                    color.bgcolor +
                     "'>" +
                     i +
                     "</span>"
@@ -627,12 +627,12 @@ export default class LGraphCanvas_UI {
                         node.color = color.groupcolor;
                     } else {
                         node.color = color.color;
-                        node.bgColor = color.bgColor;
+                        node.bgcolor = color.bgcolor;
                     }
                 } else {
                     delete node.color;
                     if (node instanceof LGraphNode) {
-                        delete node.bgColor;
+                        delete node.bgcolor;
                     }
                 }
             }
@@ -1591,7 +1591,7 @@ export default class LGraphCanvas_UI {
                     case "Color":
                         if (LGraphCanvas.node_colors[value]) {
                             node.color = LGraphCanvas.node_colors[value].color;
-                            node.bgColor = LGraphCanvas.node_colors[value].bgColor;
+                            node.bgcolor = LGraphCanvas.node_colors[value].bgcolor;
                         } else {
                             console.warn("unexpected color: " + value);
                         }

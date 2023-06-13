@@ -101,7 +101,7 @@ export type SerializedLGraphNode<T extends LGraphNode = LGraphNode> = {
     outputs?: T["outputs"];
     title?: T["title"];
     color?: T["color"];
-    bgColor?: T["bgColor"];
+    bgcolor?: T["bgcolor"];
     boxcolor?: T["boxcolor"];
     shape?: T["shape"];
     properties?: T["properties"];
@@ -121,7 +121,7 @@ export default class LGraphNode {
     static title: string;
     static type: null | string;
     static widgets_up: boolean;
-    static registerCategory: string = "";
+
     constructor(title?: string) {
         this.title = title || "Unnamed"
         this.size = [LiteGraph.NODE_WIDTH, 60];
@@ -190,7 +190,7 @@ export default class LGraphNode {
     }>;
 
     color: string;
-    bgColor: string;
+    bgcolor: string;
     boxcolor: string;
     shape: SlotShape;
 
@@ -270,6 +270,11 @@ export default class LGraphNode {
         if (!info.title) {
             this.title = getStaticPropertyOnInstance<string>(this, "title") || this.title;
         }
+
+        // renamed field
+        const bgColor = (info as any).bgColor
+        if (bgColor != null)
+            this.bgcolor ||= bgColor
 
         if (this.inputs) {
             for (let i = 0; i < this.inputs.length; ++i) {
@@ -381,8 +386,8 @@ export default class LGraphNode {
         if (this.color) {
             o.color = this.color;
         }
-        if (this.bgColor) {
-            o.bgColor = this.bgColor;
+        if (this.bgcolor) {
+            o.bgcolor = this.bgcolor;
         }
         if (this.boxcolor) {
             o.boxcolor = this.boxcolor;
@@ -399,7 +404,7 @@ export default class LGraphNode {
     }
 
     /** Creates a clone of this node  */
-    clone(cloneData: LGraphNodeCloneData = { extra: {} }): LGraphNode {
+    clone(cloneData: LGraphNodeCloneData = { forNode: {} }): LGraphNode {
         var node = LiteGraph.createNode(this.type);
         if (!node) {
             return null;
@@ -2949,7 +2954,7 @@ export default class LGraphNode {
      * when removed from graph
      * Called by `LGraph.remove` `LGraph.clear`
      */
-    onRemoved?(options: LGraphRemoveNodeOptions): void;
+    onRemoved?(options?: LGraphRemoveNodeOptions): void;
 
     /**
      * if returns false the incoming connection will be canceled

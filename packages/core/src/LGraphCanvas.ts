@@ -84,7 +84,7 @@ export interface IGraphDialog extends HTMLDivElement {
 
 export type NodeColor = {
     color: string;
-    bgColor: string;
+    bgcolor: string;
     groupcolor: string;
 }
 
@@ -120,15 +120,15 @@ export default class LGraphCanvas
     static DEFAULT_BACKGROUND_IMAGE: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
 
     static node_colors: Record<string, NodeColor> = {
-        red: { color: "#322", bgColor: "#533", groupcolor: "#A88" },
-        brown: { color: "#332922", bgColor: "#593930", groupcolor: "#b06634" },
-        green: { color: "#232", bgColor: "#353", groupcolor: "#8A8" },
-        blue: { color: "#223", bgColor: "#335", groupcolor: "#88A" },
-        pale_blue: { color: "#2a363b", bgColor: "#3f5159", groupcolor: "#3f789e" },
-        cyan: { color: "#233", bgColor: "#355", groupcolor: "#8AA" },
-        purple: { color: "#323", bgColor: "#535", groupcolor: "#a1309b" },
-        yellow: { color: "#432", bgColor: "#653", groupcolor: "#b58b2a" },
-        black: { color: "#222", bgColor: "#000", groupcolor: "#444" }
+        red: { color: "#322", bgcolor: "#533", groupcolor: "#A88" },
+        brown: { color: "#332922", bgcolor: "#593930", groupcolor: "#b06634" },
+        green: { color: "#232", bgcolor: "#353", groupcolor: "#8A8" },
+        blue: { color: "#223", bgcolor: "#335", groupcolor: "#88A" },
+        pale_blue: { color: "#2a363b", bgcolor: "#3f5159", groupcolor: "#3f789e" },
+        cyan: { color: "#233", bgcolor: "#355", groupcolor: "#8AA" },
+        purple: { color: "#323", bgcolor: "#535", groupcolor: "#a1309b" },
+        yellow: { color: "#432", bgcolor: "#653", groupcolor: "#b58b2a" },
+        black: { color: "#222", bgcolor: "#000", groupcolor: "#444" }
     }
 
     static DEFAULT_LINK_TYPE_COLORS: Record<string, string> = {
@@ -1175,13 +1175,13 @@ export default class LGraphCanvas
         const can_interact = this.allow_interaction && !this.read_only;
 
         if (e.type == "keydown") {
-            if (e.keyCode == 32) {
+            if (e.keyCode == 32 && !(e.metaKey || e.ctrlKey || e.shiftKey)) {
                 //space
                 this.dragging_canvas = true;
                 block_default = true;
             }
 
-            if (e.keyCode == 27) {
+            if (e.keyCode == 27 && !(e.metaKey || e.ctrlKey || e.shiftKey)) {
                 //esc
                 if (this.node_panel) this.node_panel.close();
                 if (this.options_panel) this.options_panel.close();
@@ -2117,7 +2117,7 @@ export default class LGraphCanvas
             this.graph.afterChange();
         }
         else {
-            console.error("graph input node not found:", type);
+            console.error("graph output node not found:", type);
         }
     }
 
@@ -2339,7 +2339,7 @@ export default class LGraphCanvas
         ctx: CanvasRenderingContext2D,
         size: Vector2,
         fgColor: string,
-        bgColor: string,
+        bgcolor: string,
         selected: boolean,
         mouseOver: boolean
     ): void {

@@ -150,7 +150,7 @@ export default class LGraph {
     }
 
     *iterateParentGraphs(): Iterable<LGraph> {
-        let graph = this;
+        let graph: LGraph | null = this;
         while (graph) {
             yield graph;
             graph = graph._subgraph_node?.graph;

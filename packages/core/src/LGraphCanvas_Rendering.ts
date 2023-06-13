@@ -609,13 +609,13 @@ export default class LGraphCanvas_Rendering {
             const top_entry = this._graph_stack[this._graph_stack.length - 1];
             const parent_graph = top_entry.graph
             const subgraph_node = this.graph._subgraph_node;
-            ctx.strokeStyle = subgraph_node.bgColor;
+            ctx.strokeStyle = subgraph_node.bgcolor;
             ctx.lineWidth = 10;
             ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
             ctx.lineWidth = 1;
             ctx.font = "40px Arial";
             ctx.textAlign = "center";
-            ctx.fillStyle = subgraph_node.bgColor || "#AAA";
+            ctx.fillStyle = subgraph_node.bgcolor || "#AAA";
             let title = "";
             for (let i = 1; i < this._graph_stack.length; ++i) {
                 title += parent_graph._subgraph_node.getTitle() + " >> ";
@@ -751,7 +751,7 @@ export default class LGraphCanvas_Rendering {
         this.current_node = node;
 
         var color = node.color || (node.constructor as any).color || LiteGraph.NODE_DEFAULT_COLOR;
-        var bgColor = node.bgColor || (node.constructor as any).bgColor || LiteGraph.NODE_DEFAULT_BGCOLOR;
+        var bgColor = node.bgcolor || (node.constructor as any).bgcolor || LiteGraph.NODE_DEFAULT_BGCOLOR;
 
         //shadow and glow
         if (node.mouseOver) {

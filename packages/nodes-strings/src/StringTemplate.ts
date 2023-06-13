@@ -93,7 +93,9 @@ export default class StringTemplate extends LGraphNode {
             catch (error) {
                 this.boxcolor = "red";
                 this._value = ""
-                console.error(error);
+                if (LiteGraph.debug) {
+                    console.error(error);
+                }
             }
             this.triggerSlot(1, this._value)
         }
