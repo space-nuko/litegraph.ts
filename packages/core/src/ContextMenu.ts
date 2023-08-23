@@ -39,6 +39,7 @@ export interface IContextMenuOptions {
     top?: number;
     scale?: number;
     allow_html?: boolean;
+    invert_scrolling?: boolean;
 }
 
 export enum ContextMenuSpecialItem {
@@ -189,20 +190,11 @@ export default class ContextMenu {
             true
         );
 
-        function on_mouse_wheel(e) {
-            var pos = parseInt(root.style.top);
-            root.style.top =
-                (pos + e.deltaY * options.scroll_speed).toFixed() + "px";
-            e.preventDefault();
-            return true;
-        }
+        options.scroll_speed = options.scroll_speed || 0.1;
+        options.invert_scrolling = options.invert_scrolling || false;
 
-        if (!options.scroll_speed) {
-            options.scroll_speed = 0.1;
-        }
-
-        root.addEventListener("wheel", on_mouse_wheel, true);
-        root.addEventListener("mousewheel", on_mouse_wheel, true);
+        root.addEventListener("wheel", this.onMouseWheel.bind(this), true);
+        root.addEventListener("mousewheel", this.onMouseWheel.bind(this), true);
 
         this.root = root;
 
@@ -220,7 +212,7 @@ export default class ContextMenu {
         for (let i = 0; i < values.length; i++) {
             let value = values[i];
             let name: string = "";
-            if (value === ContextMenuSpecialItem.SEPARATOR)
+            if (value === ContextMenuSpecialItem.SEPARATOR || value == null)
                 name = "";
             else if (typeof value === "string")
                 name = value;
@@ -298,12 +290,15 @@ export default class ContextMenu {
         if (options.scale) {
             root.style.transform = "scale(" + options.scale + ")";
         }
+
+        LiteGraph.onContextMenuCreated?.(this);
     }
 
     options: IContextMenuOptions;
     parentMenu?: ContextMenu;
     lock: boolean;
     current_submenu?: ContextMenu;
+
     addItem(
         name: string,
         value: ContextMenuItem,
@@ -319,7 +314,7 @@ export default class ContextMenu {
         if (typeof value === "string")
             value = { content: value }
 
-        if (value === ContextMenuSpecialItem.SEPARATOR) {
+        if (value === ContextMenuSpecialItem.SEPARATOR || value == null) {
             element.classList.add("separator");
             //element.innerHTML = "<hr/>"
             //continue;
@@ -487,5 +482,13 @@ export default class ContextMenu {
             return this.options.parentMenu.getFirstEvent();
         }
         return this.options.event;
+    }
+
+    onMouseWheel(e: WheelEvent) {
+        var pos = parseInt(this.root.style.top);
+        this.root.style.top =
+            (pos + e.deltaY * this.options.scroll_speed * (this.options.invert_scrolling ? -1 : 1)).toFixed() + "px";
+        e.preventDefault();
+        return true;
     }
 }
