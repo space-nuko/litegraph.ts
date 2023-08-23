@@ -59,7 +59,7 @@ export enum LinkRenderMode {
     LINEAR_LINK,
     SPLINE_LINK,
 }
-export const LinkRenderModeNames = ["Straight", "Linear", "Spline"]
+export const LINK_RENDER_MODE_NAMES = ["Straight", "Linear", "Spline"]
 
 export enum TitleMode {
     NORMAL_TITLE = 0,

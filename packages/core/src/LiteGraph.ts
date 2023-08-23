@@ -156,7 +156,8 @@ export default class LiteGraph {
         const type = config.type;
 
         if (!type) {
-            throw ("Config has no type: " + config);
+            console.error(config)
+            throw new Error("Config has no type: " + config);
         }
         if (LiteGraph.debug) {
             console.debug(classname, type)

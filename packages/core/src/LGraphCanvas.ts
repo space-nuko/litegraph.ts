@@ -274,6 +274,7 @@ export default class LGraphCanvas
     canvas: HTMLCanvasElement;
     canvas_mouse: Vector2;
     clear_background: boolean = true;
+    clear_background_color: string = "#222";
     connecting_node: LGraphNode | null;
     connecting_pos: Vector2 | null = null;
     connecting_slot: SlotIndex | null = null;
@@ -2390,5 +2391,22 @@ export default class LGraphCanvas
 
     drawGroups(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D): void {
         LGraphCanvas_Rendering.prototype.drawGroups.apply(this, arguments);
+    }
+
+    /*
+     * ComfyUI Extension
+     */
+    updateBackground(imageURL: string, clearBackgroundColor: string) {
+        this._bg_img = new Image();
+        this._bg_img.name = imageURL;
+        this._bg_img.src = imageURL;
+        this._bg_img.onload = () => {
+            this.draw(true, true);
+        };
+        this.background_image = imageURL;
+
+        this.clear_background = true;
+        this.clear_background_color = clearBackgroundColor;
+        this._pattern = null
     }
 }
