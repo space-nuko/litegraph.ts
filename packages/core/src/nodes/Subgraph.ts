@@ -252,11 +252,12 @@ export default class Subgraph extends LGraphNode {
         e: MouseEventExt,
         pos: Vector2,
         graphCanvas: LGraphCanvas
-    ) {
+    ): boolean {
         var that = this;
         setTimeout(function() {
             graphCanvas.openSubgraph(that.subgraph);
         }, 10);
+        return true;
     }
 
     override onAction(action: any, param: any, options: LActionOptions) {

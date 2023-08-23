@@ -277,10 +277,13 @@ export default class LGraphCanvas_Events {
                     //double clicking
                     if (is_double_click && this.selected_nodes[node.id]) {
                         //double click node
+                        let doProcess = true;
                         if (node.onDblClick) {
-                            node.onDblClick(e, pos, this);
+                            if (node.onDblClick(e, pos, this))
+                                doProcess = false;
                         }
-                        this.processNodeDblClicked(node);
+                        if (doProcess)
+                            this.processNodeDblClicked(node);
                         block_drag_node = true;
                     }
 

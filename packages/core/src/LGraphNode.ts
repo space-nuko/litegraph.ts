@@ -227,6 +227,7 @@ export default class LGraphNode {
     execute_triggered: number = 0;
     /** the nFrames it will be used (-- each step), means "how old" is the event */
     action_triggered: number = 0;
+    no_panel_on_double_click: boolean = false;
 
     onNodeCreated?(): void;
 
@@ -2942,7 +2943,7 @@ export default class LGraphNode {
         event: MouseEventExt,
         pos: Vector2,
         graphCanvas: LGraphCanvas
-    ): void;
+    ): boolean;
 
     onKey?(event: KeyboardEvent, pos: Vector2, graphCanvas: LGraphCanvas): void;
     onKeyDown?(event: KeyboardEvent): void;

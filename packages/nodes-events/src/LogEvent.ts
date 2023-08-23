@@ -1,6 +1,16 @@
-import { BuiltInSlotType, ITextWidget, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
+import { BuiltInSlotType, ITextWidget, LActionOptions, LGraphNode, LiteGraph, OptionalSlots, PropertyLayout, SlotLayout, Vector2 } from "@litegraph-ts/core"
 
 export interface LogEventProperties extends Record<string, any> {
+}
+
+
+function tryToStringify(value: any): string {
+    try {
+        return JSON.stringify(value);
+    }
+    catch (err) {
+        return err.toString();
+    }
 }
 
 export default class LogEvent extends LGraphNode {
@@ -32,11 +42,11 @@ export default class LogEvent extends LGraphNode {
         this.optionsWidget = this.addWidget("text", "Opts", "", null, { multiline: true, max_length: 100 })
     }
 
-    override onAction(action: any, param: any, options: { action_call?: string }) {
+    override onAction(action: any, param: any, options: LActionOptions) {
         console.log("[LogEvent] Event received:", action, param, options);
-        this.actionWidget.value = JSON.stringify(action);
-        this.paramWidget.value = JSON.stringify(param);
-        this.optionsWidget.value = JSON.stringify(options);
+        this.actionWidget.value = tryToStringify(action);
+        this.paramWidget.value = tryToStringify(param);
+        this.optionsWidget.value = tryToStringify({ action_call: options.action_call, link: options.link });
     }
 }
 
