@@ -491,7 +491,7 @@ export default class LGraphNode {
                 var w = this.widgets[i];
                 if (!w)
                     continue;
-                if (w.options.property == name) {
+                if (w.options?.property == name) {
                     w.value = value;
                     break;
                 }
@@ -1315,6 +1315,10 @@ export default class LGraphNode {
         }
         this.properties[name] = default_value;
         return o;
+    }
+
+    hasProperty(name: string): boolean {
+        return this.properties != null && name in this.properties;
     }
 
     /**

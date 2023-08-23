@@ -252,7 +252,7 @@ export default class LiteGraph {
         }
 
         if (!regConfig) {
-            throw "Node not registered!" + type
+            throw new Error("Node not registered!" + type)
         }
 
         var sCN = (regConfig.class as any).__litegraph_type__;

@@ -190,8 +190,7 @@ export default class ContextMenu {
             true
         );
 
-        options.scroll_speed = options.scroll_speed || 0.1;
-        options.invert_scrolling = options.invert_scrolling || false;
+        options.scroll_speed ||= 0.1;
 
         root.addEventListener("wheel", this.onMouseWheel.bind(this), true);
         root.addEventListener("mousewheel", this.onMouseWheel.bind(this), true);
