@@ -1849,6 +1849,26 @@ export default class LGraphNode {
 
     /**
      * returns the input slot with a given name (used for dynamic slots), -1 if not found
+     * for compatibility purposes only, please prefer `findInputSlotIndexByName`
+     * @param name the name of the slot
+     * @return the slot (-1 if not found)
+     */
+    findInputSlot(name: string): number {
+        return this.findInputSlotIndexByName(name);
+    }
+
+    /**
+     * returns the output slot with a given name (used for dynamic slots), -1 if not found
+     * for compatibility purposes only, please prefer `findOutputSlotIndexByName`
+     * @param name the name of the slot
+     * @return  the slot (-1 if not found)
+     */
+    findOutputSlot(name: string): number {
+        return this.findOutputSlotIndexByName(name);
+    }
+
+    /**
+     * returns the input slot with a given name (used for dynamic slots), -1 if not found
      * @param name the name of the slot
      * @return the slot (-1 if not found)
      */
