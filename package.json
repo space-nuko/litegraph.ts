@@ -1,6 +1,6 @@
 {
     "private": true,
-    "workspaces": ["packages/*", "apps/*"],
+    "workspaces": ["packages/*", "apps/*", "bundles/*"],
     "scripts": {
         "build": "bash build.sh"
     }

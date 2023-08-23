@@ -51,6 +51,40 @@ importers:
         specifier: ^0.5.6
         version: 0.5.6(typescript@5.0.3)(vite@4.2.1)
 
+  bundles/mini:
+    dependencies:
+      '@litegraph-ts/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@litegraph-ts/nodes-basic':
+        specifier: workspace:*
+        version: link:../../packages/nodes-basic
+      '@litegraph-ts/nodes-events':
+        specifier: workspace:*
+        version: link:../../packages/nodes-events
+      '@litegraph-ts/nodes-logic':
+        specifier: workspace:*
+        version: link:../../packages/nodes-logic
+      '@litegraph-ts/nodes-math':
+        specifier: workspace:*
+        version: link:../../packages/nodes-math
+      '@litegraph-ts/nodes-strings':
+        specifier: workspace:*
+        version: link:../../packages/nodes-strings
+      typescript:
+        specifier: ^5.0.3
+        version: 5.0.3
+      vite:
+        specifier: ^4.2.1
+        version: 4.2.1
+    devDependencies:
+      '@litegraph-ts/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      vite-plugin-checker:
+        specifier: ^0.5.6
+        version: 0.5.6(typescript@5.0.3)(vite@4.2.1)
+
   packages/core:
     dependencies:
       '@litegraph-ts/tsconfig':
